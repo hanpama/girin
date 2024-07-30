@@ -1,0 +1,56 @@
+type BasicObject {
+    idNonNull: ID!
+    stringNonNull: String!
+    intNonNull: Int!
+    floatNonNull: Float!
+    booleanNonNull: Boolean!
+    id: ID
+    string: String
+    int: Int
+    float: Float
+    boolean: Boolean
+    idNonNullArg(idNonNull: ID!): ID!
+    stringNonNullArg(stringNonNull: String!): String!
+    intNonNullArg(intNonNull: Int!): Int!
+    floatNonNullArg(floatNonNull: Float!): Float!
+    booleanNonNullArg(booleanNonNull: Boolean!): Boolean!
+    idArg(id: ID): ID
+    stringArg(string: String): String
+    intArg(int: Int): Int
+    floatArg(float: Float): Float
+    booleanArg(boolean: Boolean): Boolean
+}
+
+interface BasicInterface {
+    interfaceField: String
+}
+
+type BasicInterfaceImpl implements BasicInterface {
+    interfaceField: String
+}
+
+union BasicUnion = BasicObject | BasicInterfaceImpl
+
+enum BasicEnum {
+    ENUM_VALUE_1
+    ENUM_VALUE_2
+}
+
+input BasicInput {
+    idNonNull: ID!
+    stringNonNull: String!
+    intNonNull: Int!
+    floatNonNull: Float!
+    booleanNonNull: Boolean!
+    id: ID
+    string: String
+    int: Int
+    float: Float
+    boolean: Boolean
+}
+
+"""
+BasicScalar description
+"""
+scalar BasicScalar
+    @typeAlias(java: "java.lang.String", swift: "String")

@@ -1,0 +1,762 @@
+{
+  "path": "test/GraphQL",
+  "name": "GraphQL",
+  "children": [
+    {
+      "path": "test/GraphQL/Source",
+      "name": "Source",
+      "children": [],
+      "submodules": []
+    },
+    {
+      "path": "test/GraphQL/Basic",
+      "name": "Basic",
+      "children": [],
+      "submodules": [
+        {
+          "path": "test/GraphQL/Basic/Schema.graphql",
+          "name": "Schema",
+          "definitions": [
+            {
+              "type": "ObjectTypeDefinition",
+              "fields": [
+                {
+                  "name": "idNonNull",
+                  "description": null,
+                  "deprecation_reason": null,
+                  "args": [],
+                  "field_type": {
+                    "NonNullType": {
+                      "NamedType": "ID"
+                    }
+                  },
+                  "resolve": null,
+                  "position": {
+                    "line": 2,
+                    "column": 5
+                  }
+                },
+                {
+                  "name": "stringNonNull",
+                  "description": null,
+                  "deprecation_reason": null,
+                  "args": [],
+                  "field_type": {
+                    "NonNullType": {
+                      "NamedType": "String"
+                    }
+                  },
+                  "resolve": null,
+                  "position": {
+                    "line": 3,
+                    "column": 5
+                  }
+                },
+                {
+                  "name": "intNonNull",
+                  "description": null,
+                  "deprecation_reason": null,
+                  "args": [],
+                  "field_type": {
+                    "NonNullType": {
+                      "NamedType": "Int"
+                    }
+                  },
+                  "resolve": null,
+                  "position": {
+                    "line": 4,
+                    "column": 5
+                  }
+                },
+                {
+                  "name": "floatNonNull",
+                  "description": null,
+                  "deprecation_reason": null,
+                  "args": [],
+                  "field_type": {
+                    "NonNullType": {
+                      "NamedType": "Float"
+                    }
+                  },
+                  "resolve": null,
+                  "position": {
+                    "line": 5,
+                    "column": 5
+                  }
+                },
+                {
+                  "name": "booleanNonNull",
+                  "description": null,
+                  "deprecation_reason": null,
+                  "args": [],
+                  "field_type": {
+                    "NonNullType": {
+                      "NamedType": "Boolean"
+                    }
+                  },
+                  "resolve": null,
+                  "position": {
+                    "line": 6,
+                    "column": 5
+                  }
+                },
+                {
+                  "name": "id",
+                  "description": null,
+                  "deprecation_reason": null,
+                  "args": [],
+                  "field_type": {
+                    "NamedType": "ID"
+                  },
+                  "resolve": null,
+                  "position": {
+                    "line": 7,
+                    "column": 5
+                  }
+                },
+                {
+                  "name": "string",
+                  "description": null,
+                  "deprecation_reason": null,
+                  "args": [],
+                  "field_type": {
+                    "NamedType": "String"
+                  },
+                  "resolve": null,
+                  "position": {
+                    "line": 8,
+                    "column": 5
+                  }
+                },
+                {
+                  "name": "int",
+                  "description": null,
+                  "deprecation_reason": null,
+                  "args": [],
+                  "field_type": {
+                    "NamedType": "Int"
+                  },
+                  "resolve": null,
+                  "position": {
+                    "line": 9,
+                    "column": 5
+                  }
+                },
+                {
+                  "name": "float",
+                  "description": null,
+                  "deprecation_reason": null,
+                  "args": [],
+                  "field_type": {
+                    "NamedType": "Float"
+                  },
+                  "resolve": null,
+                  "position": {
+                    "line": 10,
+                    "column": 5
+                  }
+                },
+                {
+                  "name": "boolean",
+                  "description": null,
+                  "deprecation_reason": null,
+                  "args": [],
+                  "field_type": {
+                    "NamedType": "Boolean"
+                  },
+                  "resolve": null,
+                  "position": {
+                    "line": 11,
+                    "column": 5
+                  }
+                },
+                {
+                  "name": "idNonNullArg",
+                  "description": null,
+                  "deprecation_reason": null,
+                  "args": [
+                    {
+                      "name": "idNonNull",
+                      "description": null,
+                      "deprecation_reason": null,
+                      "field_type": {
+                        "NonNullType": {
+                          "NamedType": "ID"
+                        }
+                      },
+                      "default_value": null,
+                      "position": {
+                        "line": 12,
+                        "column": 18
+                      }
+                    }
+                  ],
+                  "field_type": {
+                    "NonNullType": {
+                      "NamedType": "ID"
+                    }
+                  },
+                  "resolve": null,
+                  "position": {
+                    "line": 12,
+                    "column": 5
+                  }
+                },
+                {
+                  "name": "stringNonNullArg",
+                  "description": null,
+                  "deprecation_reason": null,
+                  "args": [
+                    {
+                      "name": "stringNonNull",
+                      "description": null,
+                      "deprecation_reason": null,
+                      "field_type": {
+                        "NonNullType": {
+                          "NamedType": "String"
+                        }
+                      },
+                      "default_value": null,
+                      "position": {
+                        "line": 13,
+                        "column": 22
+                      }
+                    }
+                  ],
+                  "field_type": {
+                    "NonNullType": {
+                      "NamedType": "String"
+                    }
+                  },
+                  "resolve": null,
+                  "position": {
+                    "line": 13,
+                    "column": 5
+                  }
+                },
+                {
+                  "name": "intNonNullArg",
+                  "description": null,
+                  "deprecation_reason": null,
+                  "args": [
+                    {
+                      "name": "intNonNull",
+                      "description": null,
+                      "deprecation_reason": null,
+                      "field_type": {
+                        "NonNullType": {
+                          "NamedType": "Int"
+                        }
+                      },
+                      "default_value": null,
+                      "position": {
+                        "line": 14,
+                        "column": 19
+                      }
+                    }
+                  ],
+                  "field_type": {
+                    "NonNullType": {
+                      "NamedType": "Int"
+                    }
+                  },
+                  "resolve": null,
+                  "position": {
+                    "line": 14,
+                    "column": 5
+                  }
+                },
+                {
+                  "name": "floatNonNullArg",
+                  "description": null,
+                  "deprecation_reason": null,
+                  "args": [
+                    {
+                      "name": "floatNonNull",
+                      "description": null,
+                      "deprecation_reason": null,
+                      "field_type": {
+                        "NonNullType": {
+                          "NamedType": "Float"
+                        }
+                      },
+                      "default_value": null,
+                      "position": {
+                        "line": 15,
+                        "column": 21
+                      }
+                    }
+                  ],
+                  "field_type": {
+                    "NonNullType": {
+                      "NamedType": "Float"
+                    }
+                  },
+                  "resolve": null,
+                  "position": {
+                    "line": 15,
+                    "column": 5
+                  }
+                },
+                {
+                  "name": "booleanNonNullArg",
+                  "description": null,
+                  "deprecation_reason": null,
+                  "args": [
+                    {
+                      "name": "booleanNonNull",
+                      "description": null,
+                      "deprecation_reason": null,
+                      "field_type": {
+                        "NonNullType": {
+                          "NamedType": "Boolean"
+                        }
+                      },
+                      "default_value": null,
+                      "position": {
+                        "line": 16,
+                        "column": 23
+                      }
+                    }
+                  ],
+                  "field_type": {
+                    "NonNullType": {
+                      "NamedType": "Boolean"
+                    }
+                  },
+                  "resolve": null,
+                  "position": {
+                    "line": 16,
+                    "column": 5
+                  }
+                },
+                {
+                  "name": "idArg",
+                  "description": null,
+                  "deprecation_reason": null,
+                  "args": [
+                    {
+                      "name": "id",
+                      "description": null,
+                      "deprecation_reason": null,
+                      "field_type": {
+                        "NamedType": "ID"
+                      },
+                      "default_value": null,
+                      "position": {
+                        "line": 17,
+                        "column": 11
+                      }
+                    }
+                  ],
+                  "field_type": {
+                    "NamedType": "ID"
+                  },
+                  "resolve": null,
+                  "position": {
+                    "line": 17,
+                    "column": 5
+                  }
+                },
+                {
+                  "name": "stringArg",
+                  "description": null,
+                  "deprecation_reason": null,
+                  "args": [
+                    {
+                      "name": "string",
+                      "description": null,
+                      "deprecation_reason": null,
+                      "field_type": {
+                        "NamedType": "String"
+                      },
+                      "default_value": null,
+                      "position": {
+                        "line": 18,
+                        "column": 15
+                      }
+                    }
+                  ],
+                  "field_type": {
+                    "NamedType": "String"
+                  },
+                  "resolve": null,
+                  "position": {
+                    "line": 18,
+                    "column": 5
+                  }
+                },
+                {
+                  "name": "intArg",
+                  "description": null,
+                  "deprecation_reason": null,
+                  "args": [
+                    {
+                      "name": "int",
+                      "description": null,
+                      "deprecation_reason": null,
+                      "field_type": {
+                        "NamedType": "Int"
+                      },
+                      "default_value": null,
+                      "position": {
+                        "line": 19,
+                        "column": 12
+                      }
+                    }
+                  ],
+                  "field_type": {
+                    "NamedType": "Int"
+                  },
+                  "resolve": null,
+                  "position": {
+                    "line": 19,
+                    "column": 5
+                  }
+                },
+                {
+                  "name": "floatArg",
+                  "description": null,
+                  "deprecation_reason": null,
+                  "args": [
+                    {
+                      "name": "float",
+                      "description": null,
+                      "deprecation_reason": null,
+                      "field_type": {
+                        "NamedType": "Float"
+                      },
+                      "default_value": null,
+                      "position": {
+                        "line": 20,
+                        "column": 14
+                      }
+                    }
+                  ],
+                  "field_type": {
+                    "NamedType": "Float"
+                  },
+                  "resolve": null,
+                  "position": {
+                    "line": 20,
+                    "column": 5
+                  }
+                },
+                {
+                  "name": "booleanArg",
+                  "description": null,
+                  "deprecation_reason": null,
+                  "args": [
+                    {
+                      "name": "boolean",
+                      "description": null,
+                      "deprecation_reason": null,
+                      "field_type": {
+                        "NamedType": "Boolean"
+                      },
+                      "default_value": null,
+                      "position": {
+                        "line": 21,
+                        "column": 16
+                      }
+                    }
+                  ],
+                  "field_type": {
+                    "NamedType": "Boolean"
+                  },
+                  "resolve": null,
+                  "position": {
+                    "line": 21,
+                    "column": 5
+                  }
+                }
+              ],
+              "name": "BasicObject",
+              "description": null,
+              "interfaces": [],
+              "position": {
+                "line": 1,
+                "column": 1
+              }
+            },
+            {
+              "type": "InterfaceTypeDefinition",
+              "name": "BasicInterface",
+              "description": null,
+              "fields": [
+                {
+                  "name": "interfaceField",
+                  "description": null,
+                  "deprecation_reason": null,
+                  "args": [],
+                  "field_type": {
+                    "NamedType": "String"
+                  },
+                  "resolve": null,
+                  "position": {
+                    "line": 25,
+                    "column": 5
+                  }
+                }
+              ],
+              "position": {
+                "line": 24,
+                "column": 1
+              }
+            },
+            {
+              "type": "ObjectTypeDefinition",
+              "fields": [
+                {
+                  "name": "interfaceField",
+                  "description": null,
+                  "deprecation_reason": null,
+                  "args": [],
+                  "field_type": {
+                    "NamedType": "String"
+                  },
+                  "resolve": null,
+                  "position": {
+                    "line": 29,
+                    "column": 5
+                  }
+                }
+              ],
+              "name": "BasicInterfaceImpl",
+              "description": null,
+              "interfaces": [
+                "BasicInterface"
+              ],
+              "position": {
+                "line": 28,
+                "column": 1
+              }
+            },
+            {
+              "type": "UnionTypeDefinition",
+              "name": "BasicUnion",
+              "description": null,
+              "types": [
+                "BasicObject",
+                "BasicInterfaceImpl"
+              ],
+              "position": {
+                "line": 32,
+                "column": 1
+              }
+            },
+            {
+              "type": "EnumTypeDefinition",
+              "name": "BasicEnum",
+              "description": null,
+              "values": [
+                {
+                  "name": "ENUM_VALUE_1",
+                  "description": null,
+                  "deprecation_reason": null,
+                  "position": {
+                    "line": 35,
+                    "column": 5
+                  }
+                },
+                {
+                  "name": "ENUM_VALUE_2",
+                  "description": null,
+                  "deprecation_reason": null,
+                  "position": {
+                    "line": 36,
+                    "column": 5
+                  }
+                }
+              ],
+              "position": {
+                "line": 34,
+                "column": 1
+              }
+            },
+            {
+              "type": "InputObjectTypeDefinition",
+              "name": "BasicInput",
+              "description": null,
+              "fields": [
+                {
+                  "name": "idNonNull",
+                  "description": null,
+                  "deprecation_reason": null,
+                  "field_type": {
+                    "NonNullType": {
+                      "NamedType": "ID"
+                    }
+                  },
+                  "default_value": null,
+                  "position": {
+                    "line": 40,
+                    "column": 5
+                  }
+                },
+                {
+                  "name": "stringNonNull",
+                  "description": null,
+                  "deprecation_reason": null,
+                  "field_type": {
+                    "NonNullType": {
+                      "NamedType": "String"
+                    }
+                  },
+                  "default_value": null,
+                  "position": {
+                    "line": 41,
+                    "column": 5
+                  }
+                },
+                {
+                  "name": "intNonNull",
+                  "description": null,
+                  "deprecation_reason": null,
+                  "field_type": {
+                    "NonNullType": {
+                      "NamedType": "Int"
+                    }
+                  },
+                  "default_value": null,
+                  "position": {
+                    "line": 42,
+                    "column": 5
+                  }
+                },
+                {
+                  "name": "floatNonNull",
+                  "description": null,
+                  "deprecation_reason": null,
+                  "field_type": {
+                    "NonNullType": {
+                      "NamedType": "Float"
+                    }
+                  },
+                  "default_value": null,
+                  "position": {
+                    "line": 43,
+                    "column": 5
+                  }
+                },
+                {
+                  "name": "booleanNonNull",
+                  "description": null,
+                  "deprecation_reason": null,
+                  "field_type": {
+                    "NonNullType": {
+                      "NamedType": "Boolean"
+                    }
+                  },
+                  "default_value": null,
+                  "position": {
+                    "line": 44,
+                    "column": 5
+                  }
+                },
+                {
+                  "name": "id",
+                  "description": null,
+                  "deprecation_reason": null,
+                  "field_type": {
+                    "NamedType": "ID"
+                  },
+                  "default_value": null,
+                  "position": {
+                    "line": 45,
+                    "column": 5
+                  }
+                },
+                {
+                  "name": "string",
+                  "description": null,
+                  "deprecation_reason": null,
+                  "field_type": {
+                    "NamedType": "String"
+                  },
+                  "default_value": null,
+                  "position": {
+                    "line": 46,
+                    "column": 5
+                  }
+                },
+                {
+                  "name": "int",
+                  "description": null,
+                  "deprecation_reason": null,
+                  "field_type": {
+                    "NamedType": "Int"
+                  },
+                  "default_value": null,
+                  "position": {
+                    "line": 47,
+                    "column": 5
+                  }
+                },
+                {
+                  "name": "float",
+                  "description": null,
+                  "deprecation_reason": null,
+                  "field_type": {
+                    "NamedType": "Float"
+                  },
+                  "default_value": null,
+                  "position": {
+                    "line": 48,
+                    "column": 5
+                  }
+                },
+                {
+                  "name": "boolean",
+                  "description": null,
+                  "deprecation_reason": null,
+                  "field_type": {
+                    "NamedType": "Boolean"
+                  },
+                  "default_value": null,
+                  "position": {
+                    "line": 49,
+                    "column": 5
+                  }
+                }
+              ],
+              "position": {
+                "line": 39,
+                "column": 1
+              }
+            },
+            {
+              "type": "ScalarTypeDefinition",
+              "name": "BasicScalar",
+              "description": null,
+              "position": {
+                "line": 52,
+                "column": 1
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "test/GraphQL/Deprecation",
+      "name": "Deprecation",
+      "children": [],
+      "submodules": []
+    }
+  ],
+  "submodules": [
+    {
+      "path": "test/GraphQL/root.graphql",
+      "name": "root",
+      "definitions": [
+        {
+          "type": "SchemaDefinition",
+          "query": "Query",
+          "mutation": "Mutation",
+          "subscription": null
+        }
+      ]
+    }
+  ]
+}

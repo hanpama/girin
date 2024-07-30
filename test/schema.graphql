@@ -1,0 +1,60 @@
+interface BasicInterface {
+  interfaceField: String
+}
+
+enum BasicEnum {
+  ENUM_VALUE_1
+  ENUM_VALUE_2
+}
+
+type BasicObject {
+  idNonNull: ID!
+  stringNonNull: String!
+  intNonNull: Int!
+  floatNonNull: Float!
+  booleanNonNull: Boolean!
+  id: ID
+  string: String
+  int: Int
+  float: Float
+  boolean: Boolean
+  idNonNullArg(idNonNull: ID!): ID!
+  stringNonNullArg(stringNonNull: String!): String!
+  intNonNullArg(intNonNull: Int!): Int!
+  floatNonNullArg(floatNonNull: Float!): Float!
+  booleanNonNullArg(booleanNonNull: Boolean!): Boolean!
+  idArg(id: ID): ID
+  stringArg(string: String): String
+  intArg(int: Int): Int
+  floatArg(float: Float): Float
+  booleanArg(boolean: Boolean): Boolean
+}
+
+input BasicInput {
+  idNonNull: ID!
+  stringNonNull: String!
+  intNonNull: Int!
+  floatNonNull: Float!
+  booleanNonNull: Boolean!
+  id: ID
+  string: String
+  int: Int
+  float: Float
+  boolean: Boolean
+}
+
+"""
+  BasicScalar description
+"""
+scalar BasicScalar
+
+union BasicUnion = BasicObject | BasicInterfaceImpl
+
+schema {
+  query: Query
+  mutation: Mutation
+}
+
+type BasicInterfaceImpl implements BasicInterface {
+  interfaceField: String
+}

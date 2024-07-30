@@ -1,31 +1,19 @@
-pub mod model;
+use serde_json;
+use std::{fs::File, path::PathBuf};
 mod build;
+mod graphql;
+mod model;
+mod swift;
 
-// use graphql_parser::query::{parse_query, ParseError};
-use graphql_parser::schema::{parse_schema, Definition};
 
 fn main() {
-    let schema = "
-      schema {
-        query: Query
-      }
+    let schema_dir = PathBuf::from("test/GraphQL");
+    let out_dir = PathBuf::from("test/SchemaGeneration/Sources/SchemaGeneration");
 
-      type Query {
-        version: String
-      }
-    ";
-    let res = parse_schema::<&str>(schema).unwrap();
+    let result = build::build_schema(&schema_dir).unwrap();
 
-    for v in res.definitions {
-        match v {
-            Definition::SchemaDefinition(def) => {
-                // def.query
-            }
-            _ => {}
-        }
-    }
+    let file = File::create(out_dir.join("output.json")).unwrap();
+    serde_json::to_writer_pretty(&file, &result.root_module).unwrap();
 
-    let item = res.definitions.get(0).unwrap();
-
-    println!("Hello, world!");
+    graphql::render(&result, PathBuf::from("test/schema.graphql")).unwrap();
 }
