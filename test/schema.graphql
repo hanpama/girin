@@ -1,12 +1,3 @@
-interface BasicInterface {
-  interfaceField: String
-}
-
-enum BasicEnum {
-  ENUM_VALUE_1
-  ENUM_VALUE_2
-}
-
 type BasicObject {
   idNonNull: ID!
   stringNonNull: String!
@@ -28,6 +19,24 @@ type BasicObject {
   intArg(int: Int): Int
   floatArg(float: Float): Float
   booleanArg(boolean: Boolean): Boolean
+  basicScalar: BasicScalar
+}
+
+interface BasicInterface {
+  interfaceField: String
+  basicScalar: BasicScalar
+}
+
+type BasicInterfaceImpl implements BasicInterface {
+  interfaceField: String
+  basicScalar: BasicScalar
+}
+
+union BasicUnion = BasicObject | BasicInterfaceImpl
+
+enum BasicEnum {
+  ENUM_VALUE_1
+  ENUM_VALUE_2
 }
 
 input BasicInput {
@@ -41,6 +50,7 @@ input BasicInput {
   int: Int
   float: Float
   boolean: Boolean
+  basicScalar: BasicScalar
 }
 
 """
@@ -48,13 +58,10 @@ input BasicInput {
 """
 scalar BasicScalar
 
-union BasicUnion = BasicObject | BasicInterfaceImpl
-
-schema {
-  query: Query
-  mutation: Mutation
+type Query {
+  version: String
 }
 
-type BasicInterfaceImpl implements BasicInterface {
-  interfaceField: String
+type Mutation {
+  version: String
 }

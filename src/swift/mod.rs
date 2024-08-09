@@ -1,6 +1,6 @@
 use std::{error::Error, path::PathBuf};
 
-use crate::model::Module;
+use crate::definitions::Module;
 
 mod sourcecode;
 

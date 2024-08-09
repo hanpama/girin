@@ -8,22 +8,38 @@ use std::{fs::File, io::Read};
 use graphql_parser::parse_schema;
 use graphql_parser::schema;
 
-use crate::model::{
-    Definition, EnumTypeDefinition, EnumTypeExtension, EnumValueDefinition, FieldDefinition,
-    InputFieldDefinition, InputObjectTypeDefinition, InputObjectTypeExtension,
-    InterfaceTypeDefinition, InterfaceTypeExtension, Module, ObjectTypeDefinition,
-    ObjectTypeExtension, Position, ResolverConfig, ScalarTypeDefinition, Schema, SchemaDefinition,
-    SourceConfig, Submodule, TypeExpression, UnionTypeDefinition, UnionTypeExtension, Value,
+use crate::definitions::{
+    Definition, Enum, EnumExtension, EnumValueDefinition, FieldDefinition, Input, InputExtension,
+    InputFieldDefinition, Interface, InterfaceTypeExtension, Module, Object, ObjectExtension,
+    Position, ResolverConfig, Scalar, Schema, SourceConfig, Submodule, TypeExpression, Union,
+    UnionExtension, Value,
 };
 
 pub fn build_schema(dir_path: &PathBuf) -> Result<Schema, SchemaBuildingError> {
-    let module = build_module(dir_path)?;
-    return Ok(Schema {
-        root_module: module,
-    });
+    let read_dir = read_dir(&dir_path)?;
+    let mut schema = Schema::new();
+
+    for item in read_dir {
+        let item = item?;
+        let file_type = item.file_type()?;
+
+        if file_type.is_dir() {
+            let child: Module = build_module(&mut schema, &item.path())?;
+            if !child.is_empty() {
+                schema.children.push(child);
+            }
+        } else {
+            let submodule = build_submodule(&mut schema, &item.path())?;
+            if !submodule.is_empty() {
+                schema.submodules.push(submodule);
+            }
+        }
+    }
+
+    return Ok(schema);
 }
 
-fn build_module(dir_path: &PathBuf) -> Result<Module, SchemaBuildingError> {
+fn build_module(s: &mut Schema, dir_path: &PathBuf) -> Result<Module, SchemaBuildingError> {
     let read_dir = read_dir(&dir_path)?;
 
     let mut module: Module = Module {
@@ -37,18 +53,22 @@ fn build_module(dir_path: &PathBuf) -> Result<Module, SchemaBuildingError> {
         let file_type = item.file_type()?;
 
         if file_type.is_dir() {
-            let child = build_module(&item.path())?;
-            module.children.push(child);
+            let child: Module = build_module(s, &item.path())?;
+            if !child.is_empty() {
+                module.children.push(child);
+            }
         } else {
-            let submodule = build_submodule(&item.path())?;
-            module.submodules.push(submodule);
+            let submodule = build_submodule(s, &item.path())?;
+            if !submodule.is_empty() {
+                module.submodules.push(submodule);
+            }
         }
     }
 
     return Ok(module);
 }
 
-fn build_submodule(file_path: &Path) -> Result<Submodule, SchemaBuildingError> {
+fn build_submodule(s: &mut Schema, file_path: &Path) -> Result<Submodule, SchemaBuildingError> {
     let mut file = File::open(file_path)?;
     let mut buf = String::new();
     file.read_to_string(&mut buf)?;
@@ -59,98 +79,125 @@ fn build_submodule(file_path: &Path) -> Result<Submodule, SchemaBuildingError> {
         definitions: Vec::new(),
     };
     let document = parse_schema::<String>(&buf)?;
-    for def in document.definitions {
-        smod.definitions.push(build_definition(&smod, def)?);
-    }
-    return Ok(smod);
-}
 
-fn build_definition(
-    smod: &Submodule,
-    def: schema::Definition<String>,
-) -> Result<Definition, SchemaBuildingError> {
-    match def {
-        schema::Definition::SchemaDefinition(def) => Ok(Definition::SchemaDefinition(
-            build_schema_definition(smod, &def),
-        )),
-        schema::Definition::TypeDefinition(def) => match def {
-            schema::TypeDefinition::Scalar(def) => Ok(Definition::ScalarTypeDefinition(
-                build_scalar_type_definition(smod, &def)?,
-            )),
-            schema::TypeDefinition::Object(def) => Ok(Definition::ObjectTypeDefinition(
-                build_object_type_definition(smod, &def)?,
-            )),
-            schema::TypeDefinition::Interface(def) => Ok(Definition::InterfaceTypeDefinition(
-                build_interface_type_definition(smod, &def)?,
-            )),
-            schema::TypeDefinition::Union(def) => Ok(Definition::UnionTypeDefinition(
-                build_union_type_definition(smod, &def)?,
-            )),
-            schema::TypeDefinition::Enum(def) => Ok(Definition::EnumTypeDefinition(
-                build_enum_type_definition(smod, &def)?,
-            )),
-            schema::TypeDefinition::InputObject(def) => Ok(Definition::InputObjectTypeDefinition(
-                build_input_object_type_definition(smod, &def)?,
-            )),
-        },
-        schema::Definition::TypeExtension(def) => match def {
-            schema::TypeExtension::Object(def) => Ok(Definition::ObjectTypeExtension(
-                build_object_type_extension(smod, &def)?,
-            )),
-            schema::TypeExtension::Enum(def) => Ok(Definition::EnumTypeExtension(
-                build_enum_type_extension(smod, &def)?,
-            )),
-            schema::TypeExtension::InputObject(def) => Ok(Definition::InputObjectTypeExtension(
-                build_input_object_type_extension(smod, &def)?,
-            )),
-            schema::TypeExtension::Interface(def) => Ok(Definition::InterfaceTypeExtension(
-                build_interface_extension(smod, &def)?,
-            )),
-            schema::TypeExtension::Union(def) => Ok(Definition::UnionTypeExtension(
-                build_union_type_extension(smod, &def)?,
-            )),
-            schema::TypeExtension::Scalar(def) => {
+    let mut violations = vec![];
+    for def in document.definitions {
+        match def {
+            schema::Definition::SchemaDefinition(def) => {
+                s.query = def.query.clone();
+                s.mutation = def.mutation.clone();
+                s.subscription = def.subscription.clone();
+            }
+            schema::Definition::TypeDefinition(def) => match def {
+                schema::TypeDefinition::Scalar(def) => {
+                    match build_scalar_type_definition(&smod, &def) {
+                        Ok(def) => s.add_definition(smod, Definition::Scalar(def)),
+                        Err(err) => violations.extend(err.violations),
+                    }
+                }
+                schema::TypeDefinition::Object(def) => {
+                    match build_object_type_definition(&smod, &def) {
+                        Ok(def) => smod.definitions.push(Definition::Object(def)),
+                        Err(err) => violations.extend(err.violations),
+                    }
+                }
+                schema::TypeDefinition::Interface(def) => {
+                    match build_interface_type_definition(&smod, &def) {
+                        Ok(def) => smod.definitions.push(Definition::Interface(def)),
+                        Err(err) => violations.extend(err.violations),
+                    }
+                }
+                schema::TypeDefinition::Union(def) => {
+                    match build_union_type_definition(&smod, &def) {
+                        Ok(def) => smod.definitions.push(Definition::Union(def)),
+                        Err(err) => violations.extend(err.violations),
+                    }
+                }
+                schema::TypeDefinition::Enum(def) => {
+                    match build_enum_type_definition(&smod, &def) {
+                        Ok(def) => smod.definitions.push(Definition::Enum(def)),
+                        Err(err) => violations.extend(err.violations),
+                    }
+                }
+                schema::TypeDefinition::InputObject(def) => {
+                    match build_input_type_definition(&smod, &def) {
+                        Ok(def) => smod.definitions.push(Definition::Input(def)),
+                        Err(err) => violations.extend(err.violations),
+                    }
+                }
+            },
+            schema::Definition::TypeExtension(def) => match def {
+                schema::TypeExtension::Object(def) => {
+                    match build_object_type_extension(&smod, &def) {
+                        Ok(def) => smod.definitions.push(Definition::ObjectExtension(def)),
+                        Err(err) => violations.extend(err.violations),
+                    }
+                }
+                schema::TypeExtension::Enum(def) => match build_enum_type_extension(&smod, &def) {
+                    Ok(def) => smod.definitions.push(Definition::EnumExtension(def)),
+                    Err(err) => violations.extend(err.violations),
+                },
+                schema::TypeExtension::InputObject(def) => {
+                    match build_input_type_extension(&smod, &def) {
+                        Ok(def) => smod.definitions.push(Definition::InputExtension(def)),
+                        Err(err) => violations.extend(err.violations),
+                    }
+                }
+                schema::TypeExtension::Interface(def) => {
+                    match build_interface_extension(&smod, &def) {
+                        Ok(def) => smod.definitions.push(Definition::InterfaceExtension(def)),
+                        Err(err) => violations.extend(err.violations),
+                    }
+                }
+                schema::TypeExtension::Union(def) => {
+                    match build_union_type_extension(&smod, &def) {
+                        Ok(def) => smod.definitions.push(Definition::UnionExtension(def)),
+                        Err(err) => violations.extend(err.violations),
+                    }
+                }
+                schema::TypeExtension::Scalar(def) => {
+                    todo!()
+                }
+            },
+            schema::Definition::DirectiveDefinition(def) => {
                 todo!()
             }
-        },
-        schema::Definition::DirectiveDefinition(def) => {
-            todo!()
         }
     }
-}
 
-fn build_schema_definition(
-    smod: &Submodule,
-    def: &schema::SchemaDefinition<String>,
-) -> SchemaDefinition {
-    return SchemaDefinition {
-        query: def.query.clone(),
-        mutation: def.mutation.clone(),
-        subscription: def.subscription.clone(),
-    };
+    if !violations.is_empty() {
+        return Err(SchemaBuildingError::GraphQLSchemaValidationError(
+            GraphQLSchemaValidationError { violations },
+        ));
+    }
+
+    return Ok(smod);
 }
 
 fn build_scalar_type_definition(
     smod: &Submodule,
     def: &schema::ScalarType<String>,
-) -> Result<ScalarTypeDefinition, SchemaBuildingError> {
-    let mut type_aliases: HashMap<String, String> = HashMap::new();
+) -> Result<Scalar, GraphQLSchemaValidationError> {
+    let mut violations = vec![];
+    let mut type_aliases = HashMap::<String, String>::new();
+
     for dir in def.directives.iter() {
         match dir.name.as_str() {
-            "typeAlias" => {
-                let map = handle_source_type(&smod, &dir)?;
-                for (key, value) in map.iter() {
-                    type_aliases.insert(key.clone(), value.clone());
-                }
-            }
+            "typeAlias" => match handle_type_alias(&smod, &dir) {
+                Ok(map) => type_aliases = map,
+                Err(err) => violations.extend(err.violations),
+            },
             _ => {
-                // return Err(SchemaBuildingError::UnsupportedDirectiveError {
-                //     directive_name: dir.name.clone(),
-                // });
+                // TODO: handle other directives
             }
         }
     }
-    return Ok(ScalarTypeDefinition {
+
+    if !violations.is_empty() {
+        return Err(GraphQLSchemaValidationError { violations });
+    }
+
+    return Ok(Scalar {
         name: def.name.clone(),
         description: def.description.clone(),
         position: build_position(smod, &def.position),
@@ -161,17 +208,26 @@ fn build_scalar_type_definition(
 fn build_object_type_definition(
     smod: &Submodule,
     def: &schema::ObjectType<String>,
-) -> Result<ObjectTypeDefinition, SchemaBuildingError> {
-    let fields_result: Result<Vec<FieldDefinition>, SchemaBuildingError> = def
-        .fields
-        .iter()
-        .map(|fdef| build_field_definition(smod, &fdef))
-        .collect();
-    return Ok(ObjectTypeDefinition {
+) -> Result<Object, GraphQLSchemaValidationError> {
+    let mut violations = vec![];
+    let mut fields = vec![];
+
+    for fdef in def.fields.iter() {
+        match build_field_definition(smod, &fdef) {
+            Ok(fdef) => fields.push(fdef),
+            Err(err) => violations.extend(err.violations),
+        }
+    }
+
+    if !violations.is_empty() {
+        return Err(GraphQLSchemaValidationError { violations });
+    }
+
+    return Ok(Object {
         name: def.name.clone(),
         description: def.description.clone(),
         interfaces: def.implements_interfaces.clone(),
-        fields: fields_result?,
+        fields,
         position: build_position(smod, &def.position),
     });
 }
@@ -179,16 +235,25 @@ fn build_object_type_definition(
 fn build_object_type_extension(
     smod: &Submodule,
     def: &schema::ObjectTypeExtension<String>,
-) -> Result<ObjectTypeExtension, SchemaBuildingError> {
-    let fields_result: Result<Vec<FieldDefinition>, SchemaBuildingError> = def
-        .fields
-        .iter()
-        .map(|fdef| build_field_definition(smod, &fdef))
-        .collect();
-    return Ok(ObjectTypeExtension {
+) -> Result<ObjectExtension, GraphQLSchemaValidationError> {
+    let mut violations = vec![];
+    let mut fields = vec![];
+
+    for fdef in def.fields.iter() {
+        match build_field_definition(smod, &fdef) {
+            Ok(fdef) => fields.push(fdef),
+            Err(err) => violations.extend(err.violations),
+        }
+    }
+
+    if !violations.is_empty() {
+        return Err(GraphQLSchemaValidationError { violations });
+    }
+
+    return Ok(ObjectExtension {
         name: def.name.clone(),
         interfaces: def.implements_interfaces.clone(),
-        fields: fields_result?,
+        fields,
         position: build_position(smod, &def.position),
     });
 }
@@ -196,39 +261,49 @@ fn build_object_type_extension(
 fn build_field_definition(
     smod: &Submodule,
     def: &schema::Field<String>,
-) -> Result<FieldDefinition, SchemaBuildingError> {
+) -> Result<FieldDefinition, GraphQLSchemaValidationError> {
     let mut deprecation_reason: Option<String> = None;
     let mut resolve: Option<ResolverConfig> = None;
     let mut source_configs: Vec<SourceConfig> = Vec::new();
+    let mut violations = vec![];
+    let mut args = vec![];
+
     for dir in def.directives.iter() {
         match dir.name.as_str() {
-            "deprecated" => {
-                deprecation_reason = Some(handle_deprecate(&smod, &dir)?);
-            }
-            "resolve" => {
-                resolve = Some(handle_resolve(&smod, &dir)?);
-            }
-            "source" => {
-                source_configs.push(handle_source(&smod, &dir)?);
-            }
+            "deprecated" => match handle_deprecate(&smod, &dir) {
+                Ok(reason) => deprecation_reason = Some(reason),
+                Err(err) => violations.extend(err.violations),
+            },
+            "resolve" => match handle_resolve(&smod, &dir) {
+                Ok(config) => resolve = Some(config),
+                Err(err) => violations.extend(err.violations),
+            },
+            "source" => match handle_source(&smod, &dir) {
+                Ok(config) => source_configs.push(config),
+                Err(err) => violations.extend(err.violations),
+            },
             _ => {
-                // return Err(SchemaBuildingError::UnsupportedDirectiveError {
-                //     directive_name: dir.name.clone(),
-                // });
+                // TODO: handle other directives
             }
         }
     }
-    let args_result: Result<Vec<InputFieldDefinition>, SchemaBuildingError> = def
-        .arguments
-        .iter()
-        .map(|def| build_input_field_definition(smod, &def))
-        .collect();
+
+    for arg in def.arguments.iter() {
+        match build_input_field_definition(smod, &arg) {
+            Ok(arg) => args.push(arg),
+            Err(err) => violations.extend(err.violations),
+        }
+    }
+
+    if !violations.is_empty() {
+        return Err(GraphQLSchemaValidationError { violations });
+    }
 
     return Ok(FieldDefinition {
         name: def.name.clone(),
         description: def.description.clone(),
         deprecation_reason,
-        args: args_result?,
+        args,
         field_type: build_type_expression(smod, &def.field_type),
         resolve,
         source_configs,
@@ -251,17 +326,26 @@ fn build_type_expression(smod: &Submodule, def: &schema::Type<String>) -> TypeEx
 fn build_interface_type_definition(
     smod: &Submodule,
     def: &schema::InterfaceType<String>,
-) -> Result<InterfaceTypeDefinition, SchemaBuildingError> {
-    let fields_result: Result<Vec<FieldDefinition>, SchemaBuildingError> = def
-        .fields
-        .iter()
-        .map(|fdef| build_field_definition(smod, &fdef))
-        .collect();
-    return Ok(InterfaceTypeDefinition {
+) -> Result<Interface, GraphQLSchemaValidationError> {
+    let mut violations = vec![];
+    let mut fields = vec![];
+
+    for fdef in def.fields.iter() {
+        match build_field_definition(smod, &fdef) {
+            Ok(fdef) => fields.push(fdef),
+            Err(err) => violations.extend(err.violations),
+        }
+    }
+
+    if !violations.is_empty() {
+        return Err(GraphQLSchemaValidationError { violations });
+    }
+
+    return Ok(Interface {
         name: def.name.clone(),
         description: def.description.clone(),
         interfaces: def.implements_interfaces.clone(),
-        fields: fields_result?,
+        fields,
         position: build_position(smod, &def.position),
     });
 }
@@ -269,16 +353,25 @@ fn build_interface_type_definition(
 fn build_interface_extension(
     smod: &Submodule,
     def: &schema::InterfaceTypeExtension<String>,
-) -> Result<InterfaceTypeExtension, SchemaBuildingError> {
-    let fields_result: Result<Vec<FieldDefinition>, SchemaBuildingError> = def
-        .fields
-        .iter()
-        .map(|fdef| build_field_definition(smod, &fdef))
-        .collect();
+) -> Result<InterfaceTypeExtension, GraphQLSchemaValidationError> {
+    let mut violations = vec![];
+    let mut fields = vec![];
+
+    for fdef in def.fields.iter() {
+        match build_field_definition(smod, &fdef) {
+            Ok(fdef) => fields.push(fdef),
+            Err(err) => violations.extend(err.violations),
+        }
+    }
+
+    if !violations.is_empty() {
+        return Err(GraphQLSchemaValidationError { violations });
+    }
+
     return Ok(InterfaceTypeExtension {
         name: def.name.clone(),
         interfaces: def.implements_interfaces.clone(),
-        fields: fields_result?,
+        fields,
         position: build_position(smod, &def.position),
     });
 }
@@ -286,8 +379,8 @@ fn build_interface_extension(
 fn build_union_type_definition(
     smod: &Submodule,
     def: &schema::UnionType<String>,
-) -> Result<UnionTypeDefinition, SchemaBuildingError> {
-    return Ok(UnionTypeDefinition {
+) -> Result<Union, GraphQLSchemaValidationError> {
+    return Ok(Union {
         name: def.name.clone(),
         description: def.description.clone(),
         types: def.types.clone(),
@@ -298,8 +391,8 @@ fn build_union_type_definition(
 fn build_union_type_extension(
     smod: &Submodule,
     def: &schema::UnionTypeExtension<String>,
-) -> Result<UnionTypeExtension, SchemaBuildingError> {
-    return Ok(UnionTypeExtension {
+) -> Result<UnionExtension, GraphQLSchemaValidationError> {
+    return Ok(UnionExtension {
         name: def.name.clone(),
         types: def.types.clone(),
         position: build_position(smod, &def.position),
@@ -309,17 +402,25 @@ fn build_union_type_extension(
 fn build_enum_type_definition(
     smod: &Submodule,
     def: &schema::EnumType<String>,
-) -> Result<EnumTypeDefinition, SchemaBuildingError> {
-    let values_result: Result<Vec<EnumValueDefinition>, SchemaBuildingError> = def
-        .values
-        .iter()
-        .map(|vdef| build_enum_value_definition(smod, &vdef))
-        .collect();
+) -> Result<Enum, GraphQLSchemaValidationError> {
+    let mut violations = vec![];
+    let mut values = vec![];
 
-    return Ok(EnumTypeDefinition {
+    for vdef in def.values.iter() {
+        match build_enum_value_definition(smod, &vdef) {
+            Ok(vdef) => values.push(vdef),
+            Err(err) => violations.extend(err.violations),
+        }
+    }
+
+    if !violations.is_empty() {
+        return Err(GraphQLSchemaValidationError { violations });
+    }
+
+    return Ok(Enum {
         name: def.name.clone(),
         description: def.description.clone(),
-        values: values_result?,
+        values,
         position: build_position(smod, &def.position),
     });
 }
@@ -327,16 +428,24 @@ fn build_enum_type_definition(
 fn build_enum_type_extension(
     smod: &Submodule,
     def: &schema::EnumTypeExtension<String>,
-) -> Result<EnumTypeExtension, SchemaBuildingError> {
-    let values_result: Result<Vec<EnumValueDefinition>, SchemaBuildingError> = def
-        .values
-        .iter()
-        .map(|vdef| build_enum_value_definition(smod, &vdef))
-        .collect();
+) -> Result<EnumExtension, GraphQLSchemaValidationError> {
+    let mut violations = vec![];
+    let mut values = vec![];
 
-    return Ok(EnumTypeExtension {
+    for vdef in def.values.iter() {
+        match build_enum_value_definition(smod, &vdef) {
+            Ok(vdef) => values.push(vdef),
+            Err(err) => violations.extend(err.violations),
+        }
+    }
+
+    if !violations.is_empty() {
+        return Err(GraphQLSchemaValidationError { violations });
+    }
+
+    return Ok(EnumExtension {
         name: def.name.clone(),
-        values: values_result?,
+        values,
         position: build_position(smod, &def.position),
     });
 }
@@ -344,20 +453,24 @@ fn build_enum_type_extension(
 fn build_enum_value_definition(
     smod: &Submodule,
     def: &schema::EnumValue<String>,
-) -> Result<EnumValueDefinition, SchemaBuildingError> {
+) -> Result<EnumValueDefinition, GraphQLSchemaValidationError> {
     let mut deprecation_reason: Option<String> = None;
+    let mut violations = vec![];
 
     for dir in def.directives.iter() {
         match dir.name.as_str() {
-            "deprecated" => {
-                deprecation_reason = Some(handle_deprecate(&smod, &dir)?);
-            }
+            "deprecated" => match handle_deprecate(&smod, &dir) {
+                Ok(reason) => deprecation_reason = Some(reason),
+                Err(err) => violations.extend(err.violations),
+            },
             _ => {
-                // return Err(SchemaBuildingError::UnsupportedDirectiveError {
-                //     directive_name: dir.name.clone(),
-                // });
+                // TODO: handle other directives
             }
         }
+    }
+
+    if !violations.is_empty() {
+        return Err(GraphQLSchemaValidationError { violations });
     }
 
     return Ok(EnumValueDefinition {
@@ -368,35 +481,53 @@ fn build_enum_value_definition(
     });
 }
 
-fn build_input_object_type_definition(
+fn build_input_type_definition(
     smod: &Submodule,
     def: &schema::InputObjectType<String>,
-) -> Result<InputObjectTypeDefinition, SchemaBuildingError> {
-    let fields_result: Result<Vec<InputFieldDefinition>, SchemaBuildingError> = def
-        .fields
-        .iter()
-        .map(|fdef| build_input_field_definition(smod, &fdef))
-        .collect();
-    return Ok(InputObjectTypeDefinition {
+) -> Result<Input, GraphQLSchemaValidationError> {
+    let mut violations = vec![];
+    let mut fields = vec![];
+
+    for fdef in def.fields.iter() {
+        match build_input_field_definition(smod, &fdef) {
+            Ok(fdef) => fields.push(fdef),
+            Err(err) => violations.extend(err.violations),
+        }
+    }
+
+    if !violations.is_empty() {
+        return Err(GraphQLSchemaValidationError { violations });
+    }
+
+    return Ok(Input {
         name: def.name.clone(),
         description: def.description.clone(),
-        fields: fields_result?,
+        fields,
         position: build_position(smod, &def.position),
     });
 }
 
-fn build_input_object_type_extension(
+fn build_input_type_extension(
     smod: &Submodule,
     def: &schema::InputObjectTypeExtension<String>,
-) -> Result<InputObjectTypeExtension, SchemaBuildingError> {
-    let fields_result: Result<Vec<InputFieldDefinition>, SchemaBuildingError> = def
-        .fields
-        .iter()
-        .map(|fdef| build_input_field_definition(smod, &fdef))
-        .collect();
-    return Ok(InputObjectTypeExtension {
+) -> Result<InputExtension, GraphQLSchemaValidationError> {
+    let mut violations = vec![];
+    let mut fields = vec![];
+
+    for fdef in def.fields.iter() {
+        match build_input_field_definition(smod, &fdef) {
+            Ok(fdef) => fields.push(fdef),
+            Err(err) => violations.extend(err.violations),
+        }
+    }
+
+    if !violations.is_empty() {
+        return Err(GraphQLSchemaValidationError { violations });
+    }
+
+    return Ok(InputExtension {
         name: def.name.clone(),
-        fields: fields_result?,
+        fields,
         position: build_position(smod, &def.position),
     });
 }
@@ -404,20 +535,24 @@ fn build_input_object_type_extension(
 fn build_input_field_definition(
     smod: &Submodule,
     def: &schema::InputValue<String>,
-) -> Result<InputFieldDefinition, SchemaBuildingError> {
+) -> Result<InputFieldDefinition, GraphQLSchemaValidationError> {
     let mut deprecation_reason: Option<String> = None;
+    let mut violations = vec![];
 
     for dir in def.directives.iter() {
         match dir.name.as_str() {
-            "deprecated" => {
-                deprecation_reason = Some(handle_deprecate(&smod, &dir)?);
-            }
+            "deprecated" => match handle_deprecate(&smod, &dir) {
+                Ok(reason) => deprecation_reason = Some(reason),
+                Err(err) => violations.extend(err.violations),
+            },
             _ => {
-                // return Err(SchemaBuildingError::UnsupportedDirectiveError {
-                //     directive_name: dir.name.clone(),
-                // });
+                // TODO: handle other directives
             }
         }
+    }
+
+    if !violations.is_empty() {
+        return Err(GraphQLSchemaValidationError { violations });
     }
 
     return Ok(InputFieldDefinition {
@@ -455,7 +590,7 @@ fn build_value(def: schema::Value<String>) -> Value {
 fn handle_deprecate(
     smod: &Submodule,
     directive: &schema::Directive<String>,
-) -> Result<String, SchemaBuildingError> {
+) -> Result<String, GraphQLSchemaValidationError> {
     let mut reason = "No longer supported".to_string();
     let mut violations = vec![];
 
@@ -483,7 +618,7 @@ fn handle_deprecate(
     }
 
     if !violations.is_empty() {
-        return Err(SchemaBuildingError::GraphQLValidationViolation(violations));
+        return Err(GraphQLSchemaValidationError { violations });
     }
 
     return Ok(reason);
@@ -492,7 +627,7 @@ fn handle_deprecate(
 fn handle_resolve(
     smod: &Submodule,
     directive: &schema::Directive<String>,
-) -> Result<ResolverConfig, SchemaBuildingError> {
+) -> Result<ResolverConfig, GraphQLSchemaValidationError> {
     let mut def = ResolverConfig { sync: false };
     let mut violations = vec![];
 
@@ -520,7 +655,7 @@ fn handle_resolve(
     }
 
     if !violations.is_empty() {
-        return Err(SchemaBuildingError::GraphQLValidationViolation(violations));
+        return Err(GraphQLSchemaValidationError { violations });
     }
 
     return Ok(def);
@@ -529,7 +664,7 @@ fn handle_resolve(
 fn handle_source(
     smod: &Submodule,
     directive: &schema::Directive<String>,
-) -> Result<SourceConfig, SchemaBuildingError> {
+) -> Result<SourceConfig, GraphQLSchemaValidationError> {
     let mut name: Option<String> = None;
     let mut type_: Option<TypeExpression> = None;
     let mut violations = vec![];
@@ -583,7 +718,7 @@ fn handle_source(
     }
 
     if !violations.is_empty() {
-        return Err(SchemaBuildingError::GraphQLValidationViolation(violations));
+        return Err(GraphQLSchemaValidationError { violations });
     }
 
     let def = SourceConfig {
@@ -597,7 +732,7 @@ fn handle_source(
 fn handle_source_type(
     smod: &Submodule,
     directive: &schema::Directive<String>,
-) -> Result<HashMap<String, String>, SchemaBuildingError> {
+) -> Result<HashMap<String, String>, GraphQLSchemaValidationError> {
     let mut map = HashMap::new();
     let mut violations = vec![];
 
@@ -617,7 +752,36 @@ fn handle_source_type(
         }
     }
     if !violations.is_empty() {
-        return Err(SchemaBuildingError::GraphQLValidationViolation(violations));
+        return Err(GraphQLSchemaValidationError { violations });
+    }
+
+    return Ok(map);
+}
+
+fn handle_type_alias(
+    smod: &Submodule,
+    directive: &schema::Directive<String>,
+) -> Result<HashMap<String, String>, GraphQLSchemaValidationError> {
+    let mut map = HashMap::new();
+    let mut violations = vec![];
+
+    for (key, value) in directive.arguments.iter() {
+        match value {
+            schema::Value::String(value) => {
+                map.insert(key.clone(), value.clone());
+            }
+            _ => {
+                // build_positioh
+                violations.push(GraphQLValidationViolation::ValuesOfCorrectType {
+                    pos: build_position(smod, &directive.position),
+                    name: key.clone(),
+                    value: value.to_string(),
+                });
+            }
+        }
+    }
+    if !violations.is_empty() {
+        return Err(GraphQLSchemaValidationError { violations });
     }
 
     return Ok(map);
@@ -634,7 +798,7 @@ fn build_position(smod: &Submodule, def: &graphql_parser::Pos) -> Position {
 #[derive(Debug)]
 pub enum SchemaBuildingError {
     GraphQLParserError(graphql_parser::schema::ParseError),
-    GraphQLValidationViolation(Vec<GraphQLValidationViolation>),
+    GraphQLSchemaValidationError(GraphQLSchemaValidationError),
     IOError(std::io::Error),
 }
 
@@ -644,7 +808,7 @@ impl fmt::Display for SchemaBuildingError {
             SchemaBuildingError::GraphQLParserError(err) => {
                 write!(f, "GraphQL Parser Error: {}", err)
             }
-            SchemaBuildingError::GraphQLValidationViolation(err) => {
+            SchemaBuildingError::GraphQLSchemaValidationError(err) => {
                 write!(f, "GraphQL Validation Violation: {:?}", err)
             }
             SchemaBuildingError::IOError(err) => {
@@ -666,6 +830,11 @@ impl From<graphql_parser::schema::ParseError> for SchemaBuildingError {
     fn from(err: graphql_parser::schema::ParseError) -> Self {
         SchemaBuildingError::GraphQLParserError(err)
     }
+}
+
+#[derive(Debug)]
+struct GraphQLSchemaValidationError {
+    violations: Vec<GraphQLValidationViolation>,
 }
 
 #[derive(Debug)]
