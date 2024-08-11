@@ -72,6 +72,12 @@ def build_schema(config: builder_config.BuilderConfig) -> graphql.GraphQLSchema:
             "basicScalar": graphql.GraphQLField(
                 type_=BasicScalar,
             ),
+            "extendedField": graphql.GraphQLField(
+                type_=graphql.GraphQLNonNull(graphql.GraphQLID),
+            ),
+            "extendedFieldWithArg": graphql.GraphQLField(
+                type_=graphql.GraphQLNonNull(graphql.GraphQLID),
+            ),
         },
     )
     BasicInterface = graphql.GraphQLInterfaceType(
@@ -82,6 +88,15 @@ def build_schema(config: builder_config.BuilderConfig) -> graphql.GraphQLSchema:
             ),
             "basicScalar": graphql.GraphQLField(
                 type_=BasicScalar,
+            ),
+            "extendedField": graphql.GraphQLField(
+                type_=graphql.GraphQLNonNull(graphql.GraphQLID),
+            ),
+            "extendedFieldWithArg": graphql.GraphQLField(
+                type_=graphql.GraphQLNonNull(graphql.GraphQLID),
+            ),
+            "anotherField": graphql.GraphQLField(
+                type_=graphql.GraphQLNonNull(graphql.GraphQLID),
             ),
         },
     )
@@ -94,9 +109,19 @@ def build_schema(config: builder_config.BuilderConfig) -> graphql.GraphQLSchema:
             "basicScalar": graphql.GraphQLField(
                 type_=BasicScalar,
             ),
+            "extendedField": graphql.GraphQLField(
+                type_=graphql.GraphQLNonNull(graphql.GraphQLID),
+            ),
+            "extendedFieldWithArg": graphql.GraphQLField(
+                type_=graphql.GraphQLNonNull(graphql.GraphQLID),
+            ),
+            "anotherField": graphql.GraphQLField(
+                type_=graphql.GraphQLNonNull(graphql.GraphQLID),
+            ),
         },
         interfaces=lambda: [
             BasicInterface,
+            AnotherInterface,
         ],
     )
     BasicInput = graphql.GraphQLInputObjectType(
@@ -117,6 +142,9 @@ def build_schema(config: builder_config.BuilderConfig) -> graphql.GraphQLSchema:
             "booleanNonNull": graphql.GraphQLInputField(
                 type_=graphql.GraphQLNonNull(graphql.GraphQLBoolean),
             ),
+            "basicScalarNotNull": graphql.GraphQLInputField(
+                type_=graphql.GraphQLNonNull(BasicScalar),
+            ),
             "id": graphql.GraphQLInputField(
                 type_=graphql.GraphQLID,
             ),
@@ -135,10 +163,37 @@ def build_schema(config: builder_config.BuilderConfig) -> graphql.GraphQLSchema:
             "basicScalar": graphql.GraphQLInputField(
                 type_=BasicScalar,
             ),
+            "extendedField": graphql.GraphQLInputField(
+                type_=graphql.GraphQLNonNull(graphql.GraphQLID),
+            ),
         },
     )
     BasicScalar = graphql.GraphQLScalarType(
         name="BasicScalar",
+    )
+    AnotherInterface = graphql.GraphQLInterfaceType(
+        name="AnotherInterface",
+        fields=lambda: {
+            "anotherField": graphql.GraphQLField(
+                type_=graphql.GraphQLNonNull(graphql.GraphQLID),
+            ),
+        },
+    )
+    AnotherType = graphql.GraphQLObjectType(
+        name="AnotherType",
+        fields=lambda: {
+            "anotherField": graphql.GraphQLField(
+                type_=graphql.GraphQLNonNull(graphql.GraphQLID),
+            ),
+        },
+    )
+    DeprecatedFieldObject = graphql.GraphQLObjectType(
+        name="DeprecatedFieldObject",
+        fields=lambda: {
+            "deprecatedField": graphql.GraphQLField(
+                type_=graphql.GraphQLString,
+            ),
+        },
     )
     Query = graphql.GraphQLObjectType(
         name="Query",

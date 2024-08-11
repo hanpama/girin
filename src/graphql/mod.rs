@@ -25,7 +25,7 @@ fn build_schema_ast<'a>(s: &'a Schema) -> schema::Document<'a, &'a str> {
 fn build_schema_ast_from_schema<'a>(s: &'a Schema) -> Vec<schema::Definition<'a, &'a str>> {
     let mut schema_definitions = Vec::new();
 
-    for definition in s.iter_definitions() {
+    for definition in s.iter_all_definitions() {
         match definition {
             Definition::Scalar(def) => {
                 schema_definitions.push(schema::Definition::TypeDefinition(
@@ -68,7 +68,7 @@ fn format_scalar_definition<'a>(s: &'a Schema, def: &'a Scalar) -> schema::Scala
         position: graphql_parser::Pos::default(),
         name: def.name.as_str(),
         description: def.description.clone(),
-        directives: vec![],
+        directives: format_directives(&None),
     }
 }
 
@@ -81,7 +81,7 @@ fn format_object_definition<'a>(s: &'a Schema, def: &'a Object) -> schema::Objec
             .collect_object_interfaces(def)
             .map(|i| i.as_str())
             .collect(),
-        directives: vec![],
+        directives: format_directives(&None),
         fields: s
             .collect_object_fields(def)
             .map(|f| format_field_definition(f))
@@ -101,11 +101,11 @@ fn format_interface_definition<'a>(
             .collect_interface_interfaces(def)
             .map(|i| i.as_str())
             .collect(),
-        directives: vec![],
         fields: s
             .collect_interface_fields(def)
             .map(|f| format_field_definition(f))
             .collect(),
+        directives: format_directives(&None),
     }
 }
 
@@ -115,7 +115,7 @@ fn format_union_definition<'a>(s: &'a Schema, def: &'a Union) -> schema::UnionTy
         name: def.name.as_str(),
         description: def.description.clone(),
         types: s.collect_possible_types(def).map(|t| t.as_str()).collect(),
-        directives: vec![],
+        directives: format_directives(&None),
     }
 }
 
@@ -124,7 +124,7 @@ fn format_enum_definition<'a>(s: &'a Schema, def: &'a Enum) -> schema::EnumType<
         position: graphql_parser::Pos::default(),
         name: def.name.as_str(),
         description: def.description.clone(),
-        directives: vec![],
+        directives: format_directives(&None),
         values: s
             .collect_enum_values(def)
             .map(|v| format_enum_value_definition(v))
@@ -140,7 +140,7 @@ fn format_input_definition<'a>(
         position: graphql_parser::Pos::default(),
         name: i.name.as_str(),
         description: i.description.clone(),
-        directives: vec![],
+        directives: format_directives(&None),
         fields: s
             .collect_input_fields(i)
             .map(|f| format_input_field_definition(f))
@@ -159,7 +159,7 @@ fn format_field_definition<'a>(f: &'a Field) -> schema::Field<'a, &'a str> {
             .map(|a| format_input_field_definition(a))
             .collect(),
         field_type: format_type_expression(&f.field_type),
-        directives: vec![],
+        directives: format_directives(&f.deprecation_reason),
     }
 }
 
@@ -170,7 +170,7 @@ fn format_input_field_definition<'a>(f: &'a InputValue) -> schema::InputValue<'a
         description: f.description.clone(),
         value_type: format_type_expression(&f.field_type),
         default_value: f.default_value.as_ref().map(|v| format_value(v)),
-        directives: vec![],
+        directives: format_directives(&f.deprecation_reason),
     }
 }
 
@@ -179,7 +179,7 @@ fn format_enum_value_definition<'a>(v: &'a EnumValue) -> schema::EnumValue<'a, &
         position: graphql_parser::Pos::default(),
         name: v.name.as_str(),
         description: v.description.clone(),
-        directives: vec![],
+        directives: format_directives(&v.deprecation_reason),
     }
 }
 
@@ -208,6 +208,22 @@ fn format_value<'a>(t: &'a Value) -> schema::Value<'a, &'a str> {
                 .collect(),
         ),
     }
+}
+
+fn format_directives<'a>(
+    deprecated_reason: &Option<String>,
+) -> Vec<schema::Directive<'a, &'a str>> {
+    let mut formatted_directives = vec![];
+
+    if let Some(reason) = deprecated_reason {
+        formatted_directives.push(schema::Directive {
+            name: "deprecated",
+            arguments: vec![("reason", schema::Value::String(reason.to_owned()))],
+            position: graphql_parser::Pos::default(),
+        });
+    }
+
+    return formatted_directives;
 }
 
 #[derive(Debug)]

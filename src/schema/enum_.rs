@@ -1,4 +1,4 @@
-use super::Position;
+use super::{Extension, Position, Schema};
 
 #[derive(Debug)]
 pub struct Enum {
@@ -16,10 +16,26 @@ pub struct EnumValue {
     pub position: Position,
 }
 
-
 #[derive(Debug)]
 pub struct EnumExtension {
     pub name: String,
     pub values: Vec<EnumValue>,
     pub position: Position,
+}
+
+impl Schema {
+    // Enum
+    pub fn collect_enum_values<'a>(&'a self, def: &'a Enum) -> impl Iterator<Item = &'a EnumValue> {
+        def.values.iter().chain(
+            self.iter_enum_extensions(&def.name)
+                .flat_map(|ext| ext.values.iter()),
+        )
+    }
+
+    fn iter_enum_extensions(&self, name: &str) -> impl Iterator<Item = &EnumExtension> {
+        self.iter_extensions(name).flat_map(|ext| match ext {
+            Extension::EnumExtension(ext) => Some(ext),
+            _ => None,
+        })
+    }
 }

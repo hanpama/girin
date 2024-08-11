@@ -1,8 +1,6 @@
 use super::{error::PythonRenderingError, naming, sourcecode::SourceCode};
 use crate::schema::{
-    SchemaElement, Field, InputValue, Input,
-    Interface, InterfaceTypeExtension, Module, Object,
-    ObjectExtension, Scalar, Schema, Submodule, TypeExpression,
+    Definition, Field, Input, InputValue, Interface, Object, Scalar, Schema, TypeExpression,
 };
 use std::{fs::File, path::PathBuf};
 
@@ -18,11 +16,14 @@ pub fn render_builder(outdir: &PathBuf, s: &Schema) -> Result<(), PythonRenderin
     src.line("def build_schema(config: builder_config.BuilderConfig) -> graphql.GraphQLSchema:");
     src.indent();
 
-    for child in &s.children {
-        render_module(&mut src, s, child);
-    }
-    for smod in &s.submodules {
-        render_submodule(&mut src, s, smod);
+    for def in s.iter_all_definitions() {
+        match def {
+            Definition::Object(inner) => render_object_type(&mut src, s, inner),
+            Definition::Interface(inner) => render_interface_type(&mut src, s, inner),
+            Definition::Input(inner) => render_input_type(&mut src, s, inner),
+            Definition::Scalar(inner) => render_scalar_type(&mut src, s, inner),
+            _ => {}
+        }
     }
 
     src.line("return graphql.GraphQLSchema(");
@@ -56,27 +57,6 @@ pub fn render_builder(outdir: &PathBuf, s: &Schema) -> Result<(), PythonRenderin
     Ok(())
 }
 
-fn render_module(src: &mut SourceCode, s: &Schema, m: &Module) {
-    for child in &m.children {
-        render_module(src, s, child);
-    }
-    for smod in &m.submodules {
-        render_submodule(src, s, smod);
-    }
-}
-
-fn render_submodule(src: &mut SourceCode, s: &Schema, sm: &Submodule) {
-    for def in &sm.definitions {
-        match def {
-            SchemaElement::Object(inner) => render_object_type(src, s, inner),
-            SchemaElement::Interface(inner) => render_interface_type(src, s, inner),
-            SchemaElement::Input(inner) => render_input_type(src, s, inner),
-            SchemaElement::Scalar(inner) => render_scalar_type(src, s, inner),
-            _ => {}
-        }
-    }
-}
-
 fn render_object_type(src: &mut SourceCode, s: &Schema, def: &Object) {
     let name = naming::object_type_instance(def);
     src.line(format!("{} = graphql.GraphQLObjectType(", name));
@@ -94,7 +74,7 @@ fn render_object_type(src: &mut SourceCode, s: &Schema, def: &Object) {
     if def.interfaces.len() > 0 {
         src.line("interfaces=lambda: [");
         src.indent();
-        for interface in &def.interfaces {
+        for interface in s.collect_object_interfaces(def) {
             src.line(format!("{},", naming::type_instance(interface)));
         }
         src.dedent();
@@ -122,7 +102,7 @@ fn render_interface_type(src: &mut SourceCode, s: &Schema, def: &Interface) {
     if def.interfaces.len() > 0 {
         src.line("interfaces=lambda: [");
         src.indent();
-        for interface in &def.interfaces {
+        for interface in s.collect_interface_interfaces(def) {
             src.line(format!("{},", naming::type_instance(interface)));
         }
         src.dedent();

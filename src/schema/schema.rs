@@ -1,18 +1,21 @@
+use core::panic;
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 
 use super::{
-    Enum, EnumExtension, EnumValue, Field, Input, InputExtension, InputValue, Interface,
-    InterfaceTypeExtension, Object, ObjectExtension, Scalar, SourceConfig, Union, UnionExtension,
+    Enum, EnumExtension, Input, InputExtension, Interface, InterfaceTypeExtension, Object,
+    ObjectExtension, Scalar, Union, UnionExtension,
 };
 
 pub struct Schema {
     pub query: Option<String>,
     pub mutation: Option<String>,
     pub subscription: Option<String>,
+    modules: HashMap<PathBuf, Module>,
+    directories: HashMap<PathBuf, Directory>,
     definition_locations: HashMap<String, Location>,
     extension_locations: HashMap<String, Vec<Location>>,
-    elements: HashMap<PathBuf, Vec<SchemaElement>>,
+    root_dir: PathBuf,
 }
 
 impl Schema {
@@ -23,208 +26,129 @@ impl Schema {
             subscription: None,
             definition_locations: HashMap::new(),
             extension_locations: HashMap::new(),
-            elements: HashMap::new(),
+            modules: HashMap::new(),
+            directories: HashMap::new(),
+            root_dir: PathBuf::new(),
         }
     }
 
-    // pub fn get_query(&self) -> Option<&ObjectTypeDefinition> {
-    //     None // Return None if "Query" definition is not found or not of ObjectTypeDefinition type
-    // }
-
-    pub fn get_definition(&self, name: &str) -> Option<&SchemaElement> {
-        None // Return None if definition is not found
+    pub fn get_definition(&self, name: &str) -> Option<&Definition> {
+        None
     }
 
-    // Object
-    pub fn collect_object_source_configs(&self, def: &Object) -> Vec<SourceConfig> {
-        let mut cfs = def.collect_source_configs();
-        for ext in self.iter_object_extensions(&def.name) {
-            cfs.extend(ext.collect_source_configs());
-        }
-        cfs
-    }
-
-    pub fn collect_object_fields<'a>(&'a self, def: &'a Object) -> impl Iterator<Item = &'a Field> {
-        def.fields.iter().chain(
-            self.iter_object_extensions(&def.name)
-                .flat_map(|ext| ext.fields.iter()),
-        )
-    }
-
-    pub fn collect_object_interfaces<'a>(
-        &'a self,
-        def: &'a Object,
-    ) -> impl Iterator<Item = &'a String> {
-        def.interfaces.iter().chain(
-            self.iter_object_extensions(&def.name)
-                .flat_map(|ext| ext.interfaces.iter()),
-        )
-    }
-
-    fn iter_object_extensions(&self, name: &str) -> impl Iterator<Item = &ObjectExtension> {
-        self.extension_locations
-            .get(name)
-            .into_iter()
-            .flat_map(|v| v.iter())
-            .flat_map(move |loc| match &self.elements[&loc.path][loc.index] {
-                SchemaElement::Extension(Extension::ObjectExtension(ext)) => Some(ext),
-                _ => unreachable!(),
-            })
-    }
-
-    // Interface
-    pub fn collect_interface_fields<'a>(
-        &'a self,
-        def: &'a Interface,
-    ) -> impl Iterator<Item = &'a Field> {
-        def.fields.iter().chain(
-            self.iter_interface_extensions(&def.name)
-                .flat_map(|ext| ext.fields.iter()),
-        )
-    }
-
-    pub fn collect_interface_source_configs(&self, def: &Interface) -> Vec<SourceConfig> {
-        def.collect_source_configs()
-    }
-
-    pub fn collect_interface_interfaces<'a>(
-        &'a self,
-        def: &'a Interface,
-    ) -> impl Iterator<Item = &'a String> {
-        def.interfaces.iter().chain(
-            self.iter_interface_extensions(&def.name)
-                .flat_map(|ext| ext.interfaces.iter()),
-        )
-    }
-
-    fn iter_interface_extensions(
-        &self,
-        name: &str,
-    ) -> impl Iterator<Item = &InterfaceTypeExtension> {
-        self.extension_locations
-            .get(name)
-            .into_iter()
-            .flat_map(|v| v.iter())
-            .flat_map(move |loc| match &self.elements[&loc.path][loc.index] {
-                SchemaElement::Extension(Extension::InterfaceExtension(ext)) => Some(ext),
-                _ => unreachable!(),
-            })
-    }
-
-    // Input
-    pub fn collect_input_fields<'a>(
-        &'a self,
-        def: &'a Input,
-    ) -> impl Iterator<Item = &'a InputValue> {
-        def.fields.iter().chain(
-            self.iter_input_extensions(&def.name)
-                .flat_map(|ext| ext.fields.iter()),
-        )
-    }
-
-    pub fn collect_input_source_configs(&self, def: &Input) -> Vec<SourceConfig> {
-        def.collect_source_configs()
-    }
-
-    fn iter_input_extensions(&self, name: &str) -> impl Iterator<Item = &InputExtension> {
-        self.extension_locations
-            .get(name)
-            .into_iter()
-            .flat_map(|v| v.iter())
-            .flat_map(move |loc| match &self.elements[&loc.path][loc.index] {
-                SchemaElement::Extension(Extension::InputExtension(ext)) => Some(ext),
-                _ => unreachable!(),
-            })
-    }
-
-    // Enum
-    pub fn collect_enum_values<'a>(&'a self, def: &'a Enum) -> impl Iterator<Item = &'a EnumValue> {
-        def.values.iter().chain(
-            self.iter_enum_extensions(&def.name)
-                .flat_map(|ext| ext.values.iter()),
-        )
-    }
-
-    fn iter_enum_extensions(&self, name: &str) -> impl Iterator<Item = &EnumExtension> {
-        self.extension_locations
-            .get(name)
-            .into_iter()
-            .flat_map(|v| v.iter())
-            .flat_map(move |loc| match &self.elements[&loc.path][loc.index] {
-                SchemaElement::Extension(Extension::EnumExtension(ext)) => Some(ext),
-                _ => unreachable!(),
-            })
-    }
-
-    // Union
-    pub fn collect_possible_types<'a>(
-        &'a self,
-        def: &'a Union,
-    ) -> impl Iterator<Item = &'a String> {
-        def.types.iter().chain(
-            self.iter_union_extensions(&def.name)
-                .flat_map(|ext| ext.types.iter()),
-        )
-    }
-
-    fn iter_union_extensions(&self, name: &str) -> impl Iterator<Item = &UnionExtension> {
-        self.extension_locations
-            .get(name)
-            .into_iter()
-            .flat_map(|v| v.iter())
-            .flat_map(move |loc| match &self.elements[&loc.path][loc.index] {
-                SchemaElement::Extension(Extension::UnionExtension(ext)) => Some(ext),
-                _ => unreachable!(),
-            })
-    }
-
-    // Mut
-
-    pub fn iter_definitions(&self) -> impl Iterator<Item = &Definition> {
-        self.elements
+    pub fn iter_all_definitions(&self) -> impl Iterator<Item = &Definition> {
+        self.modules
             .values()
-            .flat_map(|elements| elements.iter())
+            .flat_map(|module| module.elements.iter())
             .filter_map(|element| match element {
                 SchemaElement::Definition(def) => Some(def),
                 _ => None,
             })
     }
 
-    pub fn add_definition(&mut self, path: &Path, def: Definition) {
+    pub fn iter_extensions(&self, name: &str) -> impl Iterator<Item = &Extension> {
+        self.extension_locations
+            .get(name)
+            .into_iter()
+            .flat_map(|v| v.iter())
+            .flat_map(move |loc| match self.get_element(&loc) {
+                SchemaElement::Extension(ext) => Some(ext),
+                _ => unreachable!(),
+            })
+    }
+
+    pub fn add_definition(&mut self, dir: &Path, module_name: &str, def: Definition) {
         let name = def.get_name().to_owned();
         let element = SchemaElement::Definition(def);
-        let container = self
-            .elements
-            .entry(path.to_owned())
-            .or_insert_with(Vec::new);
-
-        let location = Location {
-            path: path.to_owned(),
-            index: container.len(),
-        };
-
-        container.push(element);
+        let location = self.add_element(dir, module_name, element);
         self.definition_locations.insert(name, location);
     }
 
-    pub fn add_extension(&mut self, path: &Path, ext: Extension) {
+    pub fn add_extension(&mut self, dir: &Path, module_name: &str, ext: Extension) {
         let name = ext.get_definition_name().to_owned();
         let element = SchemaElement::Extension(ext);
-        let container = self
-            .elements
-            .entry(path.to_owned())
-            .or_insert_with(Vec::new);
-
-        let location = Location {
-            path: path.to_owned(),
-            index: container.len(),
-        };
-
-        container.push(element);
+        let location = self.add_element(dir, module_name, element);
         self.extension_locations
             .entry(name)
             .or_insert_with(Vec::new)
             .push(location);
+    }
+
+    fn add_element(&mut self, dir: &Path, module: &str, element: SchemaElement) -> Location {
+        let module = if let Some(module) = self.get_mut_module(dir, module) {
+            module
+        } else {
+            self.add_module(dir, module)
+        };
+
+        module.add_element(element)
+    }
+
+    fn get_mut_module(&mut self, dir: &Path, module: &str) -> Option<&mut Module> {
+        let path = dir.join(module);
+        self.modules.get_mut(&path)
+    }
+
+    fn add_module(&mut self, dir_path: &Path, module_name: &str) -> &mut Module {
+        let dir = if let Some(dir) = self.get_mut_directory(dir_path) {
+            dir
+        } else {
+            self.add_directory(dir_path)
+        };
+
+        let module = Module::new(dir_path, module_name);
+        let path = module.path.clone();
+
+        dir.modules.push(path.clone());
+        self.modules.insert(path.clone(), module);
+        self.modules.get_mut(&path).unwrap()
+    }
+
+    fn get_mut_directory(&mut self, path: &Path) -> Option<&mut Directory> {
+        self.directories.get_mut(path)
+    }
+
+    fn add_directory(&mut self, path: &Path) -> &mut Directory {
+        if let Some(parent_path) = path.parent() {
+            let parent = if let Some(parent) = self.get_mut_directory(parent_path) {
+                parent
+            } else {
+                self.add_directory(parent_path)
+            };
+            parent.children.push(path.to_owned());
+        }
+
+        let dir = Directory::new(path.to_owned());
+        self.directories.insert(path.to_owned(), dir);
+        self.directories.get_mut(path).unwrap()
+    }
+
+    fn get_element(&self, location: &Location) -> &SchemaElement {
+        &self.modules[&location.path].elements[location.index]
+    }
+
+    pub fn iter_child_modules(&self, path: &Path) -> impl Iterator<Item = &Module> {
+        self.directories
+            .get(path)
+            .into_iter()
+            .flat_map(|v| v.modules.iter())
+            .map(|loc| &self.modules[loc])
+    }
+
+    pub fn iter_root_modules(&self) -> impl Iterator<Item = &Module> {
+        self.iter_child_modules(&self.root_dir)
+    }
+
+    pub fn iter_child_directories(&self, path: &Path) -> impl Iterator<Item = &Directory> {
+        self.directories
+            .get(path)
+            .into_iter()
+            .flat_map(|v| v.children.iter())
+            .map(|loc| &self.directories[loc])
+    }
+
+    pub fn iter_root_directories(&self) -> impl Iterator<Item = &Directory> {
+        self.iter_child_directories(&self.root_dir)
     }
 }
 
@@ -234,9 +158,58 @@ struct Location {
     pub index: usize,
 }
 
+pub struct Directory {
+    pub path: PathBuf,
+    pub children: Vec<PathBuf>,
+    pub modules: Vec<PathBuf>,
+}
+
+impl Directory {
+    pub fn new(path: PathBuf) -> Self {
+        Self {
+            path,
+            children: Vec::new(),
+            modules: Vec::new(),
+        }
+    }
+}
+
+pub struct Module {
+    pub path: PathBuf,
+    pub elements: Vec<SchemaElement>,
+}
+
+impl Module {
+    pub fn new(dir: &Path, name: &str) -> Self {
+        Self {
+            path: dir.join(name),
+            elements: Vec::new(),
+        }
+    }
+
+    pub fn add_element(&mut self, element: SchemaElement) -> Location {
+        let path = self.path.clone();
+        let index = self.elements.len();
+        self.elements.push(element);
+        Location { path, index }
+    }
+}
+
 pub enum SchemaElement {
     Definition(Definition),
     Extension(Extension),
+}
+
+impl From<Definition> for SchemaElement {
+    fn from(def: Definition) -> Self {
+        SchemaElement::Definition(def)
+    }
+}
+
+impl From<Extension> for SchemaElement {
+    fn from(ext: Extension) -> Self {
+        SchemaElement::Extension(ext)
+    }
 }
 
 pub enum Definition {

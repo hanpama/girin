@@ -1,23 +1,22 @@
 use crate::schema::{
-    Enum, Input, Interface, InterfaceTypeExtension,
-    Module, Object, ObjectExtension, Scalar, Submodule,
+    Enum, Input, Interface, InterfaceTypeExtension, Object, ObjectExtension, Scalar,
 };
 
-pub fn module_config_type(md: &Module) -> String {
-    format!("{}", md.name)
-}
+// pub fn module_config_type(md: &Module) -> String {
+//     format!("{}", md.name)
+// }
 
-pub fn module_config_field_name(md: &Module) -> String {
-    format!("_{}", md.name)
-}
+// pub fn module_config_field_name(md: &Module) -> String {
+//     format!("_{}", md.name)
+// }
 
-pub fn submodule_config_type(smd: &Submodule) -> String {
-    format!("{}", smd.name)
-}
+// pub fn submodule_config_type(smd: &Submodule) -> String {
+//     format!("{}", smd.name)
+// }
 
-pub fn submodule_config_field_name(smd: &Submodule) -> String {
-    format!("_{}", smd.name)
-}
+// pub fn submodule_config_field_name(smd: &Submodule) -> String {
+//     format!("_{}", smd.name)
+// }
 
 pub fn object_def_resolver_type(def: &Object) -> String {
     format!("{}Resolver", def.name)

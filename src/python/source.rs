@@ -1,8 +1,5 @@
 use super::{error::PythonRenderingError, naming, sourcecode::SourceCode};
-use crate::schema::{
-    SchemaElement, Enum, Input, Interface, Module,
-    Object, Scalar, Schema, Submodule, TypeExpression,
-};
+use crate::schema::{Definition, Enum, Input, Interface, Object, Scalar, Schema, TypeExpression};
 use std::{borrow::Borrow, fs::File, path::PathBuf};
 
 pub fn render_source_defintiion(outdir: &PathBuf, s: &Schema) -> Result<(), PythonRenderingError> {
@@ -11,59 +8,40 @@ pub fn render_source_defintiion(outdir: &PathBuf, s: &Schema) -> Result<(), Pyth
     let mut file = File::create(outfile)?;
     let mut src = SourceCode::new();
 
-    for child in &s.children {
-        render_module(&mut src, s, child);
-    }
-    for smd in &s.submodules {
-        render_submodule(&mut src, s, smd);
-    }
-
-    src.write_to(&mut file)?;
-
-    Ok(())
-}
-
-fn render_module(src: &mut SourceCode, s: &Schema, md: &Module) {
-    for child in &md.children {
-        render_module(src, s, child);
-    }
-    for smd in &md.submodules {
-        render_submodule(src, s, smd);
-    }
-    // md.
-}
-
-fn render_submodule(src: &mut SourceCode, s: &Schema, smd: &Submodule) {
-    for def in &smd.definitions {
+    for def in s.iter_all_definitions() {
         match def {
-            SchemaElement::Object(inner) => {
-                render_object_source(src, s, inner);
+            Definition::Object(inner) => {
+                render_object_source(&mut src, s, inner);
                 src.line("");
                 src.line("");
             }
-            SchemaElement::Interface(inner) => {
-                render_interface_source(src, s, inner);
+            Definition::Interface(inner) => {
+                render_interface_source(&mut src, s, inner);
                 src.line("");
                 src.line("");
             }
-            SchemaElement::Input(inner) => {
-                render_input_source(src, s, inner);
+            Definition::Input(inner) => {
+                render_input_source(&mut src, s, inner);
                 src.line("");
                 src.line("");
             }
-            SchemaElement::Enum(inner) => {
-                render_enum_source(src, s, inner);
+            Definition::Enum(inner) => {
+                render_enum_source(&mut src, s, inner);
                 src.line("");
                 src.line("");
             }
-            SchemaElement::Scalar(inner) => {
-                render_scalar_source(src, s, inner);
+            Definition::Scalar(inner) => {
+                render_scalar_source(&mut src, s, inner);
                 src.line("");
                 src.line("");
             }
             _ => {}
         }
     }
+
+    src.write_to(&mut file)?;
+
+    Ok(())
 }
 
 fn render_object_source(src: &mut SourceCode, s: &Schema, def: &Object) {
@@ -165,7 +143,7 @@ fn render_enum_source(src: &mut SourceCode, s: &Schema, def: &Enum) {
     ));
     src.indent();
     for value in s.collect_enum_values(def) {
-        src.line(&format!("\"{}\",", value));
+        src.line(&format!("\"{}\",", value.name));
     }
     src.dedent();
     src.line("]");
@@ -238,9 +216,9 @@ fn format_named_type(s: &Schema, name: &str) -> String {
         return "typing.Any".to_owned();
     }
     match definition.unwrap() {
-        SchemaElement::Object(inner) => naming::object_source(inner),
-        SchemaElement::Interface(inner) => naming::interface_source(inner),
-        SchemaElement::Scalar(inner) => naming::scalar_source(inner),
+        Definition::Object(inner) => naming::object_source(inner),
+        Definition::Interface(inner) => naming::interface_source(inner),
+        Definition::Scalar(inner) => naming::scalar_source(inner),
         _ => unimplemented!(),
     }
 }

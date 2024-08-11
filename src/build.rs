@@ -29,9 +29,9 @@ fn build_directory(s: &mut Schema, root: &Path, dir: &Path) -> Result<(), Schema
         let file_type = item.file_type()?;
 
         if file_type.is_dir() {
-            build_directory(s, &root, &item.path())?
+            build_directory(s, root, &item.path())?
         } else {
-            build_file(s, &root, &item.path())?;
+            build_file(s, root, &item.path())?;
         }
     }
 
@@ -43,8 +43,8 @@ fn build_file(s: &mut Schema, root: &Path, file: &Path) -> Result<(), SchemaBuil
     File::open(file)?.read_to_string(&mut buf)?;
 
     let document = parse_schema::<String>(&buf)?;
-    let path = file.with_extension("");
-    let path = path.strip_prefix(root).unwrap();
+    let dir = file.parent().unwrap().strip_prefix(root).unwrap();
+    let module_name = file.file_stem().unwrap().to_str().unwrap();
 
     let mut violations = vec![];
     for def in document.definitions {
@@ -55,11 +55,11 @@ fn build_file(s: &mut Schema, root: &Path, file: &Path) -> Result<(), SchemaBuil
                 s.subscription = def.subscription.clone();
             }
             schema::Definition::TypeDefinition(def) => match build_type_definition(def) {
-                Ok(def) => s.add_definition(path, def),
+                Ok(def) => s.add_definition(dir, module_name, def),
                 Err(err) => violations.extend(err.violations),
             },
             schema::Definition::TypeExtension(def) => match build_type_extension(def) {
-                Ok(def) => s.add_extension(path, def),
+                Ok(def) => s.add_extension(dir, module_name, def),
                 Err(err) => violations.extend(err.violations),
             },
             schema::Definition::DirectiveDefinition(def) => {
