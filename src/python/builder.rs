@@ -1,6 +1,6 @@
 use super::{error::PythonRenderingError, naming, sourcecode::SourceCode};
-use crate::definitions::{
-    Definition, FieldDefinition, InputFieldDefinition, Input,
+use crate::schema::{
+    SchemaElement, Field, InputValue, Input,
     Interface, InterfaceTypeExtension, Module, Object,
     ObjectExtension, Scalar, Schema, Submodule, TypeExpression,
 };
@@ -68,10 +68,10 @@ fn render_module(src: &mut SourceCode, s: &Schema, m: &Module) {
 fn render_submodule(src: &mut SourceCode, s: &Schema, sm: &Submodule) {
     for def in &sm.definitions {
         match def {
-            Definition::Object(inner) => render_object_type(src, s, inner),
-            Definition::Interface(inner) => render_interface_type(src, s, inner),
-            Definition::Input(inner) => render_input_type(src, s, inner),
-            Definition::Scalar(inner) => render_scalar_type(src, s, inner),
+            SchemaElement::Object(inner) => render_object_type(src, s, inner),
+            SchemaElement::Interface(inner) => render_interface_type(src, s, inner),
+            SchemaElement::Input(inner) => render_input_type(src, s, inner),
+            SchemaElement::Scalar(inner) => render_scalar_type(src, s, inner),
             _ => {}
         }
     }
@@ -165,7 +165,7 @@ fn render_scalar_type(src: &mut SourceCode, s: &Schema, def: &Scalar) {
     src.line(")");
 }
 
-fn render_field(src: &mut SourceCode, s: &Schema, f: &FieldDefinition) {
+fn render_field(src: &mut SourceCode, s: &Schema, f: &Field) {
     src.line(format!("\"{}\": graphql.GraphQLField(", f.name));
     src.indent();
 
@@ -175,7 +175,7 @@ fn render_field(src: &mut SourceCode, s: &Schema, f: &FieldDefinition) {
     src.line("),");
 }
 
-fn render_input_field(src: &mut SourceCode, s: &Schema, f: &InputFieldDefinition) {
+fn render_input_field(src: &mut SourceCode, s: &Schema, f: &InputValue) {
     src.line(format!("\"{}\": graphql.GraphQLInputField(", f.name));
     src.indent();
 

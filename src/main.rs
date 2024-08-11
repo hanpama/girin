@@ -1,9 +1,9 @@
 use std::{fs::File, path::PathBuf};
 mod build;
 mod graphql;
-mod definitions;
+mod schema;
 mod swift;
-mod python;
+// mod python;
 
 fn main() {
     let schema_dir = PathBuf::from("test/GraphQL");
@@ -15,5 +15,5 @@ fn main() {
     // serde_json::to_writer_pretty(&file, &result.root_module).unwrap();
 
     graphql::render(&result, PathBuf::from("test/schema.graphql")).unwrap();
-    python::generate_python_code(PathBuf::from("test/python"), &result).unwrap();
+    // python::generate_python_code(PathBuf::from("test/python"), &result).unwrap();
 }

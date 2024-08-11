@@ -1,6 +1,6 @@
 use super::{error::PythonRenderingError, naming, sourcecode::SourceCode};
-use crate::definitions::{
-    Definition, Enum, Input, Interface, Module,
+use crate::schema::{
+    SchemaElement, Enum, Input, Interface, Module,
     Object, Scalar, Schema, Submodule, TypeExpression,
 };
 use std::{borrow::Borrow, fs::File, path::PathBuf};
@@ -36,27 +36,27 @@ fn render_module(src: &mut SourceCode, s: &Schema, md: &Module) {
 fn render_submodule(src: &mut SourceCode, s: &Schema, smd: &Submodule) {
     for def in &smd.definitions {
         match def {
-            Definition::Object(inner) => {
+            SchemaElement::Object(inner) => {
                 render_object_source(src, s, inner);
                 src.line("");
                 src.line("");
             }
-            Definition::Interface(inner) => {
+            SchemaElement::Interface(inner) => {
                 render_interface_source(src, s, inner);
                 src.line("");
                 src.line("");
             }
-            Definition::Input(inner) => {
+            SchemaElement::Input(inner) => {
                 render_input_source(src, s, inner);
                 src.line("");
                 src.line("");
             }
-            Definition::Enum(inner) => {
+            SchemaElement::Enum(inner) => {
                 render_enum_source(src, s, inner);
                 src.line("");
                 src.line("");
             }
-            Definition::Scalar(inner) => {
+            SchemaElement::Scalar(inner) => {
                 render_scalar_source(src, s, inner);
                 src.line("");
                 src.line("");
@@ -140,7 +140,7 @@ fn render_input_source(src: &mut SourceCode, s: &Schema, def: &Input) {
     src.indent();
 
     let mut pass = true;
-    for conf in s.collect_input_source_configs(def).values() {
+    for conf in s.collect_input_source_configs(def) {
         pass = false;
         src.line(&format!(
             "{name}: {type}",
@@ -238,9 +238,9 @@ fn format_named_type(s: &Schema, name: &str) -> String {
         return "typing.Any".to_owned();
     }
     match definition.unwrap() {
-        Definition::Object(inner) => naming::object_source(inner),
-        Definition::Interface(inner) => naming::interface_source(inner),
-        Definition::Scalar(inner) => naming::scalar_source(inner),
+        SchemaElement::Object(inner) => naming::object_source(inner),
+        SchemaElement::Interface(inner) => naming::interface_source(inner),
+        SchemaElement::Scalar(inner) => naming::scalar_source(inner),
         _ => unimplemented!(),
     }
 }

@@ -1,3 +1,11 @@
+interface AnotherInterface {
+  anotherField: ID!
+}
+
+type AnotherType {
+  anotherField: ID!
+}
+
 type BasicObject {
   idNonNull: ID!
   stringNonNull: String!
@@ -20,37 +28,48 @@ type BasicObject {
   floatArg(float: Float): Float
   booleanArg(boolean: Boolean): Boolean
   basicScalar: BasicScalar
+  extendedField: ID!
+  extendedFieldWithArg(idNonNull: ID!): ID!
 }
 
-interface BasicInterface {
+interface BasicInterface implements AnotherInterface {
   interfaceField: String
   basicScalar: BasicScalar
+  extendedField: ID!
+  extendedFieldWithArg(idNonNull: ID!): ID!
+  anotherField: ID!
 }
 
-type BasicInterfaceImpl implements BasicInterface {
+type BasicInterfaceImpl implements BasicInterface & AnotherInterface {
   interfaceField: String
   basicScalar: BasicScalar
+  extendedField: ID!
+  extendedFieldWithArg(idNonNull: ID!): ID!
+  anotherField: ID!
 }
 
-union BasicUnion = BasicObject | BasicInterfaceImpl
+union BasicUnion = BasicObject | BasicInterfaceImpl | AnotherType
 
 enum BasicEnum {
   ENUM_VALUE_1
   ENUM_VALUE_2
+  EXTENDED_VALUE
 }
 
 input BasicInput {
-  idNonNull: ID!
-  stringNonNull: String!
-  intNonNull: Int!
-  floatNonNull: Float!
-  booleanNonNull: Boolean!
+  idNonNull: ID! = "default"
+  stringNonNull: String! = "default"
+  intNonNull: Int! = 1
+  floatNonNull: Float! = 1
+  booleanNonNull: Boolean! = true
+  basicScalarNotNull: BasicScalar! = "123"
   id: ID
   string: String
   int: Int
   float: Float
   boolean: Boolean
   basicScalar: BasicScalar
+  extendedField: ID!
 }
 
 """

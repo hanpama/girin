@@ -1,0 +1,34 @@
+extend type BasicObject {
+    extendedField: ID!
+    extendedFieldWithArg(idNonNull: ID!): ID!
+}
+
+interface AnotherInterface {
+    anotherField: ID!
+}
+
+extend interface BasicInterface implements AnotherInterface {
+    extendedField: ID!
+    extendedFieldWithArg(idNonNull: ID!): ID!
+    anotherField: ID!
+}
+
+extend type BasicInterfaceImpl implements AnotherInterface {
+    extendedField: ID!
+    extendedFieldWithArg(idNonNull: ID!): ID!
+    anotherField: ID!
+}
+
+type AnotherType {
+    anotherField: ID!
+}
+
+extend union BasicUnion = AnotherType
+
+extend enum BasicEnum {
+    EXTENDED_VALUE
+}
+
+extend input BasicInput {
+    extendedField: ID!
+}

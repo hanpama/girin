@@ -1,6 +1,6 @@
 use error::PythonRenderingError;
 
-use crate::definitions::Schema;
+use crate::schema::Schema;
 use std::path::PathBuf;
 
 mod builder;

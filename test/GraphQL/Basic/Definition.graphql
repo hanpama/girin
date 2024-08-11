@@ -40,11 +40,12 @@ enum BasicEnum {
 }
 
 input BasicInput {
-    idNonNull: ID!
-    stringNonNull: String!
-    intNonNull: Int!
-    floatNonNull: Float!
-    booleanNonNull: Boolean!
+    idNonNull: ID! = "default"
+    stringNonNull: String! = "default"
+    intNonNull: Int! = 1
+    floatNonNull: Float! = 1.0
+    booleanNonNull: Boolean! = true
+    basicScalarNotNull: BasicScalar! = "123"
     id: ID
     string: String
     int: Int

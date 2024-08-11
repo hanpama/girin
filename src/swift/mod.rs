@@ -1,13 +1,8 @@
 use std::{error::Error, path::PathBuf};
 
-use crate::definitions::Module;
-
 mod sourcecode;
 
-pub fn generate_swift_code(
-    target_dir: PathBuf,
-    module: Module,
-) -> Result<(), SwiftGenerationError> {
+pub fn generate_swift_code(target_dir: PathBuf) -> Result<(), SwiftGenerationError> {
     // let source = source::Source::new(module);
     // source.generate()
 

@@ -1,6 +1,6 @@
 use super::{error::PythonRenderingError, naming, sourcecode::SourceCode};
-use crate::definitions::{
-    Definition, Interface, InterfaceTypeExtension, Module, Object,
+use crate::schema::{
+    SchemaElement, Interface, InterfaceTypeExtension, Module, Object,
     ObjectExtension, Schema, Submodule,
 };
 use std::{fs::File, path::PathBuf};
@@ -108,16 +108,16 @@ fn render_submodule_config(src: &mut SourceCode, s: &Schema, smd: &Submodule) {
     for def in &smd.definitions {
         pass = false;
         match def {
-            Definition::Object(inner) => {
+            SchemaElement::Object(inner) => {
                 render_object_def_resolver(src, s, inner);
             }
-            Definition::Interface(inner) => {
+            SchemaElement::Interface(inner) => {
                 render_interface_def_resolver(src, s, inner);
             }
-            Definition::ObjectExtension(inner) => {
+            SchemaElement::ObjectExtension(inner) => {
                 render_object_ext_resolver(src, s, inner);
             }
-            Definition::InterfaceExtension(inner) => {
+            SchemaElement::InterfaceExtension(inner) => {
                 render_interface_ext_resolver(src, s, inner);
             }
             _ => {}

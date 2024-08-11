@@ -1,4 +1,4 @@
-use crate::definitions::{
+use crate::schema::{
     Enum, Input, Interface, InterfaceTypeExtension,
     Module, Object, ObjectExtension, Scalar, Submodule,
 };
