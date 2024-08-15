@@ -1,3 +1,15 @@
+type Nested2 {
+  value: String
+}
+
+interface AnotherInterface {
+  anotherField: ID!
+}
+
+type AnotherType {
+  anotherField: ID!
+}
+
 type BasicObject {
   idNonNull: ID!
   stringNonNull: String!
@@ -69,12 +81,8 @@ input BasicInput {
 """
 scalar BasicScalar
 
-interface AnotherInterface {
-  anotherField: ID!
-}
-
-type AnotherType {
-  anotherField: ID!
+type Nested1 {
+  nested2: Nested2
 }
 
 type DeprecatedFieldObject {
@@ -83,6 +91,7 @@ type DeprecatedFieldObject {
 
 type Query {
   version: String
+  extendedHello(name: String!): String!
 }
 
 type Mutation {

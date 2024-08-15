@@ -1,5 +1,5 @@
 use crate::schema::{
-    Definition, Enum, EnumValue, Field, Input, InputValue, Interface, Object, Scalar, Schema,
+    TypeDefinition, Enum, EnumValue, Field, Input, InputValue, Interface, Object, Scalar, Schema,
     TypeExpression, Union, Value,
 };
 use graphql_parser::query::Number;
@@ -27,32 +27,32 @@ fn build_schema_ast_from_schema<'a>(s: &'a Schema) -> Vec<schema::Definition<'a,
 
     for definition in s.iter_all_definitions() {
         match definition {
-            Definition::Scalar(def) => {
+            TypeDefinition::Scalar(def) => {
                 schema_definitions.push(schema::Definition::TypeDefinition(
                     schema::TypeDefinition::Scalar(format_scalar_definition(s, def)),
                 ));
             }
-            Definition::Object(def) => {
+            TypeDefinition::Object(def) => {
                 schema_definitions.push(schema::Definition::TypeDefinition(
                     schema::TypeDefinition::Object(format_object_definition(s, def)),
                 ));
             }
-            Definition::Interface(def) => {
+            TypeDefinition::Interface(def) => {
                 schema_definitions.push(schema::Definition::TypeDefinition(
                     schema::TypeDefinition::Interface(format_interface_definition(s, def)),
                 ));
             }
-            Definition::Union(def) => {
+            TypeDefinition::Union(def) => {
                 schema_definitions.push(schema::Definition::TypeDefinition(
                     schema::TypeDefinition::Union(format_union_definition(s, def)),
                 ));
             }
-            Definition::Enum(def) => {
+            TypeDefinition::Enum(def) => {
                 schema_definitions.push(schema::Definition::TypeDefinition(
                     schema::TypeDefinition::Enum(format_enum_definition(s, def)),
                 ));
             }
-            Definition::Input(def) => {
+            TypeDefinition::Input(def) => {
                 schema_definitions.push(schema::Definition::TypeDefinition(
                     schema::TypeDefinition::InputObject(format_input_definition(s, def)),
                 ));

@@ -1,4 +1,4 @@
-use super::{Extension, InputValue, Position, Schema, SourceConfig};
+use super::{TypeExtension, InputValue, Position, Schema, SourceConfig};
 
 #[derive(Debug)]
 pub struct Input {
@@ -44,7 +44,7 @@ impl Schema {
 
     fn iter_input_extensions(&self, name: &str) -> impl Iterator<Item = &InputExtension> {
         self.iter_extensions(name).flat_map(|ext| match ext {
-            Extension::InputExtension(ext) => Some(ext),
+            TypeExtension::InputExtension(ext) => Some(ext),
             _ => None,
         })
     }

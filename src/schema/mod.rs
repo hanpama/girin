@@ -17,6 +17,6 @@ pub use input_value::InputValue;
 pub use interface::{Interface, InterfaceTypeExtension};
 pub use object::{Object, ObjectExtension};
 pub use scalar::Scalar;
-pub use schema::{Definition, Directory, Extension, Module, Schema, SchemaElement};
+pub use schema::{TypeDefinition, Directory, TypeExtension, Module, Schema, Definition};
 pub use types::{Position, TypeExpression, Value};
 pub use union::{Union, UnionExtension};

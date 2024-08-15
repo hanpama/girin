@@ -1,4 +1,4 @@
-use super::{Extension, Field, Position, Schema, SourceConfig};
+use super::{field::ResolveOption, Field, Position, Schema, SourceConfig, TypeExtension};
 
 #[derive(Debug)]
 pub struct Object {
@@ -16,6 +16,14 @@ impl Object {
             .flat_map(|field| field.collect_source_configs())
             .collect()
     }
+
+    pub fn collect_resolve_configs(&self) -> Vec<ResolveOption> {
+        self.fields
+            .iter()
+            .map(|field| field.get_resolve_option())
+            .filter_map(|opt| opt)
+            .collect()
+    }
 }
 
 #[derive(Debug)]
@@ -31,6 +39,14 @@ impl ObjectExtension {
         self.fields
             .iter()
             .flat_map(|field| field.collect_source_configs())
+            .collect()
+    }
+
+    pub fn collect_resolve_configs(&self) -> Vec<ResolveOption> {
+        self.fields
+            .iter()
+            .map(|field| field.get_resolve_option())
+            .filter_map(|opt| opt)
             .collect()
     }
 }
@@ -61,9 +77,9 @@ impl Schema {
         )
     }
 
-    fn iter_object_extensions(&self, name: &str) -> impl Iterator<Item = &ObjectExtension> {
+    pub fn iter_object_extensions(&self, name: &str) -> impl Iterator<Item = &ObjectExtension> {
         self.iter_extensions(name).flat_map(|ext| match ext {
-            Extension::ObjectExtension(ext) => Some(ext),
+            TypeExtension::ObjectExtension(ext) => Some(ext),
             _ => None,
         })
     }

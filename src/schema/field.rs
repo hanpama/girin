@@ -27,4 +27,31 @@ impl Field {
             }]
         }
     }
+
+    pub fn get_resolve_option(&self) -> Option<ResolveOption> {
+        if let Some(resolve) = &self.resolve {
+            Some(ResolveOption {
+                name: self.name.clone(),
+                args: &self.args,
+                field_type: &self.field_type,
+                sync: resolve.sync,
+            })
+        } else if !self.args.is_empty() {
+            Some(ResolveOption {
+                name: self.name.clone(),
+                args: &self.args,
+                field_type: &self.field_type,
+                sync: false,
+            })
+        } else {
+            None
+        }
+    }
+}
+
+pub struct ResolveOption<'a> {
+    pub name: String,
+    pub args: &'a Vec<InputValue>,
+    pub field_type: &'a TypeExpression,
+    pub sync: bool,
 }

@@ -9,14 +9,13 @@ use graphql_parser::parse_schema;
 use graphql_parser::schema;
 
 use crate::schema::{
-    Definition, Enum, EnumExtension, EnumValue, Extension, Field, Input, InputExtension,
+    TypeDefinition, Enum, EnumExtension, EnumValue, TypeExtension, Field, Input, InputExtension,
     InputValue, Interface, InterfaceTypeExtension, Object, ObjectExtension, Position,
     ResolverConfig, Scalar, Schema, SourceConfig, TypeExpression, Union, UnionExtension, Value,
 };
 
 pub fn build_schema(dir: &Path) -> Result<Schema, SchemaBuildingError> {
     let mut schema = Schema::new();
-    // PathBuf::from("value")
     build_directory(&mut schema, &dir, &dir)?;
     Ok(schema)
 }
@@ -79,7 +78,7 @@ fn build_file(s: &mut Schema, root: &Path, file: &Path) -> Result<(), SchemaBuil
 
 fn build_type_definition(
     def: schema::TypeDefinition<String>,
-) -> Result<Definition, GraphQLSchemaValidationError> {
+) -> Result<TypeDefinition, GraphQLSchemaValidationError> {
     Ok(match def {
         schema::TypeDefinition::Scalar(def) => build_scalar_type_definition(&def)?.into(),
         schema::TypeDefinition::Object(def) => build_object_type_definition(&def)?.into(),
@@ -92,7 +91,7 @@ fn build_type_definition(
 
 fn build_type_extension(
     def: schema::TypeExtension<String>,
-) -> Result<Extension, GraphQLSchemaValidationError> {
+) -> Result<TypeExtension, GraphQLSchemaValidationError> {
     Ok(match def {
         schema::TypeExtension::Object(def) => build_object_type_extension(&def)?.into(),
         schema::TypeExtension::Enum(def) => build_enum_type_extension(&def)?.into(),

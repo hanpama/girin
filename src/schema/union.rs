@@ -1,4 +1,4 @@
-use super::{Extension, Position, Schema};
+use super::{TypeExtension, Position, Schema};
 
 #[derive(Debug)]
 pub struct Union {
@@ -28,7 +28,7 @@ impl Schema {
 
     fn iter_union_extensions(&self, name: &str) -> impl Iterator<Item = &UnionExtension> {
         self.iter_extensions(name).flat_map(|ext| match ext {
-            Extension::UnionExtension(ext) => Some(ext),
+            TypeExtension::UnionExtension(ext) => Some(ext),
             _ => None,
         })
     }

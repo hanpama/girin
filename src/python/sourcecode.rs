@@ -108,8 +108,10 @@ impl SourceCode {
         for i in self.first_imports.values() {
             writeln!(out, "{}", i.to_string())?;
         }
-        if !self.third_imports.is_empty() {
+        if !self.first_imports.is_empty() {
             writeln!(out)?;
+        }
+        if !self.third_imports.is_empty() || !self.first_imports.is_empty() {
             writeln!(out)?;
         }
         for line in &self.body {

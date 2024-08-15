@@ -1,4 +1,4 @@
-use super::{Extension, Position, Schema};
+use super::{TypeExtension, Position, Schema};
 
 #[derive(Debug)]
 pub struct Enum {
@@ -34,7 +34,7 @@ impl Schema {
 
     fn iter_enum_extensions(&self, name: &str) -> impl Iterator<Item = &EnumExtension> {
         self.iter_extensions(name).flat_map(|ext| match ext {
-            Extension::EnumExtension(ext) => Some(ext),
+            TypeExtension::EnumExtension(ext) => Some(ext),
             _ => None,
         })
     }

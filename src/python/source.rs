@@ -1,8 +1,8 @@
-use super::{error::PythonRenderingError, naming, sourcecode::SourceCode};
-use crate::schema::{Definition, Enum, Input, Interface, Object, Scalar, Schema, TypeExpression};
+use super::{error::Error, naming, sourcecode::SourceCode};
+use crate::schema::{TypeDefinition, Enum, Input, Interface, Object, Scalar, Schema, TypeExpression};
 use std::{borrow::Borrow, fs::File, path::PathBuf};
 
-pub fn render_source_defintiion(outdir: &PathBuf, s: &Schema) -> Result<(), PythonRenderingError> {
+pub fn render_source_defintiion(outdir: &PathBuf, s: &Schema) -> Result<(), Error> {
     let outfile = outdir.join("source.py");
 
     let mut file = File::create(outfile)?;
@@ -10,27 +10,27 @@ pub fn render_source_defintiion(outdir: &PathBuf, s: &Schema) -> Result<(), Pyth
 
     for def in s.iter_all_definitions() {
         match def {
-            Definition::Object(inner) => {
+            TypeDefinition::Object(inner) => {
                 render_object_source(&mut src, s, inner);
                 src.line("");
                 src.line("");
             }
-            Definition::Interface(inner) => {
+            TypeDefinition::Interface(inner) => {
                 render_interface_source(&mut src, s, inner);
                 src.line("");
                 src.line("");
             }
-            Definition::Input(inner) => {
+            TypeDefinition::Input(inner) => {
                 render_input_source(&mut src, s, inner);
                 src.line("");
                 src.line("");
             }
-            Definition::Enum(inner) => {
+            TypeDefinition::Enum(inner) => {
                 render_enum_source(&mut src, s, inner);
                 src.line("");
                 src.line("");
             }
-            Definition::Scalar(inner) => {
+            TypeDefinition::Scalar(inner) => {
                 render_scalar_source(&mut src, s, inner);
                 src.line("");
                 src.line("");
@@ -216,9 +216,9 @@ fn format_named_type(s: &Schema, name: &str) -> String {
         return "typing.Any".to_owned();
     }
     match definition.unwrap() {
-        Definition::Object(inner) => naming::object_source(inner),
-        Definition::Interface(inner) => naming::interface_source(inner),
-        Definition::Scalar(inner) => naming::scalar_source(inner),
+        TypeDefinition::Object(inner) => naming::object_source(inner),
+        TypeDefinition::Interface(inner) => naming::interface_source(inner),
+        TypeDefinition::Scalar(inner) => naming::scalar_source(inner),
         _ => unimplemented!(),
     }
 }

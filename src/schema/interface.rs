@@ -1,4 +1,4 @@
-use super::{Extension, Field, Position, Schema, SourceConfig};
+use super::{field::ResolveOption, Field, Position, Schema, SourceConfig, TypeExtension};
 
 #[derive(Debug)]
 pub struct Interface {
@@ -16,6 +16,14 @@ impl Interface {
             .flat_map(|field| field.collect_source_configs())
             .collect()
     }
+
+    pub fn collect_resolve_configs(&self) -> Vec<ResolveOption> {
+        self.fields
+            .iter()
+            .map(|field| field.get_resolve_option())
+            .filter_map(|opt| opt)
+            .collect()
+    }
 }
 
 #[derive(Debug)]
@@ -24,6 +32,23 @@ pub struct InterfaceTypeExtension {
     pub fields: Vec<Field>,
     pub interfaces: Vec<String>,
     pub position: Position,
+}
+
+impl InterfaceTypeExtension {
+    pub fn collect_source_configs(&self) -> Vec<SourceConfig> {
+        self.fields
+            .iter()
+            .flat_map(|field| field.collect_source_configs())
+            .collect()
+    }
+
+    pub fn collect_resolve_configs(&self) -> Vec<ResolveOption> {
+        self.fields
+            .iter()
+            .map(|field| field.get_resolve_option())
+            .filter_map(|opt| opt)
+            .collect()
+    }
 }
 
 impl Schema {
@@ -56,7 +81,7 @@ impl Schema {
         name: &str,
     ) -> impl Iterator<Item = &InterfaceTypeExtension> {
         self.iter_extensions(name).flat_map(|ext| match ext {
-            Extension::InterfaceExtension(ext) => Some(ext),
+            TypeExtension::InterfaceExtension(ext) => Some(ext),
             _ => None,
         })
     }

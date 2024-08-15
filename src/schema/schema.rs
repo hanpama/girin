@@ -1,4 +1,3 @@
-use core::panic;
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 
@@ -15,7 +14,7 @@ pub struct Schema {
     directories: HashMap<PathBuf, Directory>,
     definition_locations: HashMap<String, Location>,
     extension_locations: HashMap<String, Vec<Location>>,
-    root_dir: PathBuf,
+    root_dir: Directory,
 }
 
 impl Schema {
@@ -28,45 +27,45 @@ impl Schema {
             extension_locations: HashMap::new(),
             modules: HashMap::new(),
             directories: HashMap::new(),
-            root_dir: PathBuf::new(),
+            root_dir: Directory::new(PathBuf::new()),
         }
     }
 
-    pub fn get_definition(&self, name: &str) -> Option<&Definition> {
+    pub fn get_definition(&self, name: &str) -> Option<&TypeDefinition> {
         None
     }
 
-    pub fn iter_all_definitions(&self) -> impl Iterator<Item = &Definition> {
+    pub fn iter_all_definitions(&self) -> impl Iterator<Item = &TypeDefinition> {
         self.modules
             .values()
-            .flat_map(|module| module.elements.iter())
+            .flat_map(|module| module.definitions.iter())
             .filter_map(|element| match element {
-                SchemaElement::Definition(def) => Some(def),
+                Definition::TypeDefinition(def) => Some(def),
                 _ => None,
             })
     }
 
-    pub fn iter_extensions(&self, name: &str) -> impl Iterator<Item = &Extension> {
+    pub fn iter_extensions(&self, name: &str) -> impl Iterator<Item = &TypeExtension> {
         self.extension_locations
             .get(name)
             .into_iter()
             .flat_map(|v| v.iter())
             .flat_map(move |loc| match self.get_element(&loc) {
-                SchemaElement::Extension(ext) => Some(ext),
+                Definition::TypeExtension(ext) => Some(ext),
                 _ => unreachable!(),
             })
     }
 
-    pub fn add_definition(&mut self, dir: &Path, module_name: &str, def: Definition) {
+    pub fn add_definition(&mut self, dir: &Path, module_name: &str, def: TypeDefinition) {
         let name = def.get_name().to_owned();
-        let element = SchemaElement::Definition(def);
+        let element = Definition::TypeDefinition(def);
         let location = self.add_element(dir, module_name, element);
         self.definition_locations.insert(name, location);
     }
 
-    pub fn add_extension(&mut self, dir: &Path, module_name: &str, ext: Extension) {
+    pub fn add_extension(&mut self, dir: &Path, module_name: &str, ext: TypeExtension) {
         let name = ext.get_definition_name().to_owned();
-        let element = SchemaElement::Extension(ext);
+        let element = Definition::TypeExtension(ext);
         let location = self.add_element(dir, module_name, element);
         self.extension_locations
             .entry(name)
@@ -74,14 +73,32 @@ impl Schema {
             .push(location);
     }
 
-    fn add_element(&mut self, dir: &Path, module: &str, element: SchemaElement) -> Location {
+    // pub fn collect_object_extensions(
+    //     &self,
+    //     object: &Object,
+    // ) -> impl Iterator<Item = &ObjectExtension> {
+    //     self.iter_extensions(&object.name)
+    //         .filter_map(|ext| match ext {
+    //             TypeExtension::ObjectExtension(ext) => Some(ext),
+    //             _ => None,
+    //         })
+    // }
+
+    // pub fn get_definition_module(&self, name: &str) -> &Module {
+    //     self.definition_locations
+    //         .get(name)
+    //         .map(|loc| &self.modules[&loc.path])
+    //         .unwrap()
+    // }
+
+    fn add_element(&mut self, dir: &Path, module: &str, element: Definition) -> Location {
         let module = if let Some(module) = self.get_mut_module(dir, module) {
             module
         } else {
             self.add_module(dir, module)
         };
 
-        module.add_element(element)
+        module.add_definition(element)
     }
 
     fn get_mut_module(&mut self, dir: &Path, module: &str) -> Option<&mut Module> {
@@ -123,13 +140,13 @@ impl Schema {
         self.directories.get_mut(path).unwrap()
     }
 
-    fn get_element(&self, location: &Location) -> &SchemaElement {
-        &self.modules[&location.path].elements[location.index]
+    fn get_element(&self, location: &Location) -> &Definition {
+        &self.modules[&location.path].definitions[location.index]
     }
 
-    pub fn iter_child_modules(&self, path: &Path) -> impl Iterator<Item = &Module> {
+    pub fn iter_child_modules(&self, dir: &Directory) -> impl Iterator<Item = &Module> {
         self.directories
-            .get(path)
+            .get(&dir.path)
             .into_iter()
             .flat_map(|v| v.modules.iter())
             .map(|loc| &self.modules[loc])
@@ -139,9 +156,9 @@ impl Schema {
         self.iter_child_modules(&self.root_dir)
     }
 
-    pub fn iter_child_directories(&self, path: &Path) -> impl Iterator<Item = &Directory> {
+    pub fn iter_child_directories(&self, dir: &Directory) -> impl Iterator<Item = &Directory> {
         self.directories
-            .get(path)
+            .get(&dir.path)
             .into_iter()
             .flat_map(|v| v.children.iter())
             .map(|loc| &self.directories[loc])
@@ -176,43 +193,43 @@ impl Directory {
 
 pub struct Module {
     pub path: PathBuf,
-    pub elements: Vec<SchemaElement>,
+    pub definitions: Vec<Definition>,
 }
 
 impl Module {
     pub fn new(dir: &Path, name: &str) -> Self {
         Self {
             path: dir.join(name),
-            elements: Vec::new(),
+            definitions: Vec::new(),
         }
     }
 
-    pub fn add_element(&mut self, element: SchemaElement) -> Location {
+    fn add_definition(&mut self, definition: Definition) -> Location {
         let path = self.path.clone();
-        let index = self.elements.len();
-        self.elements.push(element);
+        let index = self.definitions.len();
+        self.definitions.push(definition);
         Location { path, index }
     }
 }
 
-pub enum SchemaElement {
-    Definition(Definition),
-    Extension(Extension),
-}
-
-impl From<Definition> for SchemaElement {
-    fn from(def: Definition) -> Self {
-        SchemaElement::Definition(def)
-    }
-}
-
-impl From<Extension> for SchemaElement {
-    fn from(ext: Extension) -> Self {
-        SchemaElement::Extension(ext)
-    }
-}
-
 pub enum Definition {
+    TypeDefinition(TypeDefinition),
+    TypeExtension(TypeExtension),
+}
+
+impl From<TypeDefinition> for Definition {
+    fn from(def: TypeDefinition) -> Self {
+        Definition::TypeDefinition(def)
+    }
+}
+
+impl From<TypeExtension> for Definition {
+    fn from(ext: TypeExtension) -> Self {
+        Definition::TypeExtension(ext)
+    }
+}
+
+pub enum TypeDefinition {
     Scalar(Scalar),
     Object(Object),
     Interface(Interface),
@@ -221,51 +238,51 @@ pub enum Definition {
     Input(Input),
 }
 
-impl Definition {
+impl TypeDefinition {
     pub fn get_name(&self) -> &str {
         match self {
-            Definition::Scalar(scalar) => &scalar.name,
-            Definition::Object(object) => &object.name,
-            Definition::Interface(interface) => &interface.name,
-            Definition::Union(union) => &union.name,
-            Definition::Enum(enum_) => &enum_.name,
-            Definition::Input(input) => &input.name,
+            TypeDefinition::Scalar(scalar) => &scalar.name,
+            TypeDefinition::Object(object) => &object.name,
+            TypeDefinition::Interface(interface) => &interface.name,
+            TypeDefinition::Union(union) => &union.name,
+            TypeDefinition::Enum(enum_) => &enum_.name,
+            TypeDefinition::Input(input) => &input.name,
         }
     }
 }
 
-impl From<Scalar> for Definition {
+impl From<Scalar> for TypeDefinition {
     fn from(scalar: Scalar) -> Self {
-        Definition::Scalar(scalar)
+        TypeDefinition::Scalar(scalar)
     }
 }
-impl From<Object> for Definition {
+impl From<Object> for TypeDefinition {
     fn from(object: Object) -> Self {
-        Definition::Object(object)
+        TypeDefinition::Object(object)
     }
 }
-impl From<Interface> for Definition {
+impl From<Interface> for TypeDefinition {
     fn from(interface: Interface) -> Self {
-        Definition::Interface(interface)
+        TypeDefinition::Interface(interface)
     }
 }
-impl From<Union> for Definition {
+impl From<Union> for TypeDefinition {
     fn from(union: Union) -> Self {
-        Definition::Union(union)
+        TypeDefinition::Union(union)
     }
 }
-impl From<Enum> for Definition {
+impl From<Enum> for TypeDefinition {
     fn from(enum_: Enum) -> Self {
-        Definition::Enum(enum_)
+        TypeDefinition::Enum(enum_)
     }
 }
-impl From<Input> for Definition {
+impl From<Input> for TypeDefinition {
     fn from(input: Input) -> Self {
-        Definition::Input(input)
+        TypeDefinition::Input(input)
     }
 }
 
-pub enum Extension {
+pub enum TypeExtension {
     ObjectExtension(ObjectExtension),
     InterfaceExtension(InterfaceTypeExtension),
     UnionExtension(UnionExtension),
@@ -273,40 +290,40 @@ pub enum Extension {
     InputExtension(InputExtension),
 }
 
-impl Extension {
+impl TypeExtension {
     pub fn get_definition_name(&self) -> &str {
         match self {
-            Extension::ObjectExtension(ext) => &ext.name,
-            Extension::InterfaceExtension(ext) => &ext.name,
-            Extension::UnionExtension(ext) => &ext.name,
-            Extension::EnumExtension(ext) => &ext.name,
-            Extension::InputExtension(ext) => &ext.name,
+            TypeExtension::ObjectExtension(ext) => &ext.name,
+            TypeExtension::InterfaceExtension(ext) => &ext.name,
+            TypeExtension::UnionExtension(ext) => &ext.name,
+            TypeExtension::EnumExtension(ext) => &ext.name,
+            TypeExtension::InputExtension(ext) => &ext.name,
         }
     }
 }
 
-impl From<ObjectExtension> for Extension {
+impl From<ObjectExtension> for TypeExtension {
     fn from(ext: ObjectExtension) -> Self {
-        Extension::ObjectExtension(ext)
+        TypeExtension::ObjectExtension(ext)
     }
 }
-impl From<InterfaceTypeExtension> for Extension {
+impl From<InterfaceTypeExtension> for TypeExtension {
     fn from(ext: InterfaceTypeExtension) -> Self {
-        Extension::InterfaceExtension(ext)
+        TypeExtension::InterfaceExtension(ext)
     }
 }
-impl From<UnionExtension> for Extension {
+impl From<UnionExtension> for TypeExtension {
     fn from(ext: UnionExtension) -> Self {
-        Extension::UnionExtension(ext)
+        TypeExtension::UnionExtension(ext)
     }
 }
-impl From<EnumExtension> for Extension {
+impl From<EnumExtension> for TypeExtension {
     fn from(ext: EnumExtension) -> Self {
-        Extension::EnumExtension(ext)
+        TypeExtension::EnumExtension(ext)
     }
 }
-impl From<InputExtension> for Extension {
+impl From<InputExtension> for TypeExtension {
     fn from(ext: InputExtension) -> Self {
-        Extension::InputExtension(ext)
+        TypeExtension::InputExtension(ext)
     }
 }

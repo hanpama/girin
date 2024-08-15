@@ -3,6 +3,17 @@
 import typing
 
 
+class Nested2Source(typing.Protocol):
+    value: "typing.Optional[str]"
+
+
+class AnotherInterfaceSource(typing.Protocol):
+    anotherField: "typing.Any"
+
+
+class AnotherTypeSource(typing.Protocol):
+    anotherField: "typing.Any"
+
 
 class BasicObjectSource(typing.Protocol):
     idNonNull: "typing.Any"
@@ -56,12 +67,8 @@ class BasicInputSource:
 BasicScalarSource = str
 
 
-class AnotherInterfaceSource(typing.Protocol):
-    anotherField: "typing.Any"
-
-
-class AnotherTypeSource(typing.Protocol):
-    anotherField: "typing.Any"
+class Nested1Source(typing.Protocol):
+    nested2: "typing.Optional[typing.Any]"
 
 
 class DeprecatedFieldObjectSource(typing.Protocol):
