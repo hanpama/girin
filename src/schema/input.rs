@@ -27,6 +27,22 @@ pub struct InputExtension {
     pub position: Position,
 }
 
+impl InputExtension {
+    pub fn iter_fields(&self) -> impl Iterator<Item = &InputValue> {
+        self.fields.iter()
+    }
+
+    // pub fn collect_source_configs(&self) -> Vec<SourceConfig> {
+    //     self.fields
+    //         .iter()
+    //         .map(|field| SourceConfig {
+    //             name: field.name.clone(),
+    //             type_: field.field_type.clone(),
+    //         })
+    //         .collect()
+    // }
+}
+
 // impl Schema {
 //     pub fn collect_input_fields<'a>(
 //         &'a self,

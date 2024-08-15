@@ -9,8 +9,8 @@ use graphql_parser::parse_schema;
 use graphql_parser::schema;
 
 use crate::schema::{
-    Definition, Directory, EnumDefinition, EnumExtension, EnumValue, Field, InputDefinition,
-    InputExtension, InputValue, InterfaceDefinition, InterfaceTypeExtension, Module,
+    Definition, Directory, EnumDefinition, EnumExtension, EnumValue, Extension, Field,
+    InputDefinition, InputExtension, InputValue, InterfaceDefinition, InterfaceExtension, Module,
     ObjectDefinition, ObjectExtension, Position, ResolverConfig, ScalarDefinition, Schema,
     SchemaDefinition, SourceConfig, TypeExpression, UnionDefinition, UnionExtension, Value,
 };
@@ -113,19 +113,19 @@ fn build_type_extension(
 ) -> Result<Definition, GraphQLSchemaValidationError> {
     Ok(match def {
         schema::TypeExtension::Object(def) => {
-            Definition::ObjectExtension(build_object_type_extension(&def)?)
+            Extension::ObjectExtension(build_object_type_extension(&def)?)
         }
         schema::TypeExtension::Interface(def) => {
-            Definition::InterfaceExtension(build_interface_extension(&def)?)
+            Extension::InterfaceExtension(build_interface_extension(&def)?)
         }
         schema::TypeExtension::Union(def) => {
-            Definition::UnionExtension(build_union_type_extension(&def)?)
+            Extension::UnionExtension(build_union_type_extension(&def)?)
         }
         schema::TypeExtension::Enum(def) => {
-            Definition::EnumExtension(build_enum_type_extension(&def)?)
+            Extension::EnumExtension(build_enum_type_extension(&def)?)
         }
         schema::TypeExtension::InputObject(def) => {
-            Definition::InputExtension(build_input_type_extension(&def)?)
+            Extension::InputExtension(build_input_type_extension(&def)?)
         }
         schema::TypeExtension::Scalar(def) => {
             todo!()
@@ -306,7 +306,7 @@ fn build_interface_type_definition(
 
 fn build_interface_extension(
     def: &schema::InterfaceTypeExtension<String>,
-) -> Result<InterfaceTypeExtension, GraphQLSchemaValidationError> {
+) -> Result<InterfaceExtension, GraphQLSchemaValidationError> {
     let mut violations = vec![];
     let mut fields = vec![];
 
@@ -321,7 +321,7 @@ fn build_interface_extension(
         return Err(GraphQLSchemaValidationError { violations });
     }
 
-    return Ok(InterfaceTypeExtension {
+    return Ok(InterfaceExtension {
         name: def.name.clone(),
         interfaces: def.implements_interfaces.clone(),
         fields,

@@ -27,14 +27,22 @@ impl InterfaceDefinition {
 }
 
 #[derive(Debug)]
-pub struct InterfaceTypeExtension {
+pub struct InterfaceExtension {
     pub name: String,
     pub fields: Vec<Field>,
     pub interfaces: Vec<String>,
     pub position: Position,
 }
 
-impl InterfaceTypeExtension {
+impl InterfaceExtension {
+    pub fn iter_interfaces(&self) -> impl Iterator<Item = &str> {
+        self.interfaces.iter().map(|s| s.as_str())
+    }
+
+    pub fn iter_fields(&self) -> impl Iterator<Item = &Field> {
+        self.fields.iter()
+    }
+
     pub fn collect_source_configs(&self) -> Vec<SourceConfig> {
         self.fields
             .iter()

@@ -35,6 +35,13 @@ pub struct ObjectExtension {
 }
 
 impl ObjectExtension {
+    pub fn iter_interfaces(&self) -> impl Iterator<Item = &str> {
+        self.interfaces.iter().map(|s| s.as_str())
+    }
+    pub fn iter_fields(&self) -> impl Iterator<Item = &Field> {
+        self.fields.iter()
+    }
+
     pub fn collect_source_configs(&self) -> Vec<SourceConfig> {
         self.fields
             .iter()
@@ -50,37 +57,3 @@ impl ObjectExtension {
             .collect()
     }
 }
-
-// impl Schema {
-//     pub fn collect_object_source_configs(&self, def: &ObjectDefinition) -> Vec<SourceConfig> {
-//         let mut cfs = def.collect_source_configs();
-//         for ext in self.iter_object_extensions(&def.name) {
-//             cfs.extend(ext.collect_source_configs());
-//         }
-//         cfs
-//     }
-
-//     pub fn collect_object_fields<'a>(&'a self, def: &'a ObjectDefinition) -> impl Iterator<Item = &'a Field> {
-//         def.fields.iter().chain(
-//             self.iter_object_extensions(&def.name)
-//                 .flat_map(|ext| ext.fields.iter()),
-//         )
-//     }
-
-//     pub fn collect_object_interfaces<'a>(
-//         &'a self,
-//         def: &'a ObjectDefinition,
-//     ) -> impl Iterator<Item = &'a String> {
-//         def.interfaces.iter().chain(
-//             self.iter_object_extensions(&def.name)
-//                 .flat_map(|ext| ext.interfaces.iter()),
-//         )
-//     }
-
-//     pub fn iter_object_extensions(&self, name: &str) -> impl Iterator<Item = &ObjectExtension> {
-//         self.iter_extensions(name).flat_map(|ext| match ext {
-//             TypeExtension::ObjectExtension(ext) => Some(ext),
-//             _ => None,
-//         })
-//     }
-// }

@@ -1,6 +1,6 @@
 use super::{error::Result, naming, sourcecode::SourceCode};
 use crate::schema::{
-    Definition, Directory, InterfaceDefinition, InterfaceTypeExtension, Module, ObjectDefinition,
+    Definition, Directory, InterfaceDefinition, InterfaceExtension, Module, ObjectDefinition,
     ObjectExtension, Schema,
 };
 use std::{fs::File, path::PathBuf};
@@ -246,7 +246,7 @@ fn render_interface_ext_resolver(
     src: &mut SourceCode,
     s: &Schema,
     m: &Module,
-    def: &InterfaceTypeExtension,
+    def: &InterfaceExtension,
 ) {
     src.line(&format!(
         "class {name}(typing.Protocol):",

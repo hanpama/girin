@@ -1,5 +1,5 @@
 use crate::schema::{
-    EnumDefinition, InputDefinition, InterfaceDefinition, InterfaceTypeExtension, ObjectDefinition, ObjectExtension, ScalarDefinition,
+    EnumDefinition, InputDefinition, InterfaceDefinition, InterfaceExtension, ObjectDefinition, ObjectExtension, ScalarDefinition,
     TypeDefinition, TypeExtension,
 };
 
@@ -28,7 +28,7 @@ pub fn def_interface_resolver_type(def: &InterfaceDefinition) -> String {
 pub fn ext_object_resolver_type(def: &ObjectExtension) -> String {
     format!("{}Config", def.name)
 }
-pub fn ext_interface_resolver_type(def: &InterfaceTypeExtension) -> String {
+pub fn ext_interface_resolver_type(def: &InterfaceExtension) -> String {
     format!("{}Config", def.name)
 }
 

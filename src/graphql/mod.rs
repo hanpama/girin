@@ -25,8 +25,8 @@ fn build_schema_ast<'a>(s: &'a Schema) -> schema::Document<'a, &'a str> {
 fn build_schema_ast_from_schema<'a>(s: &'a Schema) -> Vec<schema::Definition<'a, &'a str>> {
     let mut schema_definitions = Vec::new();
 
-    for traversal in s.traverse_definitions() {
-        match traversal.definition {
+    for (_, def) in s.iter_definitions() {
+        match def {
             Definition::ScalarDefinition(def) => {
                 schema_definitions.push(schema::Definition::TypeDefinition(
                     schema::TypeDefinition::Scalar(format_scalar_definition(s, def)),
@@ -85,12 +85,13 @@ fn format_object_definition<'a>(
         name: def.name.as_str(),
         description: def.description.clone(),
         implements_interfaces: s
-            .collect_object_interfaces(def)
-            .map(|i| i.as_str())
+            .collect_object_exts(&def.name)
+            .flat_map(|(_, ext)| ext.iter_interfaces())
             .collect(),
         directives: format_directives(&None),
         fields: s
-            .collect_object_fields(def)
+            .collect_object_exts(&def.name)
+            .flat_map(|(_, ext)| ext.iter_fields())
             .map(|f| format_field_definition(f))
             .collect(),
     }
@@ -105,11 +106,12 @@ fn format_interface_definition<'a>(
         name: def.name.as_str(),
         description: def.description.clone(),
         implements_interfaces: s
-            .collect_interface_interfaces(def)
-            .map(|i| i.as_str())
+            .iter_interface_exts(&def.name)
+            .flat_map(|(_, ext)| ext.iter_interfaces())
             .collect(),
         fields: s
-            .collect_interface_fields(def)
+            .iter_interface_exts(&def.name)
+            .flat_map(|(_, ext)| ext.iter_fields())
             .map(|f| format_field_definition(f))
             .collect(),
         directives: format_directives(&None),
@@ -124,7 +126,10 @@ fn format_union_definition<'a>(
         position: graphql_parser::Pos::default(),
         name: def.name.as_str(),
         description: def.description.clone(),
-        types: s.collect_possible_types(def).map(|t| t.as_str()).collect(),
+        types: s
+            .iter_union_exts(&def.name)
+            .flat_map(|(_, ext)| ext.iter_types())
+            .collect(),
         directives: format_directives(&None),
     }
 }
@@ -139,7 +144,8 @@ fn format_enum_definition<'a>(
         description: def.description.clone(),
         directives: format_directives(&None),
         values: s
-            .collect_enum_values(def)
+            .iter_enum_exts(&def.name)
+            .flat_map(|(_, ext)| ext.iter_values())
             .map(|v| format_enum_value_definition(v))
             .collect(),
     }
@@ -147,15 +153,16 @@ fn format_enum_definition<'a>(
 
 fn format_input_definition<'a>(
     s: &'a Schema,
-    i: &'a InputDefinition,
+    def: &'a InputDefinition,
 ) -> schema::InputObjectType<'a, &'a str> {
     schema::InputObjectType {
         position: graphql_parser::Pos::default(),
-        name: i.name.as_str(),
-        description: i.description.clone(),
+        name: def.name.as_str(),
+        description: def.description.clone(),
         directives: format_directives(&None),
         fields: s
-            .collect_input_fields(i)
+            .iter_input_exts(&def.name)
+            .flat_map(|(_, ext)| ext.iter_fields())
             .map(|f| format_input_field_definition(f))
             .collect(),
     }

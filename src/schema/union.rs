@@ -15,6 +15,12 @@ pub struct UnionExtension {
     pub position: Position,
 }
 
+impl UnionExtension {
+    pub fn iter_types(&self) -> impl Iterator<Item = &str> {
+        self.types.iter().map(|s| s.as_str())
+    }
+}
+
 // impl Schema {
 //     pub fn collect_possible_types<'a>(
 //         &'a self,

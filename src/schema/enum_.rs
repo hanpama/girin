@@ -23,6 +23,12 @@ pub struct EnumExtension {
     pub position: Position,
 }
 
+impl EnumExtension {
+    pub fn iter_values(&self) -> impl Iterator<Item = &EnumValue> {
+        self.values.iter()
+    }
+}
+
 // impl Schema {
 //     // Enum
 //     pub fn collect_enum_values<'a>(&'a self, def: &'a EnumDefinition) -> impl Iterator<Item = &'a EnumValue> {

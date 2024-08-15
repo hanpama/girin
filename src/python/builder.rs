@@ -69,7 +69,7 @@ fn render_object_type(src: &mut SourceCode, s: &Schema, def: &ObjectDefinition) 
     for field in &def.fields {
         render_field(src, s, &def.name, field)
     }
-    for ext in s.iter_object_extensions(&def.name) {
+    for ext in s.iter_object_exts(&def.name) {
         for field in &ext.fields {
             render_field(src, s, &def.name, field)
         }
