@@ -1,5 +1,8 @@
 use super::{error::Error, naming, sourcecode::SourceCode};
-use crate::schema::{TypeDefinition, Enum, Input, Interface, Object, Scalar, Schema, TypeExpression};
+use crate::schema::{
+    Definition, EnumDefinition, InputDefinition, InterfaceDefinition, ObjectDefinition,
+    ScalarDefinition, Schema, TypeExpression,
+};
 use std::{borrow::Borrow, fs::File, path::PathBuf};
 
 pub fn render_source_defintiion(outdir: &PathBuf, s: &Schema) -> Result<(), Error> {
@@ -10,27 +13,27 @@ pub fn render_source_defintiion(outdir: &PathBuf, s: &Schema) -> Result<(), Erro
 
     for def in s.iter_all_definitions() {
         match def {
-            TypeDefinition::Object(inner) => {
+            Definition::ObjectDefinition(inner) => {
                 render_object_source(&mut src, s, inner);
                 src.line("");
                 src.line("");
             }
-            TypeDefinition::Interface(inner) => {
+            Definition::InterfaceDefinition(inner) => {
                 render_interface_source(&mut src, s, inner);
                 src.line("");
                 src.line("");
             }
-            TypeDefinition::Input(inner) => {
+            Definition::InputDefinition(inner) => {
                 render_input_source(&mut src, s, inner);
                 src.line("");
                 src.line("");
             }
-            TypeDefinition::Enum(inner) => {
+            Definition::EnumDefinition(inner) => {
                 render_enum_source(&mut src, s, inner);
                 src.line("");
                 src.line("");
             }
-            TypeDefinition::Scalar(inner) => {
+            Definition::ScalarDefinition(inner) => {
                 render_scalar_source(&mut src, s, inner);
                 src.line("");
                 src.line("");
@@ -44,7 +47,7 @@ pub fn render_source_defintiion(outdir: &PathBuf, s: &Schema) -> Result<(), Erro
     Ok(())
 }
 
-fn render_object_source(src: &mut SourceCode, s: &Schema, def: &Object) {
+fn render_object_source(src: &mut SourceCode, s: &Schema, def: &ObjectDefinition) {
     src.import_third("typing");
 
     let mut superclasses = vec!["typing.Protocol".to_owned()];
@@ -78,7 +81,7 @@ fn render_object_source(src: &mut SourceCode, s: &Schema, def: &Object) {
     src.dedent();
 }
 
-fn render_interface_source(src: &mut SourceCode, s: &Schema, def: &Interface) {
+fn render_interface_source(src: &mut SourceCode, s: &Schema, def: &InterfaceDefinition) {
     src.import_third("typing");
 
     let mut superclasses = vec!["typing.Protocol".to_owned()];
@@ -111,7 +114,7 @@ fn render_interface_source(src: &mut SourceCode, s: &Schema, def: &Interface) {
     src.dedent();
 }
 
-fn render_input_source(src: &mut SourceCode, s: &Schema, def: &Input) {
+fn render_input_source(src: &mut SourceCode, s: &Schema, def: &InputDefinition) {
     src.import_third("typing");
 
     src.line(&format!("class {name}:", name = naming::input_source(def)));
@@ -134,7 +137,7 @@ fn render_input_source(src: &mut SourceCode, s: &Schema, def: &Input) {
     src.dedent();
 }
 
-fn render_enum_source(src: &mut SourceCode, s: &Schema, def: &Enum) {
+fn render_enum_source(src: &mut SourceCode, s: &Schema, def: &EnumDefinition) {
     src.import_third("typing");
 
     src.line(&format!(
@@ -149,7 +152,7 @@ fn render_enum_source(src: &mut SourceCode, s: &Schema, def: &Enum) {
     src.line("]");
 }
 
-fn render_scalar_source(src: &mut SourceCode, s: &Schema, def: &Scalar) {
+fn render_scalar_source(src: &mut SourceCode, s: &Schema, def: &ScalarDefinition) {
     src.import_third("typing");
 
     let alias = def.type_aliases.get("python");
@@ -216,9 +219,9 @@ fn format_named_type(s: &Schema, name: &str) -> String {
         return "typing.Any".to_owned();
     }
     match definition.unwrap() {
-        TypeDefinition::Object(inner) => naming::object_source(inner),
-        TypeDefinition::Interface(inner) => naming::interface_source(inner),
-        TypeDefinition::Scalar(inner) => naming::scalar_source(inner),
+        Definition::Object(inner) => naming::object_source(inner),
+        Definition::Interface(inner) => naming::interface_source(inner),
+        Definition::Scalar(inner) => naming::scalar_source(inner),
         _ => unimplemented!(),
     }
 }

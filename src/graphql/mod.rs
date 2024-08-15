@@ -1,6 +1,6 @@
 use crate::schema::{
-    TypeDefinition, Enum, EnumValue, Field, Input, InputValue, Interface, Object, Scalar, Schema,
-    TypeExpression, Union, Value,
+    Definition, EnumDefinition, EnumValue, Field, InputDefinition, InputValue, InterfaceDefinition,
+    ObjectDefinition, ScalarDefinition, Schema, TypeExpression, UnionDefinition, Value,
 };
 use graphql_parser::query::Number;
 use graphql_parser::schema;
@@ -25,45 +25,49 @@ fn build_schema_ast<'a>(s: &'a Schema) -> schema::Document<'a, &'a str> {
 fn build_schema_ast_from_schema<'a>(s: &'a Schema) -> Vec<schema::Definition<'a, &'a str>> {
     let mut schema_definitions = Vec::new();
 
-    for definition in s.iter_all_definitions() {
-        match definition {
-            TypeDefinition::Scalar(def) => {
+    for traversal in s.traverse_definitions() {
+        match traversal.definition {
+            Definition::ScalarDefinition(def) => {
                 schema_definitions.push(schema::Definition::TypeDefinition(
                     schema::TypeDefinition::Scalar(format_scalar_definition(s, def)),
                 ));
             }
-            TypeDefinition::Object(def) => {
+            Definition::ObjectDefinition(def) => {
                 schema_definitions.push(schema::Definition::TypeDefinition(
                     schema::TypeDefinition::Object(format_object_definition(s, def)),
                 ));
             }
-            TypeDefinition::Interface(def) => {
+            Definition::InterfaceDefinition(def) => {
                 schema_definitions.push(schema::Definition::TypeDefinition(
                     schema::TypeDefinition::Interface(format_interface_definition(s, def)),
                 ));
             }
-            TypeDefinition::Union(def) => {
+            Definition::UnionDefinition(def) => {
                 schema_definitions.push(schema::Definition::TypeDefinition(
                     schema::TypeDefinition::Union(format_union_definition(s, def)),
                 ));
             }
-            TypeDefinition::Enum(def) => {
+            Definition::EnumDefinition(def) => {
                 schema_definitions.push(schema::Definition::TypeDefinition(
                     schema::TypeDefinition::Enum(format_enum_definition(s, def)),
                 ));
             }
-            TypeDefinition::Input(def) => {
+            Definition::InputDefinition(def) => {
                 schema_definitions.push(schema::Definition::TypeDefinition(
                     schema::TypeDefinition::InputObject(format_input_definition(s, def)),
                 ));
             }
+            _ => {}
         }
     }
 
     return schema_definitions;
 }
 
-fn format_scalar_definition<'a>(s: &'a Schema, def: &'a Scalar) -> schema::ScalarType<'a, &'a str> {
+fn format_scalar_definition<'a>(
+    s: &'a Schema,
+    def: &'a ScalarDefinition,
+) -> schema::ScalarType<'a, &'a str> {
     schema::ScalarType {
         position: graphql_parser::Pos::default(),
         name: def.name.as_str(),
@@ -72,7 +76,10 @@ fn format_scalar_definition<'a>(s: &'a Schema, def: &'a Scalar) -> schema::Scala
     }
 }
 
-fn format_object_definition<'a>(s: &'a Schema, def: &'a Object) -> schema::ObjectType<'a, &'a str> {
+fn format_object_definition<'a>(
+    s: &'a Schema,
+    def: &'a ObjectDefinition,
+) -> schema::ObjectType<'a, &'a str> {
     schema::ObjectType {
         position: graphql_parser::Pos::default(),
         name: def.name.as_str(),
@@ -91,7 +98,7 @@ fn format_object_definition<'a>(s: &'a Schema, def: &'a Object) -> schema::Objec
 
 fn format_interface_definition<'a>(
     s: &'a Schema,
-    def: &'a Interface,
+    def: &'a InterfaceDefinition,
 ) -> schema::InterfaceType<'a, &'a str> {
     schema::InterfaceType {
         position: graphql_parser::Pos::default(),
@@ -109,7 +116,10 @@ fn format_interface_definition<'a>(
     }
 }
 
-fn format_union_definition<'a>(s: &'a Schema, def: &'a Union) -> schema::UnionType<'a, &'a str> {
+fn format_union_definition<'a>(
+    s: &'a Schema,
+    def: &'a UnionDefinition,
+) -> schema::UnionType<'a, &'a str> {
     schema::UnionType {
         position: graphql_parser::Pos::default(),
         name: def.name.as_str(),
@@ -119,7 +129,10 @@ fn format_union_definition<'a>(s: &'a Schema, def: &'a Union) -> schema::UnionTy
     }
 }
 
-fn format_enum_definition<'a>(s: &'a Schema, def: &'a Enum) -> schema::EnumType<'a, &'a str> {
+fn format_enum_definition<'a>(
+    s: &'a Schema,
+    def: &'a EnumDefinition,
+) -> schema::EnumType<'a, &'a str> {
     schema::EnumType {
         position: graphql_parser::Pos::default(),
         name: def.name.as_str(),
@@ -134,7 +147,7 @@ fn format_enum_definition<'a>(s: &'a Schema, def: &'a Enum) -> schema::EnumType<
 
 fn format_input_definition<'a>(
     s: &'a Schema,
-    i: &'a Input,
+    i: &'a InputDefinition,
 ) -> schema::InputObjectType<'a, &'a str> {
     schema::InputObjectType {
         position: graphql_parser::Pos::default(),

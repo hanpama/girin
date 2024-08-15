@@ -1,7 +1,7 @@
-use super::{TypeExtension, Position, Schema};
+use super::Position;
 
 #[derive(Debug)]
-pub struct Enum {
+pub struct EnumDefinition {
     pub name: String,
     pub description: Option<String>,
     pub values: Vec<EnumValue>,
@@ -23,19 +23,19 @@ pub struct EnumExtension {
     pub position: Position,
 }
 
-impl Schema {
-    // Enum
-    pub fn collect_enum_values<'a>(&'a self, def: &'a Enum) -> impl Iterator<Item = &'a EnumValue> {
-        def.values.iter().chain(
-            self.iter_enum_extensions(&def.name)
-                .flat_map(|ext| ext.values.iter()),
-        )
-    }
+// impl Schema {
+//     // Enum
+//     pub fn collect_enum_values<'a>(&'a self, def: &'a EnumDefinition) -> impl Iterator<Item = &'a EnumValue> {
+//         def.values.iter().chain(
+//             self.iter_enum_extensions(&def.name)
+//                 .flat_map(|ext| ext.values.iter()),
+//         )
+//     }
 
-    fn iter_enum_extensions(&self, name: &str) -> impl Iterator<Item = &EnumExtension> {
-        self.iter_extensions(name).flat_map(|ext| match ext {
-            TypeExtension::EnumExtension(ext) => Some(ext),
-            _ => None,
-        })
-    }
-}
+//     fn iter_enum_extensions(&self, name: &str) -> impl Iterator<Item = &EnumExtension> {
+//         self.iter_extensions(name).flat_map(|ext| match ext {
+//             TypeExtension::EnumExtension(ext) => Some(ext),
+//             _ => None,
+//         })
+//     }
+// }

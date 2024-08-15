@@ -1,50 +1,33 @@
 use super::{error::Result, naming, sourcecode::SourceCode};
 use crate::schema::{
-    Definition, Directory, Interface, InterfaceTypeExtension, Module, Object, ObjectExtension,
-    Schema, TypeDefinition, TypeExtension,
+    Definition, Directory, InterfaceDefinition, InterfaceTypeExtension, Module, ObjectDefinition,
+    ObjectExtension, Schema,
 };
 use std::{fs::File, path::PathBuf};
 
 pub fn render_builder_config(outdir: &PathBuf, s: &Schema) -> Result<()> {
     let root_dir = outdir.join("protocol");
-
-    for dir in s.iter_root_directories() {
-        render_directory(&root_dir, s, dir)?;
-    }
-    for md in s.iter_root_modules() {
-        render_module_config(&root_dir, s, md)?;
-    }
-
-    render_config_index(&root_dir, s.iter_root_directories(), s.iter_root_modules())?;
-
+    render_directory(&root_dir, s, &s.root_dir)?;
     Ok(())
 }
 
-fn render_directory(basedir: &PathBuf, s: &Schema, d: &Directory) -> Result<()> {
-    let dir_path = basedir.join(&d.path);
+fn render_directory(parent_dir: &PathBuf, s: &Schema, d: &Directory) -> Result<()> {
+    let dir_path = parent_dir.join(d.get_name());
     std::fs::create_dir_all(&dir_path)?;
 
-    for dir in s.iter_child_directories(d) {
-        render_directory(basedir, s, dir)?;
+    for dir in d.iter_directories() {
+        render_directory(parent_dir, s, dir)?;
     }
-    for md in s.iter_child_modules(d) {
-        render_module_config(basedir, s, md)?;
+    for md in d.iter_modules() {
+        render_module_config(parent_dir, s, md)?;
     }
 
-    render_config_index(
-        &dir_path,
-        s.iter_child_directories(d),
-        s.iter_child_modules(d),
-    )?;
+    render_config_index(&dir_path, d)?;
 
     Ok(())
 }
 
-fn render_config_index<'a>(
-    dir_path: &PathBuf,
-    dirs: impl Iterator<Item = &'a Directory>,
-    mds: impl Iterator<Item = &'a Module>,
-) -> Result<()> {
+fn render_config_index<'a>(dir_path: &PathBuf, d: &Directory) -> Result<()> {
     let filepath = dir_path.join("__init__.py");
     let mut file = File::create(filepath)?;
 
@@ -54,8 +37,8 @@ fn render_config_index<'a>(
 
     src.line("class Config(typing.NamedTuple):");
     src.indent();
-    for dir in dirs {
-        let name = dir.path.file_name().unwrap().to_str().unwrap();
+    for dir in d.iter_directories() {
+        let name = dir.get_name();
         src.import_first(&format!(".{name}"));
         src.line(&format!(
             "{name}: {type}.Config",
@@ -63,8 +46,8 @@ fn render_config_index<'a>(
             type = name,
         ));
     }
-    for md in mds {
-        let name = md.path.file_stem().unwrap().to_str().unwrap();
+    for md in d.iter_modules() {
+        let name = md.get_name();
         src.import_first(&format!(".{name}"));
         src.line(&format!(
             "{name}: {type}.Config",
@@ -79,8 +62,8 @@ fn render_config_index<'a>(
     Ok(())
 }
 
-fn render_module_config(basedir: &PathBuf, s: &Schema, m: &Module) -> Result<()> {
-    let filepath = basedir.join(m.path.with_extension("py"));
+fn render_module_config(parent_dir: &PathBuf, s: &Schema, m: &Module) -> Result<()> {
+    let filepath = parent_dir.join(m.path.with_extension("py"));
     let mut file = File::create(filepath)?;
 
     let mut src = SourceCode::new();
@@ -92,85 +75,80 @@ fn render_module_config(basedir: &PathBuf, s: &Schema, m: &Module) -> Result<()>
 
     let mut pass = true;
 
-    for def in &m.definitions {
+    for def in m.iter_definitions() {
         pass = false;
         match def {
-            Definition::TypeDefinition(inner) => match inner {
-                TypeDefinition::Object(inner) => {
-                    render_object_def_resolver(&mut src, s, m, inner);
-                    src.line("");
-                }
-                TypeDefinition::Interface(inner) => {
-                    render_interface_def_resolver(&mut src, s, m, inner);
-                    src.line("");
-                }
-                TypeDefinition::Scalar(inner) => {
-                    // render_scalar_def_resolver(src, s, inner);
-                }
-                TypeDefinition::Input(inner) => { /* noop */ }
-                TypeDefinition::Enum(inner) => { /* noop */ }
-                TypeDefinition::Union(inner) => { /* noop */ }
-            },
-            Definition::TypeExtension(inner) => match inner {
-                TypeExtension::ObjectExtension(inner) => {
-                    render_object_ext_resolver(&mut src, s, m, inner);
-                    src.line("");
-                }
-                TypeExtension::InterfaceExtension(inner) => {
-                    render_interface_ext_resolver(&mut src, s, m, inner);
-                    src.line("");
-                }
-                TypeExtension::InputExtension(inner) => { /* noop */ }
-                TypeExtension::EnumExtension(inner) => { /* noop */ }
-                TypeExtension::UnionExtension(inner) => { /* noop */ }
-            },
+            Definition::ObjectDefinition(inner) => {
+                render_object_def_resolver(&mut src, s, m, inner);
+                src.line("");
+            }
+            Definition::InterfaceDefinition(inner) => {
+                render_interface_def_resolver(&mut src, s, m, inner);
+                src.line("");
+            }
+            Definition::ScalarDefinition(inner) => {
+                // render_scalar_def_resolver(src, s, inner);
+            }
+            Definition::InputDefinition(inner) => { /* noop */ }
+            Definition::EnumDefinition(inner) => { /* noop */ }
+            Definition::UnionDefinition(inner) => { /* noop */ }
+
+            Definition::ObjectExtension(inner) => {
+                render_object_ext_resolver(&mut src, s, m, inner);
+                src.line("");
+            }
+            Definition::InterfaceExtension(inner) => {
+                render_interface_ext_resolver(&mut src, s, m, inner);
+                src.line("");
+            }
+            Definition::InputExtension(inner) => { /* noop */ }
+            Definition::EnumExtension(inner) => { /* noop */ }
+            Definition::UnionExtension(inner) => { /* noop */ }
             _ => {}
         }
     }
 
-    for def in &m.definitions {
+    for def in m.iter_definitions() {
         match def {
-            Definition::TypeDefinition(inner) => match inner {
-                TypeDefinition::Object(inner) => {
-                    src.line(&format!(
-                        "{name}: {type}",
-                        name = inner.name,
-                        type = naming::def_object_resolver_type(&inner),
-                    ));
-                }
-                TypeDefinition::Interface(inner) => {
-                    src.line(&format!(
-                        "{name}: {type}",
-                        name = inner.name,
-                        type = naming::def_interface_resolver_type(&inner),
-                    ));
-                }
-                TypeDefinition::Scalar(inner) => {
-                    // render_scalar_def_resolver(src, s, inner);
-                }
-                TypeDefinition::Input(inner) => { /* noop */ }
-                TypeDefinition::Enum(inner) => { /* noop */ }
-                TypeDefinition::Union(inner) => { /* noop */ }
-            },
-            Definition::TypeExtension(inner) => match inner {
-                TypeExtension::ObjectExtension(inner) => {
-                    src.line(&format!(
-                        "{name}: {type}",
-                        name = inner.name,
-                        type = naming::ext_object_resolver_type(&inner),
-                    ));
-                }
-                TypeExtension::InterfaceExtension(inner) => {
-                    src.line(&format!(
-                        "{name}: {type}",
-                        name = inner.name,
-                        type = naming::ext_interface_resolver_type(&inner),
-                    ));
-                }
-                TypeExtension::InputExtension(inner) => { /* noop */ }
-                TypeExtension::EnumExtension(inner) => { /* noop */ }
-                TypeExtension::UnionExtension(inner) => { /* noop */ }
-            },
+            Definition::ObjectDefinition(inner) => {
+                src.line(&format!(
+                    "{name}: {type}",
+                    name = inner.name,
+                    type = naming::def_object_resolver_type(&inner),
+                ));
+            }
+            Definition::InterfaceDefinition(inner) => {
+                src.line(&format!(
+                    "{name}: {type}",
+                    name = inner.name,
+                    type = naming::def_interface_resolver_type(&inner),
+                ));
+            }
+            Definition::ScalarDefinition(inner) => {
+                // render_scalar_def_resolver(src, s, inner);
+            }
+            Definition::InputDefinition(inner) => { /* noop */ }
+            Definition::EnumDefinition(inner) => { /* noop */ }
+            Definition::UnionDefinition(inner) => { /* noop */ }
+
+            Definition::ObjectExtension(inner) => {
+                src.line(&format!(
+                    "{name}: {type}",
+                    name = inner.name,
+                    type = naming::ext_object_resolver_type(&inner),
+                ));
+            }
+            Definition::InterfaceExtension(inner) => {
+                src.line(&format!(
+                    "{name}: {type}",
+                    name = inner.name,
+                    type = naming::ext_interface_resolver_type(&inner),
+                ));
+            }
+            Definition::InputExtension(inner) => { /* noop */ }
+            Definition::EnumExtension(inner) => { /* noop */ }
+            Definition::UnionExtension(inner) => { /* noop */ }
+
             _ => {}
         }
     }
@@ -185,7 +163,12 @@ fn render_module_config(basedir: &PathBuf, s: &Schema, m: &Module) -> Result<()>
     Ok(())
 }
 
-fn render_object_def_resolver(src: &mut SourceCode, s: &Schema, m: &Module, def: &Object) {
+fn render_object_def_resolver(
+    src: &mut SourceCode,
+    s: &Schema,
+    m: &Module,
+    def: &ObjectDefinition,
+) {
     src.line(&format!(
         "class {name}(typing.Protocol):",
         name = naming::def_object_resolver_type(def)
@@ -208,7 +191,12 @@ fn render_object_def_resolver(src: &mut SourceCode, s: &Schema, m: &Module, def:
     src.dedent();
 }
 
-fn render_interface_def_resolver(src: &mut SourceCode, s: &Schema, m: &Module, def: &Interface) {
+fn render_interface_def_resolver(
+    src: &mut SourceCode,
+    s: &Schema,
+    m: &Module,
+    def: &InterfaceDefinition,
+) {
     src.line(&format!(
         "class {name}(typing.Protocol):",
         name = naming::def_interface_resolver_type(def)

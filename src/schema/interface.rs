@@ -1,7 +1,7 @@
-use super::{field::ResolveOption, Field, Position, Schema, SourceConfig, TypeExtension};
+use super::{field::ResolveOption, Field, Position, Schema, SourceConfig};
 
 #[derive(Debug)]
-pub struct Interface {
+pub struct InterfaceDefinition {
     pub name: String,
     pub description: Option<String>,
     pub fields: Vec<Field>,
@@ -9,7 +9,7 @@ pub struct Interface {
     pub position: Position,
 }
 
-impl Interface {
+impl InterfaceDefinition {
     pub fn collect_source_configs(&self) -> Vec<SourceConfig> {
         self.fields
             .iter()
@@ -51,38 +51,38 @@ impl InterfaceTypeExtension {
     }
 }
 
-impl Schema {
-    pub fn collect_interface_fields<'a>(
-        &'a self,
-        def: &'a Interface,
-    ) -> impl Iterator<Item = &'a Field> {
-        def.fields.iter().chain(
-            self.iter_interface_extensions(&def.name)
-                .flat_map(|ext| ext.fields.iter()),
-        )
-    }
+// impl Schema {
+//     pub fn collect_interface_fields<'a>(
+//         &'a self,
+//         def: &'a InterfaceDefinition,
+//     ) -> impl Iterator<Item = &'a Field> {
+//         def.fields.iter().chain(
+//             self.iter_interface_extensions(&def.name)
+//                 .flat_map(|ext| ext.fields.iter()),
+//         )
+//     }
 
-    pub fn collect_interface_source_configs(&self, def: &Interface) -> Vec<SourceConfig> {
-        def.collect_source_configs()
-    }
+//     pub fn collect_interface_source_configs(&self, def: &InterfaceDefinition) -> Vec<SourceConfig> {
+//         def.collect_source_configs()
+//     }
 
-    pub fn collect_interface_interfaces<'a>(
-        &'a self,
-        def: &'a Interface,
-    ) -> impl Iterator<Item = &'a String> {
-        def.interfaces.iter().chain(
-            self.iter_interface_extensions(&def.name)
-                .flat_map(|ext| ext.interfaces.iter()),
-        )
-    }
+//     pub fn collect_interface_interfaces<'a>(
+//         &'a self,
+//         def: &'a InterfaceDefinition,
+//     ) -> impl Iterator<Item = &'a String> {
+//         def.interfaces.iter().chain(
+//             self.iter_interface_extensions(&def.name)
+//                 .flat_map(|ext| ext.interfaces.iter()),
+//         )
+//     }
 
-    fn iter_interface_extensions(
-        &self,
-        name: &str,
-    ) -> impl Iterator<Item = &InterfaceTypeExtension> {
-        self.iter_extensions(name).flat_map(|ext| match ext {
-            TypeExtension::InterfaceExtension(ext) => Some(ext),
-            _ => None,
-        })
-    }
-}
+//     fn iter_interface_extensions(
+//         &self,
+//         name: &str,
+//     ) -> impl Iterator<Item = &InterfaceTypeExtension> {
+//         self.iter_extensions(name).flat_map(|ext| match ext {
+//             TypeExtension::InterfaceExtension(ext) => Some(ext),
+//             _ => None,
+//         })
+//     }
+// }

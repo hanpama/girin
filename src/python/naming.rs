@@ -1,5 +1,5 @@
 use crate::schema::{
-    Enum, Input, Interface, InterfaceTypeExtension, Object, ObjectExtension, Scalar,
+    EnumDefinition, InputDefinition, InterfaceDefinition, InterfaceTypeExtension, ObjectDefinition, ObjectExtension, ScalarDefinition,
     TypeDefinition, TypeExtension,
 };
 
@@ -19,10 +19,10 @@ use crate::schema::{
 //     format!("_{}", smd.name)
 // }
 
-pub fn def_object_resolver_type(def: &Object) -> String {
+pub fn def_object_resolver_type(def: &ObjectDefinition) -> String {
     format!("{}Config", def.name)
 }
-pub fn def_interface_resolver_type(def: &Interface) -> String {
+pub fn def_interface_resolver_type(def: &InterfaceDefinition) -> String {
     format!("{}Config", def.name)
 }
 pub fn ext_object_resolver_type(def: &ObjectExtension) -> String {
@@ -32,23 +32,23 @@ pub fn ext_interface_resolver_type(def: &InterfaceTypeExtension) -> String {
     format!("{}Config", def.name)
 }
 
-pub fn object_source(def: &Object) -> String {
+pub fn object_source(def: &ObjectDefinition) -> String {
     format!("{}Source", def.name)
 }
 
-pub fn interface_source(def: &Interface) -> String {
+pub fn interface_source(def: &InterfaceDefinition) -> String {
     format!("{}Source", def.name)
 }
 
-pub fn input_source(def: &Input) -> String {
+pub fn input_source(def: &InputDefinition) -> String {
     format!("{}Source", def.name)
 }
 
-pub fn scalar_source(def: &Scalar) -> String {
+pub fn scalar_source(def: &ScalarDefinition) -> String {
     format!("{}Source", def.name)
 }
 
-pub fn enum_source(def: &Enum) -> String {
+pub fn enum_source(def: &EnumDefinition) -> String {
     format!("{}Source", def.name)
 }
 
@@ -56,16 +56,16 @@ pub fn source<S: Into<String>>(def_name: S) -> String {
     format!("{}Source", def_name.into())
 }
 
-pub fn object_type_instance(def: &Object) -> String {
+pub fn object_type_instance(def: &ObjectDefinition) -> String {
     format!("{}", def.name)
 }
-pub fn input_type_instance(def: &Input) -> String {
+pub fn input_type_instance(def: &InputDefinition) -> String {
     format!("{}", def.name)
 }
 pub fn type_instance(def_name: &str) -> String {
     format!("{}", def_name)
 }
-pub fn interface_type_instance(def: &Interface) -> String {
+pub fn interface_type_instance(def: &InterfaceDefinition) -> String {
     format!("{}", def.name)
 }
 

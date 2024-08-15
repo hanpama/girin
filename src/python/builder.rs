@@ -1,7 +1,7 @@
 use super::{error::Error, naming, sourcecode::SourceCode};
 use crate::schema::{
-    Field, Input, InputValue, Interface, Module, Object, Scalar, Schema, TypeDefinition,
-    TypeExpression, Value,
+    Field, InputDefinition, InputValue, InterfaceDefinition, Module, ObjectDefinition,
+    ScalarDefinition, Schema, TypeExpression, Value,
 };
 use std::{fs::File, path::PathBuf};
 
@@ -58,7 +58,7 @@ pub fn render_builder(outdir: &PathBuf, s: &Schema) -> Result<(), Error> {
     Ok(())
 }
 
-fn render_object_type(src: &mut SourceCode, s: &Schema, def: &Object) {
+fn render_object_type(src: &mut SourceCode, s: &Schema, def: &ObjectDefinition) {
     let name = naming::object_type_instance(def);
     src.line(format!("{} = graphql.GraphQLObjectType(", name));
     src.indent();
@@ -70,7 +70,6 @@ fn render_object_type(src: &mut SourceCode, s: &Schema, def: &Object) {
         render_field(src, s, &def.name, field)
     }
     for ext in s.iter_object_extensions(&def.name) {
-        
         for field in &ext.fields {
             render_field(src, s, &def.name, field)
         }
@@ -92,7 +91,7 @@ fn render_object_type(src: &mut SourceCode, s: &Schema, def: &Object) {
     src.line(")");
 }
 
-fn render_interface_type(src: &mut SourceCode, s: &Schema, def: &Interface) {
+fn render_interface_type(src: &mut SourceCode, s: &Schema, def: &InterfaceDefinition) {
     let name = naming::interface_type_instance(def);
     src.line(format!("{} = graphql.GraphQLInterfaceType(", name));
     src.indent();
@@ -120,7 +119,7 @@ fn render_interface_type(src: &mut SourceCode, s: &Schema, def: &Interface) {
     src.line(")");
 }
 
-fn render_input_type(src: &mut SourceCode, s: &Schema, def: &Input) {
+fn render_input_type(src: &mut SourceCode, s: &Schema, def: &InputDefinition) {
     let name = naming::input_type_instance(def);
     src.line(format!("{} = graphql.GraphQLInputObjectType(", name));
     src.indent();
@@ -138,7 +137,7 @@ fn render_input_type(src: &mut SourceCode, s: &Schema, def: &Input) {
     src.line(")");
 }
 
-fn render_scalar_type(src: &mut SourceCode, s: &Schema, def: &Scalar) {
+fn render_scalar_type(src: &mut SourceCode, s: &Schema, def: &ScalarDefinition) {
     let name = naming::type_instance(&def.name);
     src.line(format!("{} = graphql.GraphQLScalarType(", name));
     src.indent();
@@ -178,7 +177,11 @@ fn render_field(src: &mut SourceCode, s: &Schema, parent_name: &str, def: &Field
     if let Some(opt) = def.get_resolve_option() {
         let def_config_path = format_definition_config_path(s, parent_name);
 
-        src.line(format!("resolve={}.{},", def_config_path, naming::resolver_name(&opt.name)));
+        src.line(format!(
+            "resolve={}.{},",
+            def_config_path,
+            naming::resolver_name(&opt.name)
+        ));
     }
     if let Some(deprecation_reason) = &def.deprecation_reason {
         src.line(format!("deprecation_reason={:?},", deprecation_reason));

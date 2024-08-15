@@ -1,14 +1,14 @@
-use super::{TypeExtension, InputValue, Position, Schema, SourceConfig};
+use super::{InputValue, Position, SourceConfig};
 
 #[derive(Debug)]
-pub struct Input {
+pub struct InputDefinition {
     pub name: String,
     pub description: Option<String>,
     pub fields: Vec<InputValue>,
     pub position: Position,
 }
 
-impl Input {
+impl InputDefinition {
     pub fn collect_source_configs(&self) -> Vec<SourceConfig> {
         self.fields
             .iter()
@@ -27,25 +27,25 @@ pub struct InputExtension {
     pub position: Position,
 }
 
-impl Schema {
-    pub fn collect_input_fields<'a>(
-        &'a self,
-        def: &'a Input,
-    ) -> impl Iterator<Item = &'a InputValue> {
-        def.fields.iter().chain(
-            self.iter_input_extensions(&def.name)
-                .flat_map(|ext| ext.fields.iter()),
-        )
-    }
+// impl Schema {
+//     pub fn collect_input_fields<'a>(
+//         &'a self,
+//         def: &'a InputDefinition,
+//     ) -> impl Iterator<Item = &'a InputValue> {
+//         def.fields.iter().chain(
+//             self.iter_input_extensions(&def.name)
+//                 .flat_map(|ext| ext.fields.iter()),
+//         )
+//     }
 
-    pub fn collect_input_source_configs(&self, def: &Input) -> Vec<SourceConfig> {
-        def.collect_source_configs()
-    }
+//     pub fn collect_input_source_configs(&self, def: &InputDefinition) -> Vec<SourceConfig> {
+//         def.collect_source_configs()
+//     }
 
-    fn iter_input_extensions(&self, name: &str) -> impl Iterator<Item = &InputExtension> {
-        self.iter_extensions(name).flat_map(|ext| match ext {
-            TypeExtension::InputExtension(ext) => Some(ext),
-            _ => None,
-        })
-    }
-}
+//     fn iter_input_extensions(&self, name: &str) -> impl Iterator<Item = &InputExtension> {
+//         self.iter_extensions(name).flat_map(|ext| match ext {
+//             TypeExtension::InputExtension(ext) => Some(ext),
+//             _ => None,
+//         })
+//     }
+// }
