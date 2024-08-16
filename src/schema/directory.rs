@@ -1,7 +1,11 @@
-use std::{collections::HashMap, iter::once};
+use std::{
+    collections::HashMap,
+    iter::{empty, once},
+};
 
-use super::{Definition, Extension, Loc, Module};
+use super::{Definition, ExtensionRef, Module};
 
+#[derive(Debug)]
 pub struct Directory {
     pub name: String,
     children: Vec<DirectoryChild>,
@@ -11,6 +15,7 @@ pub struct Directory {
     ext_idx: HashMap<String, Vec<String>>,
 }
 
+#[derive(Debug)]
 pub enum DirectoryChild {
     Directory(Directory),
     Module(Module),
@@ -101,28 +106,40 @@ impl Directory {
         self.def_idx.keys().map(|name| self.get_definition(name))
     }
 
-    fn get_definition(&self, name: &str) -> &Definition {
+    pub fn get_definition(&self, name: &str) -> &Definition {
         match self.get_child(&self.def_idx[name]) {
             DirectoryChild::Directory(dir) => dir.get_definition(name),
             DirectoryChild::Module(module) => module.get_definition(name),
         }
     }
 
-    pub fn collect_extension<'a>(&'a self, name: &'a str) -> Vec<(Loc<'a>, &'a Extension)> {
-        self.ext_idx[name]
-            .iter()
-            .map(|n| self.get_child(n))
-            .flat_map(|child| match child {
-                DirectoryChild::Directory(dir) => dir.collect_extension(name),
-                DirectoryChild::Module(module) => vec![(
-                    Loc::new(module.get_name(), name),
-                    module.get_extension(name),
-                )],
-            })
-            .collect()
+    pub fn resolve_extensions<'a>(
+        &'a self,
+        name: &'a str,
+    ) -> Box<dyn Iterator<Item = ExtensionRef<'a>> + 'a> {
+        if !self.ext_idx.contains_key(name) {
+            return Box::new(empty());
+        }
+        Box::new(
+            self.ext_idx[name]
+                .iter()
+                .map(|n| self.get_child(n))
+                .flat_map(|child| match child {
+                    DirectoryChild::Directory(dir) => dir.resolve_extensions(name),
+                    DirectoryChild::Module(module) => Box::new(once(ExtensionRef::new(
+                        module.get_name(),
+                        module.get_extension(name),
+                    ))),
+                })
+                .map(|loc| loc.prepend(&self.name)),
+        )
     }
 
     fn get_child<'a>(&'a self, seg: &'a str) -> &'a DirectoryChild {
-        &self.children[*self.directories.get(seg).unwrap()]
+        if let Some(idx) = self.directories.get(seg) {
+            return &self.children[*idx];
+        } else {
+            return &self.children[self.modules[seg]];
+        }
     }
 }

@@ -1,7 +1,7 @@
 use super::{error::Result, naming, sourcecode::SourceCode};
 use crate::schema::{
-    Definition, Directory, InterfaceDefinition, InterfaceExtension, Module, ObjectDefinition,
-    ObjectExtension, Schema,
+    Definition, Directory, Extension, InterfaceDefinition, InterfaceExtension, Module,
+    ObjectDefinition, ObjectExtension, Schema,
 };
 use std::{fs::File, path::PathBuf};
 
@@ -92,19 +92,22 @@ fn render_module_config(parent_dir: &PathBuf, s: &Schema, m: &Module) -> Result<
             Definition::InputDefinition(inner) => { /* noop */ }
             Definition::EnumDefinition(inner) => { /* noop */ }
             Definition::UnionDefinition(inner) => { /* noop */ }
+        }
+    }
 
-            Definition::ObjectExtension(inner) => {
+    for ext in m.iter_extensions() {
+        match ext {
+            Extension::ObjectExtension(inner) => {
                 render_object_ext_resolver(&mut src, s, m, inner);
                 src.line("");
             }
-            Definition::InterfaceExtension(inner) => {
+            Extension::InterfaceExtension(inner) => {
                 render_interface_ext_resolver(&mut src, s, m, inner);
                 src.line("");
             }
-            Definition::InputExtension(inner) => { /* noop */ }
-            Definition::EnumExtension(inner) => { /* noop */ }
-            Definition::UnionExtension(inner) => { /* noop */ }
-            _ => {}
+            Extension::InputExtension(inner) => { /* noop */ }
+            Extension::EnumExtension(inner) => { /* noop */ }
+            Extension::UnionExtension(inner) => { /* noop */ }
         }
     }
 
@@ -130,26 +133,27 @@ fn render_module_config(parent_dir: &PathBuf, s: &Schema, m: &Module) -> Result<
             Definition::InputDefinition(inner) => { /* noop */ }
             Definition::EnumDefinition(inner) => { /* noop */ }
             Definition::UnionDefinition(inner) => { /* noop */ }
-
-            Definition::ObjectExtension(inner) => {
+        }
+    }
+    for ext in m.iter_extensions() {
+        match ext {
+            Extension::ObjectExtension(inner) => {
                 src.line(&format!(
                     "{name}: {type}",
                     name = inner.name,
                     type = naming::ext_object_resolver_type(&inner),
                 ));
             }
-            Definition::InterfaceExtension(inner) => {
+            Extension::InterfaceExtension(inner) => {
                 src.line(&format!(
                     "{name}: {type}",
                     name = inner.name,
                     type = naming::ext_interface_resolver_type(&inner),
                 ));
             }
-            Definition::InputExtension(inner) => { /* noop */ }
-            Definition::EnumExtension(inner) => { /* noop */ }
-            Definition::UnionExtension(inner) => { /* noop */ }
-
-            _ => {}
+            Extension::InputExtension(inner) => { /* noop */ }
+            Extension::EnumExtension(inner) => { /* noop */ }
+            Extension::UnionExtension(inner) => { /* noop */ }
         }
     }
 

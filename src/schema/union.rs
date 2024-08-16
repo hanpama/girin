@@ -8,6 +8,12 @@ pub struct UnionDefinition {
     pub position: Position,
 }
 
+impl UnionDefinition {
+    pub fn iter_types(&self) -> impl Iterator<Item = &str> {
+        self.types.iter().map(|s| s.as_str())
+    }
+}
+
 #[derive(Debug)]
 pub struct UnionExtension {
     pub name: String,
@@ -20,22 +26,3 @@ impl UnionExtension {
         self.types.iter().map(|s| s.as_str())
     }
 }
-
-// impl Schema {
-//     pub fn collect_possible_types<'a>(
-//         &'a self,
-//         def: &'a UnionDefinition,
-//     ) -> impl Iterator<Item = &'a String> {
-//         def.types.iter().chain(
-//             self.iter_union_extensions(&def.name)
-//                 .flat_map(|ext| ext.types.iter()),
-//         )
-//     }
-
-//     fn iter_union_extensions(&self, name: &str) -> impl Iterator<Item = &UnionExtension> {
-//         self.iter_extensions(name).flat_map(|ext| match ext {
-//             TypeExtension::UnionExtension(ext) => Some(ext),
-//             _ => None,
-//         })
-//     }
-// }

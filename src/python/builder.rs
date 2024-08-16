@@ -1,6 +1,6 @@
 use super::{error::Error, naming, sourcecode::SourceCode};
 use crate::schema::{
-    Field, InputDefinition, InputValue, InterfaceDefinition, Module, ObjectDefinition,
+    Definition, Field, InputDefinition, InputValue, InterfaceDefinition, Module, ObjectDefinition,
     ScalarDefinition, Schema, TypeExpression, Value,
 };
 use std::{fs::File, path::PathBuf};
@@ -17,12 +17,12 @@ pub fn render_builder(outdir: &PathBuf, s: &Schema) -> Result<(), Error> {
     src.line("def build_schema(config: Config) -> graphql.GraphQLSchema:");
     src.indent();
 
-    for def in s.iter_all_definitions() {
+    for def in s.iter_definitions() {
         match def {
-            TypeDefinition::Object(inner) => render_object_type(&mut src, s, inner),
-            TypeDefinition::Interface(inner) => render_interface_type(&mut src, s, inner),
-            TypeDefinition::Input(inner) => render_input_type(&mut src, s, inner),
-            TypeDefinition::Scalar(inner) => render_scalar_type(&mut src, s, inner),
+            Definition::ObjectDefinition(inner) => render_object_type(&mut src, s, inner),
+            Definition::InterfaceDefinition(inner) => render_interface_type(&mut src, s, inner),
+            Definition::InputDefinition(inner) => render_input_type(&mut src, s, inner),
+            Definition::ScalarDefinition(inner) => render_scalar_type(&mut src, s, inner),
             _ => {}
         }
     }
@@ -99,7 +99,7 @@ fn render_interface_type(src: &mut SourceCode, s: &Schema, def: &InterfaceDefini
 
     src.line("fields=lambda: {");
     src.indent();
-    for field in s.collect_interface_fields(def) {
+    for field in s.collect_interface_fields(&def.name) {
         render_field(src, s, &def.name, field)
     }
     src.dedent();
@@ -108,7 +108,7 @@ fn render_interface_type(src: &mut SourceCode, s: &Schema, def: &InterfaceDefini
     if def.interfaces.len() > 0 {
         src.line("interfaces=lambda: [");
         src.indent();
-        for interface in s.collect_interface_interfaces(def) {
+        for interface in s.collect_interface_interfaces(&def.name) {
             src.line(format!("{},", naming::type_instance(interface)));
         }
         src.dedent();
@@ -127,7 +127,7 @@ fn render_input_type(src: &mut SourceCode, s: &Schema, def: &InputDefinition) {
 
     src.line("fields=lambda: {");
     src.indent();
-    for field in s.collect_input_fields(def) {
+    for field in s.collect_input_fields(&def.name) {
         render_input_field(src, s, field)
     }
     src.dedent();

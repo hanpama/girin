@@ -64,7 +64,7 @@ fn build_file(file: &Path) -> Result<Module, SchemaBuildingError> {
                 Err(err) => violations.extend(err.violations),
             },
             schema::Definition::TypeExtension(def) => match build_type_extension(def) {
-                Ok(def) => module.add_definition(def),
+                Ok(def) => module.add_extension(def),
                 Err(err) => violations.extend(err.violations),
             },
             schema::Definition::DirectiveDefinition(def) => {
@@ -110,7 +110,7 @@ fn build_type_definition(
 
 fn build_type_extension(
     def: schema::TypeExtension<String>,
-) -> Result<Definition, GraphQLSchemaValidationError> {
+) -> Result<Extension, GraphQLSchemaValidationError> {
     Ok(match def {
         schema::TypeExtension::Object(def) => {
             Extension::ObjectExtension(build_object_type_extension(&def)?)
@@ -729,6 +729,8 @@ fn handle_type_alias(
 
 fn build_position(def: &graphql_parser::Pos) -> Position {
     return Position {
+        // directory,
+        // module,
         line: def.line,
         column: def.column,
     };

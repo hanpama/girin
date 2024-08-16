@@ -25,7 +25,7 @@ fn build_schema_ast<'a>(s: &'a Schema) -> schema::Document<'a, &'a str> {
 fn build_schema_ast_from_schema<'a>(s: &'a Schema) -> Vec<schema::Definition<'a, &'a str>> {
     let mut schema_definitions = Vec::new();
 
-    for (_, def) in s.iter_definitions() {
+    for def in s.iter_definitions() {
         match def {
             Definition::ScalarDefinition(def) => {
                 schema_definitions.push(schema::Definition::TypeDefinition(
@@ -84,14 +84,10 @@ fn format_object_definition<'a>(
         position: graphql_parser::Pos::default(),
         name: def.name.as_str(),
         description: def.description.clone(),
-        implements_interfaces: s
-            .collect_object_exts(&def.name)
-            .flat_map(|(_, ext)| ext.iter_interfaces())
-            .collect(),
+        implements_interfaces: s.collect_object_interfaces(&def.name),
         directives: format_directives(&None),
         fields: s
-            .collect_object_exts(&def.name)
-            .flat_map(|(_, ext)| ext.iter_fields())
+            .collect_object_fields(&def.name)
             .map(|f| format_field_definition(f))
             .collect(),
     }
@@ -105,13 +101,9 @@ fn format_interface_definition<'a>(
         position: graphql_parser::Pos::default(),
         name: def.name.as_str(),
         description: def.description.clone(),
-        implements_interfaces: s
-            .iter_interface_exts(&def.name)
-            .flat_map(|(_, ext)| ext.iter_interfaces())
-            .collect(),
+        implements_interfaces: s.collect_interface_interfaces(&def.name),
         fields: s
-            .iter_interface_exts(&def.name)
-            .flat_map(|(_, ext)| ext.iter_fields())
+            .collect_interface_fields(&def.name)
             .map(|f| format_field_definition(f))
             .collect(),
         directives: format_directives(&None),
@@ -126,10 +118,7 @@ fn format_union_definition<'a>(
         position: graphql_parser::Pos::default(),
         name: def.name.as_str(),
         description: def.description.clone(),
-        types: s
-            .iter_union_exts(&def.name)
-            .flat_map(|(_, ext)| ext.iter_types())
-            .collect(),
+        types: s.collect_union_types(&def.name),
         directives: format_directives(&None),
     }
 }
@@ -144,8 +133,7 @@ fn format_enum_definition<'a>(
         description: def.description.clone(),
         directives: format_directives(&None),
         values: s
-            .iter_enum_exts(&def.name)
-            .flat_map(|(_, ext)| ext.iter_values())
+            .collect_enum_values(&def.name)
             .map(|v| format_enum_value_definition(v))
             .collect(),
     }
@@ -161,8 +149,7 @@ fn format_input_definition<'a>(
         description: def.description.clone(),
         directives: format_directives(&None),
         fields: s
-            .iter_input_exts(&def.name)
-            .flat_map(|(_, ext)| ext.iter_fields())
+            .collect_input_fields(&def.name)
             .map(|f| format_input_field_definition(f))
             .collect(),
     }

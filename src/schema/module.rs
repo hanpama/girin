@@ -2,6 +2,7 @@ use std::collections::HashMap;
 
 use super::{Definition, Extension, SchemaDefinition};
 
+#[derive(Debug)]
 pub struct Module {
     name: String,
     schema_definition: Option<SchemaDefinition>,
@@ -10,6 +11,7 @@ pub struct Module {
     ext_idx: HashMap<String, usize>,
 }
 
+#[derive(Debug)]
 pub enum ModuleChild {
     Definition(Definition),
     Extension(Extension),

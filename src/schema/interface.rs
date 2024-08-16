@@ -10,6 +10,14 @@ pub struct InterfaceDefinition {
 }
 
 impl InterfaceDefinition {
+    pub fn iter_interfaces(&self) -> impl Iterator<Item = &str> {
+        self.interfaces.iter().map(|s| s.as_str())
+    }
+
+    pub fn iter_fields(&self) -> impl Iterator<Item = &Field> {
+        self.fields.iter()
+    }
+
     pub fn collect_source_configs(&self) -> Vec<SourceConfig> {
         self.fields
             .iter()
@@ -58,39 +66,3 @@ impl InterfaceExtension {
             .collect()
     }
 }
-
-// impl Schema {
-//     pub fn collect_interface_fields<'a>(
-//         &'a self,
-//         def: &'a InterfaceDefinition,
-//     ) -> impl Iterator<Item = &'a Field> {
-//         def.fields.iter().chain(
-//             self.iter_interface_extensions(&def.name)
-//                 .flat_map(|ext| ext.fields.iter()),
-//         )
-//     }
-
-//     pub fn collect_interface_source_configs(&self, def: &InterfaceDefinition) -> Vec<SourceConfig> {
-//         def.collect_source_configs()
-//     }
-
-//     pub fn collect_interface_interfaces<'a>(
-//         &'a self,
-//         def: &'a InterfaceDefinition,
-//     ) -> impl Iterator<Item = &'a String> {
-//         def.interfaces.iter().chain(
-//             self.iter_interface_extensions(&def.name)
-//                 .flat_map(|ext| ext.interfaces.iter()),
-//         )
-//     }
-
-//     fn iter_interface_extensions(
-//         &self,
-//         name: &str,
-//     ) -> impl Iterator<Item = &InterfaceTypeExtension> {
-//         self.iter_extensions(name).flat_map(|ext| match ext {
-//             TypeExtension::InterfaceExtension(ext) => Some(ext),
-//             _ => None,
-//         })
-//     }
-// }

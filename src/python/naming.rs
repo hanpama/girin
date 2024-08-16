@@ -1,6 +1,6 @@
 use crate::schema::{
-    EnumDefinition, InputDefinition, InterfaceDefinition, InterfaceExtension, ObjectDefinition, ObjectExtension, ScalarDefinition,
-    TypeDefinition, TypeExtension,
+    EnumDefinition, InputDefinition, InterfaceDefinition, InterfaceExtension, ObjectDefinition,
+    ObjectExtension, ScalarDefinition,
 };
 
 // pub fn module_config_type(md: &Module) -> String {
