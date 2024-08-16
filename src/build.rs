@@ -9,62 +9,55 @@ use graphql_parser::parse_schema;
 use graphql_parser::schema;
 
 use crate::schema::{
-    Definition, Directory, EnumDefinition, EnumExtension, EnumValue, Extension, Field,
-    InputDefinition, InputExtension, InputValue, InterfaceDefinition, InterfaceExtension, Module,
-    ObjectDefinition, ObjectExtension, Position, ResolverConfig, ScalarDefinition, Schema,
-    SchemaDefinition, SourceConfig, TypeExpression, UnionDefinition, UnionExtension, Value,
+    Definition, EnumDefinition, EnumExtension, EnumValue, Extension, Field, InputDefinition,
+    InputExtension, InputValue, InterfaceDefinition, InterfaceExtension, ObjectDefinition,
+    ObjectExtension, Position, ResolverConfig, ScalarDefinition, Schema, SourceConfig,
+    TypeExpression, UnionDefinition, UnionExtension, Value,
 };
 
-pub fn build_schema(dir: &Path) -> Result<Schema, SchemaBuildingError> {
-    let schema = Schema::new(build_directory(&dir, &dir)?);
+pub fn build_schema(root: &Path) -> Result<Schema, SchemaBuildingError> {
+    let mut schema = Schema::new();
+    build_directory(&mut schema, &root, &root)?;
     Ok(schema)
 }
 
-fn build_directory(root: &Path, dir: &Path) -> Result<Directory, SchemaBuildingError> {
-    let read_dir = read_dir(&dir)?;
-    let module_name = dir.file_stem().unwrap().to_str().unwrap();
-
-    let mut directory = Directory::new(module_name.to_owned());
-
-    for item in read_dir {
+fn build_directory(s: &mut Schema, root: &Path, dir: &Path) -> Result<(), SchemaBuildingError> {
+    for item in read_dir(&dir)? {
         let item = item?;
-        let file_type = item.file_type()?;
-
-        if file_type.is_dir() {
-            directory.add_directory(build_directory(root, &item.path())?);
+        if item.file_type()?.is_dir() {
+            build_directory(s, root, &item.path())?;
         } else {
-            directory.add_module(build_file(&item.path())?);
+            build_file(s, root, &item.path())?;
         }
     }
-
-    Ok(directory)
+    Ok(())
 }
 
-fn build_file(file: &Path) -> Result<Module, SchemaBuildingError> {
+fn build_file(s: &mut Schema, root: &Path, file: &Path) -> Result<(), SchemaBuildingError> {
     let mut buf = String::new();
     File::open(file)?.read_to_string(&mut buf)?;
 
     let document = parse_schema::<String>(&buf)?;
-    let module_name = file.file_stem().unwrap().to_str().unwrap();
-
-    let mut module = Module::new(module_name.to_owned());
+    let module: Vec<String> = file
+        .strip_prefix(root)
+        .iter()
+        .map(|p| p.to_str().unwrap().to_owned())
+        .collect();
 
     let mut violations = vec![];
     for def in document.definitions {
         match def {
             schema::Definition::SchemaDefinition(def) => {
-                module.set_schema_definition(SchemaDefinition {
-                    query: def.query.clone(),
-                    mutation: def.mutation.clone(),
-                    subscription: def.subscription.clone(),
-                });
+                s.set_query(def.query.clone());
+                s.set_mutation(def.mutation.clone());
+                s.set_subscription(def.subscription.clone());
             }
-            schema::Definition::TypeDefinition(def) => match build_type_definition(def) {
-                Ok(def) => module.add_definition(def),
+            schema::Definition::TypeDefinition(def) => match build_type_definition(&module, def) {
+                Ok(def) => s.add_definition(def),
                 Err(err) => violations.extend(err.violations),
             },
-            schema::Definition::TypeExtension(def) => match build_type_extension(def) {
-                Ok(def) => module.add_extension(def),
+            schema::Definition::TypeExtension(def) => match build_type_extension(&module, def) {
+                Ok(def) => s.add_extension(def),
                 Err(err) => violations.extend(err.violations),
             },
             schema::Definition::DirectiveDefinition(def) => {
@@ -79,53 +72,55 @@ fn build_file(file: &Path) -> Result<Module, SchemaBuildingError> {
         ));
     }
 
-    Ok(module)
+    Ok(())
 }
 
 fn build_type_definition(
+    module: &[String],
     def: schema::TypeDefinition<String>,
 ) -> Result<Definition, GraphQLSchemaValidationError> {
     Ok(match def {
         schema::TypeDefinition::Scalar(def) => {
-            Definition::ScalarDefinition(build_scalar_type_definition(&def)?)
+            Definition::ScalarDefinition(build_scalar_type_definition(module, &def)?)
         }
         schema::TypeDefinition::Object(def) => {
-            Definition::ObjectDefinition(build_object_type_definition(&def)?)
+            Definition::ObjectDefinition(build_object_type_definition(module, &def)?)
         }
         schema::TypeDefinition::Interface(def) => {
-            Definition::InterfaceDefinition(build_interface_type_definition(&def)?)
+            Definition::InterfaceDefinition(build_interface_type_definition(module, &def)?)
         }
         schema::TypeDefinition::Union(def) => {
-            Definition::UnionDefinition(build_union_type_definition(&def)?)
+            Definition::UnionDefinition(build_union_type_definition(module, &def)?)
         }
         schema::TypeDefinition::Enum(def) => {
-            Definition::EnumDefinition(build_enum_type_definition(&def)?)
+            Definition::EnumDefinition(build_enum_type_definition(module, &def)?)
         }
         schema::TypeDefinition::InputObject(def) => {
-            Definition::InputDefinition(build_input_type_definition(&def)?)
+            Definition::InputDefinition(build_input_type_definition(module, &def)?)
         }
     })
     // Ok(())
 }
 
 fn build_type_extension(
+    module: &[String],
     def: schema::TypeExtension<String>,
 ) -> Result<Extension, GraphQLSchemaValidationError> {
     Ok(match def {
         schema::TypeExtension::Object(def) => {
-            Extension::ObjectExtension(build_object_type_extension(&def)?)
+            Extension::ObjectExtension(build_object_type_extension(module, &def)?)
         }
         schema::TypeExtension::Interface(def) => {
-            Extension::InterfaceExtension(build_interface_extension(&def)?)
+            Extension::InterfaceExtension(build_interface_extension(module, &def)?)
         }
         schema::TypeExtension::Union(def) => {
-            Extension::UnionExtension(build_union_type_extension(&def)?)
+            Extension::UnionExtension(build_union_type_extension(module, &def)?)
         }
         schema::TypeExtension::Enum(def) => {
-            Extension::EnumExtension(build_enum_type_extension(&def)?)
+            Extension::EnumExtension(build_enum_type_extension(module, &def)?)
         }
         schema::TypeExtension::InputObject(def) => {
-            Extension::InputExtension(build_input_type_extension(&def)?)
+            Extension::InputExtension(build_input_type_extension(module, &def)?)
         }
         schema::TypeExtension::Scalar(def) => {
             todo!()
@@ -134,6 +129,7 @@ fn build_type_extension(
 }
 
 fn build_scalar_type_definition(
+    module: &[String],
     def: &schema::ScalarType<String>,
 ) -> Result<ScalarDefinition, GraphQLSchemaValidationError> {
     let mut violations = vec![];
@@ -159,11 +155,13 @@ fn build_scalar_type_definition(
         name: def.name.clone(),
         description: def.description.clone(),
         position: build_position(&def.position),
+        module: module.to_vec(),
         type_aliases,
     });
 }
 
 fn build_object_type_definition(
+    module: &[String],
     def: &schema::ObjectType<String>,
 ) -> Result<ObjectDefinition, GraphQLSchemaValidationError> {
     let mut violations = vec![];
@@ -185,11 +183,13 @@ fn build_object_type_definition(
         description: def.description.clone(),
         interfaces: def.implements_interfaces.clone(),
         fields,
+        module: module.to_vec(),
         position: build_position(&def.position),
     });
 }
 
 fn build_object_type_extension(
+    module: &[String],
     def: &schema::ObjectTypeExtension<String>,
 ) -> Result<ObjectExtension, GraphQLSchemaValidationError> {
     let mut violations = vec![];
@@ -210,6 +210,7 @@ fn build_object_type_extension(
         name: def.name.clone(),
         interfaces: def.implements_interfaces.clone(),
         fields,
+        module: module.to_vec(),
         position: build_position(&def.position),
     });
 }
@@ -266,19 +267,8 @@ fn build_field_definition(
     });
 }
 
-fn build_type_expression(def: &schema::Type<String>) -> TypeExpression {
-    match def {
-        schema::Type::NamedType(name) => TypeExpression::NamedType(name.to_string()),
-        schema::Type::ListType(inner) => {
-            TypeExpression::ListType(Box::new(build_type_expression(inner)))
-        }
-        schema::Type::NonNullType(inner) => {
-            TypeExpression::NonNullType(Box::new(build_type_expression(inner)))
-        }
-    }
-}
-
 fn build_interface_type_definition(
+    module: &[String],
     def: &schema::InterfaceType<String>,
 ) -> Result<InterfaceDefinition, GraphQLSchemaValidationError> {
     let mut violations = vec![];
@@ -300,11 +290,13 @@ fn build_interface_type_definition(
         description: def.description.clone(),
         interfaces: def.implements_interfaces.clone(),
         fields,
+        module: module.to_vec(),
         position: build_position(&def.position),
     });
 }
 
 fn build_interface_extension(
+    module: &[String],
     def: &schema::InterfaceTypeExtension<String>,
 ) -> Result<InterfaceExtension, GraphQLSchemaValidationError> {
     let mut violations = vec![];
@@ -325,32 +317,38 @@ fn build_interface_extension(
         name: def.name.clone(),
         interfaces: def.implements_interfaces.clone(),
         fields,
+        module: module.to_vec(),
         position: build_position(&def.position),
     });
 }
 
 fn build_union_type_definition(
+    module: &[String],
     def: &schema::UnionType<String>,
 ) -> Result<UnionDefinition, GraphQLSchemaValidationError> {
     return Ok(UnionDefinition {
         name: def.name.clone(),
         description: def.description.clone(),
         types: def.types.clone(),
+        module: module.to_vec(),
         position: build_position(&def.position),
     });
 }
 
 fn build_union_type_extension(
+    module: &[String],
     def: &schema::UnionTypeExtension<String>,
 ) -> Result<UnionExtension, GraphQLSchemaValidationError> {
     return Ok(UnionExtension {
         name: def.name.clone(),
         types: def.types.clone(),
+        module: module.to_vec(),
         position: build_position(&def.position),
     });
 }
 
 fn build_enum_type_definition(
+    module: &[String],
     def: &schema::EnumType<String>,
 ) -> Result<EnumDefinition, GraphQLSchemaValidationError> {
     let mut violations = vec![];
@@ -371,11 +369,13 @@ fn build_enum_type_definition(
         name: def.name.clone(),
         description: def.description.clone(),
         values,
+        module: module.to_vec(),
         position: build_position(&def.position),
     });
 }
 
 fn build_enum_type_extension(
+    module: &[String],
     def: &schema::EnumTypeExtension<String>,
 ) -> Result<EnumExtension, GraphQLSchemaValidationError> {
     let mut violations = vec![];
@@ -395,6 +395,7 @@ fn build_enum_type_extension(
     return Ok(EnumExtension {
         name: def.name.clone(),
         values,
+        module: module.to_vec(),
         position: build_position(&def.position),
     });
 }
@@ -430,6 +431,7 @@ fn build_enum_value_definition(
 }
 
 fn build_input_type_definition(
+    module: &[String],
     def: &schema::InputObjectType<String>,
 ) -> Result<InputDefinition, GraphQLSchemaValidationError> {
     let mut violations = vec![];
@@ -450,11 +452,13 @@ fn build_input_type_definition(
         name: def.name.clone(),
         description: def.description.clone(),
         fields,
+        module: module.to_vec(),
         position: build_position(&def.position),
     });
 }
 
 fn build_input_type_extension(
+    module: &[String],
     def: &schema::InputObjectTypeExtension<String>,
 ) -> Result<InputExtension, GraphQLSchemaValidationError> {
     let mut violations = vec![];
@@ -474,6 +478,7 @@ fn build_input_type_extension(
     return Ok(InputExtension {
         name: def.name.clone(),
         fields,
+        module: module.to_vec(),
         position: build_position(&def.position),
     });
 }
@@ -734,6 +739,18 @@ fn build_position(def: &graphql_parser::Pos) -> Position {
         line: def.line,
         column: def.column,
     };
+}
+
+fn build_type_expression(def: &schema::Type<String>) -> TypeExpression {
+    match def {
+        schema::Type::NamedType(name) => TypeExpression::NamedType(name.to_string()),
+        schema::Type::ListType(inner) => {
+            TypeExpression::ListType(Box::new(build_type_expression(inner)))
+        }
+        schema::Type::NonNullType(inner) => {
+            TypeExpression::NonNullType(Box::new(build_type_expression(inner)))
+        }
+    }
 }
 
 #[derive(Debug)]

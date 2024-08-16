@@ -1,7 +1,7 @@
 use super::{error::Result, naming, sourcecode::SourceCode};
 use crate::schema::{
-    Definition, Directory, Extension, InterfaceDefinition, InterfaceExtension, Module,
-    ObjectDefinition, ObjectExtension, Schema,
+    Definition, Extension, InterfaceDefinition, InterfaceExtension, Module, ObjectDefinition,
+    ObjectExtension, Schema,
 };
 use std::{fs::File, path::PathBuf};
 

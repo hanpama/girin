@@ -30,13 +30,13 @@ pub fn render_builder(outdir: &PathBuf, s: &Schema) -> Result<(), Error> {
     src.line("return graphql.GraphQLSchema(");
     src.indent();
 
-    if let Some(query) = &s.query {
+    if let Some(query) = &s.get_query() {
         src.line(format!("query={},", naming::type_instance(query)));
     }
-    if let Some(mutation) = &s.mutation {
+    if let Some(mutation) = &s.get_mutation() {
         src.line(format!("mutation={},", naming::type_instance(mutation)));
     }
-    if let Some(subscription) = &s.subscription {
+    if let Some(subscription) = &s.get_subscription() {
         src.line(format!(
             "subscription={},",
             naming::type_instance(subscription)
@@ -67,20 +67,22 @@ fn render_object_type(src: &mut SourceCode, s: &Schema, def: &ObjectDefinition) 
     src.line("fields=lambda: {");
     src.indent();
     for field in &def.fields {
-        render_field(src, s, &def.name, field)
+        render_field(src, s, &def.module, &def.name, field)
     }
-    for ext in s.iter_object_exts(&def.name) {
-        for field in &ext.fields {
-            render_field(src, s, &def.name, field)
+    for ext in s.collect_extentions(&def.name) {
+        for field in &ext.as_object_ext().fields {
+            render_field(src, s, &def.module, &def.name, field)
         }
     }
     src.dedent();
     src.line("},");
 
-    if def.interfaces.len() > 0 {
+    let interfaces = s.collect_object_interfaces(&def.name);
+
+    if interfaces.len() > 0 {
         src.line("interfaces=lambda: [");
         src.indent();
-        for interface in s.collect_object_interfaces(def) {
+        for interface in interfaces {
             src.line(format!("{},", naming::type_instance(interface)));
         }
         src.dedent();
@@ -100,7 +102,7 @@ fn render_interface_type(src: &mut SourceCode, s: &Schema, def: &InterfaceDefini
     src.line("fields=lambda: {");
     src.indent();
     for field in s.collect_interface_fields(&def.name) {
-        render_field(src, s, &def.name, field)
+        render_field(src, s, &def.module, &def.name, field)
     }
     src.dedent();
     src.line("},");
@@ -143,7 +145,7 @@ fn render_scalar_type(src: &mut SourceCode, s: &Schema, def: &ScalarDefinition) 
     src.indent();
     src.line(format!("name=\"{}\",", def.name));
 
-    let config_path = format_definition_config_path(s, &def.name);
+    let config_path = format_definition_config_path(&def.module, &def.name);
     src.line(format!("serialize={config_path}.serialize,"));
     src.line(format!("parse_value={config_path}.parse_value,"));
     src.line(format!("parse_literal={config_path}.parse_literal,"));
@@ -156,7 +158,13 @@ fn render_scalar_type(src: &mut SourceCode, s: &Schema, def: &ScalarDefinition) 
     src.line(")");
 }
 
-fn render_field(src: &mut SourceCode, s: &Schema, parent_name: &str, def: &Field) {
+fn render_field(
+    src: &mut SourceCode,
+    s: &Schema,
+    parent_module: &Module,
+    parent_name: &str,
+    def: &Field,
+) {
     src.line(format!("\"{}\": graphql.GraphQLField(", def.name));
     src.indent();
 
@@ -175,7 +183,7 @@ fn render_field(src: &mut SourceCode, s: &Schema, parent_name: &str, def: &Field
         src.line("},");
     }
     if let Some(opt) = def.get_resolve_option() {
-        let def_config_path = format_definition_config_path(s, parent_name);
+        let def_config_path = format_definition_config_path(parent_module, parent_name);
 
         src.line(format!(
             "resolve={}.{},",
@@ -291,14 +299,6 @@ fn format_value(t: &Value) -> String {
     }
 }
 
-fn format_definition_config_path(s: &Schema, def_name: &str) -> String {
-    let module_path = s
-        .get_definition_module(def_name)
-        .path
-        .iter()
-        .map(|p| p.to_string_lossy().into_owned())
-        .collect::<Vec<String>>()
-        .join(".");
-
-    format!("config.{}.{}", module_path, def_name)
+fn format_definition_config_path(module: &Module, name: &str) -> String {
+    format!("config.{}.{}", module.join("."), name)
 }

@@ -1,11 +1,12 @@
 use std::collections::HashMap;
 
-use super::Position;
+use super::{Module, Position};
 
 #[derive(Debug)]
 pub struct ScalarDefinition {
     pub name: String,
     pub description: Option<String>,
+    pub module: Module,
     pub position: Position,
     pub type_aliases: HashMap<String, String>,
 }

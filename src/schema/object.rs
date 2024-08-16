@@ -1,4 +1,4 @@
-use super::{field::ResolveOption, Field, Position, SourceConfig};
+use super::{field::ResolveOption, Field, Module, Position, SourceConfig};
 
 #[derive(Debug)]
 pub struct ObjectDefinition {
@@ -6,6 +6,7 @@ pub struct ObjectDefinition {
     pub name: String,
     pub description: Option<String>,
     pub interfaces: Vec<String>,
+    pub module: Module,
     pub position: Position,
 }
 
@@ -39,6 +40,7 @@ pub struct ObjectExtension {
     pub name: String,
     pub interfaces: Vec<String>,
     pub fields: Vec<Field>,
+    pub module: Module,
     pub position: Position,
 }
 

@@ -1,4 +1,4 @@
-use super::{field::ResolveOption, Field, Position, Schema, SourceConfig};
+use super::{field::ResolveOption, Field, Module, Position, SourceConfig};
 
 #[derive(Debug)]
 pub struct InterfaceDefinition {
@@ -6,6 +6,7 @@ pub struct InterfaceDefinition {
     pub description: Option<String>,
     pub fields: Vec<Field>,
     pub interfaces: Vec<String>,
+    pub module: Module,
     pub position: Position,
 }
 
@@ -39,6 +40,7 @@ pub struct InterfaceExtension {
     pub name: String,
     pub fields: Vec<Field>,
     pub interfaces: Vec<String>,
+    pub module: Module,
     pub position: Position,
 }
 

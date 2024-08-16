@@ -4,6 +4,7 @@ mod graphql;
 mod python;
 mod schema;
 mod swift;
+
 fn main() {
     let schema_dir = PathBuf::from("test/GraphQL");
     let out_dir = PathBuf::from("test/SchemaGeneration/Sources/SchemaGeneration");

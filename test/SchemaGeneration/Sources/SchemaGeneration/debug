@@ -1,1688 +1,1709 @@
 Schema {
-    root_dir: Directory {
-        name: "GraphQL",
-        children: [
-            Directory(
-                Directory {
-                    name: "Nested1",
-                    children: [
-                        Directory(
-                            Directory {
-                                name: "Nested2",
-                                children: [
-                                    Module(
-                                        Module {
-                                            name: "nested2",
-                                            schema_definition: None,
-                                            children: [
-                                                Definition(
-                                                    ObjectDefinition(
-                                                        ObjectDefinition {
-                                                            fields: [
-                                                                Field {
-                                                                    name: "value",
-                                                                    description: None,
-                                                                    deprecation_reason: None,
-                                                                    args: [],
-                                                                    field_type: NamedType(
-                                                                        "String",
-                                                                    ),
-                                                                    resolve: None,
-                                                                    source_configs: [],
-                                                                    position: Position {
-                                                                        line: 2,
-                                                                        column: 5,
-                                                                    },
-                                                                },
-                                                            ],
-                                                            name: "Nested2",
-                                                            description: None,
-                                                            interfaces: [],
-                                                            position: Position {
-                                                                line: 1,
-                                                                column: 1,
-                                                            },
-                                                        },
-                                                    ),
-                                                ),
-                                            ],
-                                            def_idx: {
-                                                "Nested2": 0,
-                                            },
-                                            ext_idx: {},
+    query: Some(
+        "Query",
+    ),
+    mutation: Some(
+        "Mutation",
+    ),
+    subscription: None,
+    types: {
+        [
+            "Basic/Definition.graphql",
+        ]: [
+            Definition(
+                ObjectDefinition(
+                    ObjectDefinition {
+                        fields: [
+                            Field {
+                                name: "idNonNull",
+                                description: None,
+                                deprecation_reason: None,
+                                args: [],
+                                field_type: NonNullType(
+                                    NamedType(
+                                        "ID",
+                                    ),
+                                ),
+                                resolve: None,
+                                source_configs: [],
+                                position: Position {
+                                    line: 2,
+                                    column: 5,
+                                },
+                            },
+                            Field {
+                                name: "stringNonNull",
+                                description: None,
+                                deprecation_reason: None,
+                                args: [],
+                                field_type: NonNullType(
+                                    NamedType(
+                                        "String",
+                                    ),
+                                ),
+                                resolve: None,
+                                source_configs: [],
+                                position: Position {
+                                    line: 3,
+                                    column: 5,
+                                },
+                            },
+                            Field {
+                                name: "intNonNull",
+                                description: None,
+                                deprecation_reason: None,
+                                args: [],
+                                field_type: NonNullType(
+                                    NamedType(
+                                        "Int",
+                                    ),
+                                ),
+                                resolve: None,
+                                source_configs: [],
+                                position: Position {
+                                    line: 4,
+                                    column: 5,
+                                },
+                            },
+                            Field {
+                                name: "floatNonNull",
+                                description: None,
+                                deprecation_reason: None,
+                                args: [],
+                                field_type: NonNullType(
+                                    NamedType(
+                                        "Float",
+                                    ),
+                                ),
+                                resolve: None,
+                                source_configs: [],
+                                position: Position {
+                                    line: 5,
+                                    column: 5,
+                                },
+                            },
+                            Field {
+                                name: "booleanNonNull",
+                                description: None,
+                                deprecation_reason: None,
+                                args: [],
+                                field_type: NonNullType(
+                                    NamedType(
+                                        "Boolean",
+                                    ),
+                                ),
+                                resolve: None,
+                                source_configs: [],
+                                position: Position {
+                                    line: 6,
+                                    column: 5,
+                                },
+                            },
+                            Field {
+                                name: "id",
+                                description: None,
+                                deprecation_reason: None,
+                                args: [],
+                                field_type: NamedType(
+                                    "ID",
+                                ),
+                                resolve: None,
+                                source_configs: [],
+                                position: Position {
+                                    line: 7,
+                                    column: 5,
+                                },
+                            },
+                            Field {
+                                name: "string",
+                                description: None,
+                                deprecation_reason: None,
+                                args: [],
+                                field_type: NamedType(
+                                    "String",
+                                ),
+                                resolve: None,
+                                source_configs: [],
+                                position: Position {
+                                    line: 8,
+                                    column: 5,
+                                },
+                            },
+                            Field {
+                                name: "int",
+                                description: None,
+                                deprecation_reason: None,
+                                args: [],
+                                field_type: NamedType(
+                                    "Int",
+                                ),
+                                resolve: None,
+                                source_configs: [],
+                                position: Position {
+                                    line: 9,
+                                    column: 5,
+                                },
+                            },
+                            Field {
+                                name: "float",
+                                description: None,
+                                deprecation_reason: None,
+                                args: [],
+                                field_type: NamedType(
+                                    "Float",
+                                ),
+                                resolve: None,
+                                source_configs: [],
+                                position: Position {
+                                    line: 10,
+                                    column: 5,
+                                },
+                            },
+                            Field {
+                                name: "boolean",
+                                description: None,
+                                deprecation_reason: None,
+                                args: [],
+                                field_type: NamedType(
+                                    "Boolean",
+                                ),
+                                resolve: None,
+                                source_configs: [],
+                                position: Position {
+                                    line: 11,
+                                    column: 5,
+                                },
+                            },
+                            Field {
+                                name: "idNonNullArg",
+                                description: None,
+                                deprecation_reason: None,
+                                args: [
+                                    InputValue {
+                                        name: "idNonNull",
+                                        description: None,
+                                        deprecation_reason: None,
+                                        field_type: NonNullType(
+                                            NamedType(
+                                                "ID",
+                                            ),
+                                        ),
+                                        default_value: Some(
+                                            String(
+                                                "default",
+                                            ),
+                                        ),
+                                        position: Position {
+                                            line: 12,
+                                            column: 18,
                                         },
-                                    ),
+                                    },
                                 ],
-                                directories: {},
-                                modules: {
-                                    "nested2": 0,
-                                },
-                                def_idx: {
-                                    "Nested2": "nested2",
-                                },
-                                ext_idx: {},
-                            },
-                        ),
-                        Module(
-                            Module {
-                                name: "nested1",
-                                schema_definition: None,
-                                children: [
-                                    Definition(
-                                        ObjectDefinition(
-                                            ObjectDefinition {
-                                                fields: [
-                                                    Field {
-                                                        name: "nested2",
-                                                        description: None,
-                                                        deprecation_reason: None,
-                                                        args: [],
-                                                        field_type: NamedType(
-                                                            "Nested2",
-                                                        ),
-                                                        resolve: None,
-                                                        source_configs: [],
-                                                        position: Position {
-                                                            line: 2,
-                                                            column: 5,
-                                                        },
-                                                    },
-                                                ],
-                                                name: "Nested1",
-                                                description: None,
-                                                interfaces: [],
-                                                position: Position {
-                                                    line: 1,
-                                                    column: 1,
-                                                },
-                                            },
-                                        ),
+                                field_type: NonNullType(
+                                    NamedType(
+                                        "ID",
                                     ),
-                                ],
-                                def_idx: {
-                                    "Nested1": 0,
-                                },
-                                ext_idx: {},
-                            },
-                        ),
-                    ],
-                    directories: {
-                        "Nested2": 0,
-                    },
-                    modules: {
-                        "nested1": 1,
-                    },
-                    def_idx: {
-                        "Nested1": "nested1",
-                        "Nested2": "Nested2",
-                    },
-                    ext_idx: {},
-                },
-            ),
-            Directory(
-                Directory {
-                    name: "Basic",
-                    children: [
-                        Module(
-                            Module {
-                                name: "Definition",
-                                schema_definition: None,
-                                children: [
-                                    Definition(
-                                        ObjectDefinition(
-                                            ObjectDefinition {
-                                                fields: [
-                                                    Field {
-                                                        name: "idNonNull",
-                                                        description: None,
-                                                        deprecation_reason: None,
-                                                        args: [],
-                                                        field_type: NonNullType(
-                                                            NamedType(
-                                                                "ID",
-                                                            ),
-                                                        ),
-                                                        resolve: None,
-                                                        source_configs: [],
-                                                        position: Position {
-                                                            line: 2,
-                                                            column: 5,
-                                                        },
-                                                    },
-                                                    Field {
-                                                        name: "stringNonNull",
-                                                        description: None,
-                                                        deprecation_reason: None,
-                                                        args: [],
-                                                        field_type: NonNullType(
-                                                            NamedType(
-                                                                "String",
-                                                            ),
-                                                        ),
-                                                        resolve: None,
-                                                        source_configs: [],
-                                                        position: Position {
-                                                            line: 3,
-                                                            column: 5,
-                                                        },
-                                                    },
-                                                    Field {
-                                                        name: "intNonNull",
-                                                        description: None,
-                                                        deprecation_reason: None,
-                                                        args: [],
-                                                        field_type: NonNullType(
-                                                            NamedType(
-                                                                "Int",
-                                                            ),
-                                                        ),
-                                                        resolve: None,
-                                                        source_configs: [],
-                                                        position: Position {
-                                                            line: 4,
-                                                            column: 5,
-                                                        },
-                                                    },
-                                                    Field {
-                                                        name: "floatNonNull",
-                                                        description: None,
-                                                        deprecation_reason: None,
-                                                        args: [],
-                                                        field_type: NonNullType(
-                                                            NamedType(
-                                                                "Float",
-                                                            ),
-                                                        ),
-                                                        resolve: None,
-                                                        source_configs: [],
-                                                        position: Position {
-                                                            line: 5,
-                                                            column: 5,
-                                                        },
-                                                    },
-                                                    Field {
-                                                        name: "booleanNonNull",
-                                                        description: None,
-                                                        deprecation_reason: None,
-                                                        args: [],
-                                                        field_type: NonNullType(
-                                                            NamedType(
-                                                                "Boolean",
-                                                            ),
-                                                        ),
-                                                        resolve: None,
-                                                        source_configs: [],
-                                                        position: Position {
-                                                            line: 6,
-                                                            column: 5,
-                                                        },
-                                                    },
-                                                    Field {
-                                                        name: "id",
-                                                        description: None,
-                                                        deprecation_reason: None,
-                                                        args: [],
-                                                        field_type: NamedType(
-                                                            "ID",
-                                                        ),
-                                                        resolve: None,
-                                                        source_configs: [],
-                                                        position: Position {
-                                                            line: 7,
-                                                            column: 5,
-                                                        },
-                                                    },
-                                                    Field {
-                                                        name: "string",
-                                                        description: None,
-                                                        deprecation_reason: None,
-                                                        args: [],
-                                                        field_type: NamedType(
-                                                            "String",
-                                                        ),
-                                                        resolve: None,
-                                                        source_configs: [],
-                                                        position: Position {
-                                                            line: 8,
-                                                            column: 5,
-                                                        },
-                                                    },
-                                                    Field {
-                                                        name: "int",
-                                                        description: None,
-                                                        deprecation_reason: None,
-                                                        args: [],
-                                                        field_type: NamedType(
-                                                            "Int",
-                                                        ),
-                                                        resolve: None,
-                                                        source_configs: [],
-                                                        position: Position {
-                                                            line: 9,
-                                                            column: 5,
-                                                        },
-                                                    },
-                                                    Field {
-                                                        name: "float",
-                                                        description: None,
-                                                        deprecation_reason: None,
-                                                        args: [],
-                                                        field_type: NamedType(
-                                                            "Float",
-                                                        ),
-                                                        resolve: None,
-                                                        source_configs: [],
-                                                        position: Position {
-                                                            line: 10,
-                                                            column: 5,
-                                                        },
-                                                    },
-                                                    Field {
-                                                        name: "boolean",
-                                                        description: None,
-                                                        deprecation_reason: None,
-                                                        args: [],
-                                                        field_type: NamedType(
-                                                            "Boolean",
-                                                        ),
-                                                        resolve: None,
-                                                        source_configs: [],
-                                                        position: Position {
-                                                            line: 11,
-                                                            column: 5,
-                                                        },
-                                                    },
-                                                    Field {
-                                                        name: "idNonNullArg",
-                                                        description: None,
-                                                        deprecation_reason: None,
-                                                        args: [
-                                                            InputValue {
-                                                                name: "idNonNull",
-                                                                description: None,
-                                                                deprecation_reason: None,
-                                                                field_type: NonNullType(
-                                                                    NamedType(
-                                                                        "ID",
-                                                                    ),
-                                                                ),
-                                                                default_value: Some(
-                                                                    String(
-                                                                        "default",
-                                                                    ),
-                                                                ),
-                                                                position: Position {
-                                                                    line: 12,
-                                                                    column: 18,
-                                                                },
-                                                            },
-                                                        ],
-                                                        field_type: NonNullType(
-                                                            NamedType(
-                                                                "ID",
-                                                            ),
-                                                        ),
-                                                        resolve: None,
-                                                        source_configs: [],
-                                                        position: Position {
-                                                            line: 12,
-                                                            column: 5,
-                                                        },
-                                                    },
-                                                    Field {
-                                                        name: "stringNonNullArg",
-                                                        description: None,
-                                                        deprecation_reason: None,
-                                                        args: [
-                                                            InputValue {
-                                                                name: "stringNonNull",
-                                                                description: None,
-                                                                deprecation_reason: None,
-                                                                field_type: NonNullType(
-                                                                    NamedType(
-                                                                        "String",
-                                                                    ),
-                                                                ),
-                                                                default_value: Some(
-                                                                    String(
-                                                                        "default",
-                                                                    ),
-                                                                ),
-                                                                position: Position {
-                                                                    line: 13,
-                                                                    column: 22,
-                                                                },
-                                                            },
-                                                        ],
-                                                        field_type: NonNullType(
-                                                            NamedType(
-                                                                "String",
-                                                            ),
-                                                        ),
-                                                        resolve: None,
-                                                        source_configs: [],
-                                                        position: Position {
-                                                            line: 13,
-                                                            column: 5,
-                                                        },
-                                                    },
-                                                    Field {
-                                                        name: "intNonNullArg",
-                                                        description: None,
-                                                        deprecation_reason: None,
-                                                        args: [
-                                                            InputValue {
-                                                                name: "intNonNull",
-                                                                description: None,
-                                                                deprecation_reason: None,
-                                                                field_type: NonNullType(
-                                                                    NamedType(
-                                                                        "Int",
-                                                                    ),
-                                                                ),
-                                                                default_value: Some(
-                                                                    Int(
-                                                                        1,
-                                                                    ),
-                                                                ),
-                                                                position: Position {
-                                                                    line: 14,
-                                                                    column: 19,
-                                                                },
-                                                            },
-                                                        ],
-                                                        field_type: NonNullType(
-                                                            NamedType(
-                                                                "Int",
-                                                            ),
-                                                        ),
-                                                        resolve: None,
-                                                        source_configs: [],
-                                                        position: Position {
-                                                            line: 14,
-                                                            column: 5,
-                                                        },
-                                                    },
-                                                    Field {
-                                                        name: "floatNonNullArg",
-                                                        description: None,
-                                                        deprecation_reason: None,
-                                                        args: [
-                                                            InputValue {
-                                                                name: "floatNonNull",
-                                                                description: None,
-                                                                deprecation_reason: None,
-                                                                field_type: NonNullType(
-                                                                    NamedType(
-                                                                        "Float",
-                                                                    ),
-                                                                ),
-                                                                default_value: Some(
-                                                                    Float(
-                                                                        1.0,
-                                                                    ),
-                                                                ),
-                                                                position: Position {
-                                                                    line: 15,
-                                                                    column: 21,
-                                                                },
-                                                            },
-                                                        ],
-                                                        field_type: NonNullType(
-                                                            NamedType(
-                                                                "Float",
-                                                            ),
-                                                        ),
-                                                        resolve: None,
-                                                        source_configs: [],
-                                                        position: Position {
-                                                            line: 15,
-                                                            column: 5,
-                                                        },
-                                                    },
-                                                    Field {
-                                                        name: "booleanNonNullArg",
-                                                        description: None,
-                                                        deprecation_reason: None,
-                                                        args: [
-                                                            InputValue {
-                                                                name: "booleanNonNull",
-                                                                description: None,
-                                                                deprecation_reason: None,
-                                                                field_type: NonNullType(
-                                                                    NamedType(
-                                                                        "Boolean",
-                                                                    ),
-                                                                ),
-                                                                default_value: Some(
-                                                                    Boolean(
-                                                                        true,
-                                                                    ),
-                                                                ),
-                                                                position: Position {
-                                                                    line: 16,
-                                                                    column: 23,
-                                                                },
-                                                            },
-                                                        ],
-                                                        field_type: NonNullType(
-                                                            NamedType(
-                                                                "Boolean",
-                                                            ),
-                                                        ),
-                                                        resolve: None,
-                                                        source_configs: [],
-                                                        position: Position {
-                                                            line: 16,
-                                                            column: 5,
-                                                        },
-                                                    },
-                                                    Field {
-                                                        name: "idArg",
-                                                        description: None,
-                                                        deprecation_reason: None,
-                                                        args: [
-                                                            InputValue {
-                                                                name: "id",
-                                                                description: None,
-                                                                deprecation_reason: None,
-                                                                field_type: NamedType(
-                                                                    "ID",
-                                                                ),
-                                                                default_value: None,
-                                                                position: Position {
-                                                                    line: 17,
-                                                                    column: 11,
-                                                                },
-                                                            },
-                                                        ],
-                                                        field_type: NamedType(
-                                                            "ID",
-                                                        ),
-                                                        resolve: None,
-                                                        source_configs: [],
-                                                        position: Position {
-                                                            line: 17,
-                                                            column: 5,
-                                                        },
-                                                    },
-                                                    Field {
-                                                        name: "stringArg",
-                                                        description: None,
-                                                        deprecation_reason: None,
-                                                        args: [
-                                                            InputValue {
-                                                                name: "string",
-                                                                description: None,
-                                                                deprecation_reason: None,
-                                                                field_type: NamedType(
-                                                                    "String",
-                                                                ),
-                                                                default_value: None,
-                                                                position: Position {
-                                                                    line: 18,
-                                                                    column: 15,
-                                                                },
-                                                            },
-                                                        ],
-                                                        field_type: NamedType(
-                                                            "String",
-                                                        ),
-                                                        resolve: None,
-                                                        source_configs: [],
-                                                        position: Position {
-                                                            line: 18,
-                                                            column: 5,
-                                                        },
-                                                    },
-                                                    Field {
-                                                        name: "intArg",
-                                                        description: None,
-                                                        deprecation_reason: None,
-                                                        args: [
-                                                            InputValue {
-                                                                name: "int",
-                                                                description: None,
-                                                                deprecation_reason: None,
-                                                                field_type: NamedType(
-                                                                    "Int",
-                                                                ),
-                                                                default_value: None,
-                                                                position: Position {
-                                                                    line: 19,
-                                                                    column: 12,
-                                                                },
-                                                            },
-                                                        ],
-                                                        field_type: NamedType(
-                                                            "Int",
-                                                        ),
-                                                        resolve: None,
-                                                        source_configs: [],
-                                                        position: Position {
-                                                            line: 19,
-                                                            column: 5,
-                                                        },
-                                                    },
-                                                    Field {
-                                                        name: "floatArg",
-                                                        description: None,
-                                                        deprecation_reason: None,
-                                                        args: [
-                                                            InputValue {
-                                                                name: "float",
-                                                                description: None,
-                                                                deprecation_reason: None,
-                                                                field_type: NamedType(
-                                                                    "Float",
-                                                                ),
-                                                                default_value: None,
-                                                                position: Position {
-                                                                    line: 20,
-                                                                    column: 14,
-                                                                },
-                                                            },
-                                                        ],
-                                                        field_type: NamedType(
-                                                            "Float",
-                                                        ),
-                                                        resolve: None,
-                                                        source_configs: [],
-                                                        position: Position {
-                                                            line: 20,
-                                                            column: 5,
-                                                        },
-                                                    },
-                                                    Field {
-                                                        name: "booleanArg",
-                                                        description: None,
-                                                        deprecation_reason: None,
-                                                        args: [
-                                                            InputValue {
-                                                                name: "boolean",
-                                                                description: None,
-                                                                deprecation_reason: None,
-                                                                field_type: NamedType(
-                                                                    "Boolean",
-                                                                ),
-                                                                default_value: None,
-                                                                position: Position {
-                                                                    line: 21,
-                                                                    column: 16,
-                                                                },
-                                                            },
-                                                        ],
-                                                        field_type: NamedType(
-                                                            "Boolean",
-                                                        ),
-                                                        resolve: None,
-                                                        source_configs: [],
-                                                        position: Position {
-                                                            line: 21,
-                                                            column: 5,
-                                                        },
-                                                    },
-                                                    Field {
-                                                        name: "basicScalar",
-                                                        description: None,
-                                                        deprecation_reason: None,
-                                                        args: [],
-                                                        field_type: NamedType(
-                                                            "BasicScalar",
-                                                        ),
-                                                        resolve: None,
-                                                        source_configs: [],
-                                                        position: Position {
-                                                            line: 22,
-                                                            column: 5,
-                                                        },
-                                                    },
-                                                ],
-                                                name: "BasicObject",
-                                                description: None,
-                                                interfaces: [],
-                                                position: Position {
-                                                    line: 1,
-                                                    column: 1,
-                                                },
-                                            },
-                                        ),
-                                    ),
-                                    Definition(
-                                        InterfaceDefinition(
-                                            InterfaceDefinition {
-                                                name: "BasicInterface",
-                                                description: None,
-                                                fields: [
-                                                    Field {
-                                                        name: "interfaceField",
-                                                        description: None,
-                                                        deprecation_reason: None,
-                                                        args: [],
-                                                        field_type: NamedType(
-                                                            "String",
-                                                        ),
-                                                        resolve: None,
-                                                        source_configs: [],
-                                                        position: Position {
-                                                            line: 26,
-                                                            column: 5,
-                                                        },
-                                                    },
-                                                    Field {
-                                                        name: "basicScalar",
-                                                        description: None,
-                                                        deprecation_reason: None,
-                                                        args: [],
-                                                        field_type: NamedType(
-                                                            "BasicScalar",
-                                                        ),
-                                                        resolve: None,
-                                                        source_configs: [],
-                                                        position: Position {
-                                                            line: 27,
-                                                            column: 5,
-                                                        },
-                                                    },
-                                                ],
-                                                interfaces: [],
-                                                position: Position {
-                                                    line: 25,
-                                                    column: 1,
-                                                },
-                                            },
-                                        ),
-                                    ),
-                                    Definition(
-                                        ObjectDefinition(
-                                            ObjectDefinition {
-                                                fields: [
-                                                    Field {
-                                                        name: "interfaceField",
-                                                        description: None,
-                                                        deprecation_reason: None,
-                                                        args: [],
-                                                        field_type: NamedType(
-                                                            "String",
-                                                        ),
-                                                        resolve: None,
-                                                        source_configs: [],
-                                                        position: Position {
-                                                            line: 31,
-                                                            column: 5,
-                                                        },
-                                                    },
-                                                    Field {
-                                                        name: "basicScalar",
-                                                        description: None,
-                                                        deprecation_reason: None,
-                                                        args: [],
-                                                        field_type: NamedType(
-                                                            "BasicScalar",
-                                                        ),
-                                                        resolve: None,
-                                                        source_configs: [],
-                                                        position: Position {
-                                                            line: 32,
-                                                            column: 5,
-                                                        },
-                                                    },
-                                                ],
-                                                name: "BasicInterfaceImpl",
-                                                description: None,
-                                                interfaces: [
-                                                    "BasicInterface",
-                                                ],
-                                                position: Position {
-                                                    line: 30,
-                                                    column: 1,
-                                                },
-                                            },
-                                        ),
-                                    ),
-                                    Definition(
-                                        UnionDefinition(
-                                            UnionDefinition {
-                                                name: "BasicUnion",
-                                                description: None,
-                                                types: [
-                                                    "BasicObject",
-                                                    "BasicInterfaceImpl",
-                                                ],
-                                                position: Position {
-                                                    line: 35,
-                                                    column: 1,
-                                                },
-                                            },
-                                        ),
-                                    ),
-                                    Definition(
-                                        EnumDefinition(
-                                            EnumDefinition {
-                                                name: "BasicEnum",
-                                                description: None,
-                                                values: [
-                                                    EnumValue {
-                                                        name: "ENUM_VALUE_1",
-                                                        description: None,
-                                                        deprecation_reason: None,
-                                                        position: Position {
-                                                            line: 38,
-                                                            column: 5,
-                                                        },
-                                                    },
-                                                    EnumValue {
-                                                        name: "ENUM_VALUE_2",
-                                                        description: None,
-                                                        deprecation_reason: None,
-                                                        position: Position {
-                                                            line: 39,
-                                                            column: 5,
-                                                        },
-                                                    },
-                                                ],
-                                                position: Position {
-                                                    line: 37,
-                                                    column: 1,
-                                                },
-                                            },
-                                        ),
-                                    ),
-                                    Definition(
-                                        InputDefinition(
-                                            InputDefinition {
-                                                name: "BasicInput",
-                                                description: None,
-                                                fields: [
-                                                    InputValue {
-                                                        name: "idNonNull",
-                                                        description: None,
-                                                        deprecation_reason: None,
-                                                        field_type: NonNullType(
-                                                            NamedType(
-                                                                "ID",
-                                                            ),
-                                                        ),
-                                                        default_value: Some(
-                                                            String(
-                                                                "default",
-                                                            ),
-                                                        ),
-                                                        position: Position {
-                                                            line: 43,
-                                                            column: 5,
-                                                        },
-                                                    },
-                                                    InputValue {
-                                                        name: "stringNonNull",
-                                                        description: None,
-                                                        deprecation_reason: None,
-                                                        field_type: NonNullType(
-                                                            NamedType(
-                                                                "String",
-                                                            ),
-                                                        ),
-                                                        default_value: Some(
-                                                            String(
-                                                                "default",
-                                                            ),
-                                                        ),
-                                                        position: Position {
-                                                            line: 44,
-                                                            column: 5,
-                                                        },
-                                                    },
-                                                    InputValue {
-                                                        name: "intNonNull",
-                                                        description: None,
-                                                        deprecation_reason: None,
-                                                        field_type: NonNullType(
-                                                            NamedType(
-                                                                "Int",
-                                                            ),
-                                                        ),
-                                                        default_value: Some(
-                                                            Int(
-                                                                1,
-                                                            ),
-                                                        ),
-                                                        position: Position {
-                                                            line: 45,
-                                                            column: 5,
-                                                        },
-                                                    },
-                                                    InputValue {
-                                                        name: "floatNonNull",
-                                                        description: None,
-                                                        deprecation_reason: None,
-                                                        field_type: NonNullType(
-                                                            NamedType(
-                                                                "Float",
-                                                            ),
-                                                        ),
-                                                        default_value: Some(
-                                                            Float(
-                                                                1.0,
-                                                            ),
-                                                        ),
-                                                        position: Position {
-                                                            line: 46,
-                                                            column: 5,
-                                                        },
-                                                    },
-                                                    InputValue {
-                                                        name: "booleanNonNull",
-                                                        description: None,
-                                                        deprecation_reason: None,
-                                                        field_type: NonNullType(
-                                                            NamedType(
-                                                                "Boolean",
-                                                            ),
-                                                        ),
-                                                        default_value: Some(
-                                                            Boolean(
-                                                                true,
-                                                            ),
-                                                        ),
-                                                        position: Position {
-                                                            line: 47,
-                                                            column: 5,
-                                                        },
-                                                    },
-                                                    InputValue {
-                                                        name: "basicScalarNotNull",
-                                                        description: None,
-                                                        deprecation_reason: None,
-                                                        field_type: NonNullType(
-                                                            NamedType(
-                                                                "BasicScalar",
-                                                            ),
-                                                        ),
-                                                        default_value: Some(
-                                                            String(
-                                                                "123",
-                                                            ),
-                                                        ),
-                                                        position: Position {
-                                                            line: 48,
-                                                            column: 5,
-                                                        },
-                                                    },
-                                                    InputValue {
-                                                        name: "id",
-                                                        description: None,
-                                                        deprecation_reason: None,
-                                                        field_type: NamedType(
-                                                            "ID",
-                                                        ),
-                                                        default_value: None,
-                                                        position: Position {
-                                                            line: 49,
-                                                            column: 5,
-                                                        },
-                                                    },
-                                                    InputValue {
-                                                        name: "string",
-                                                        description: None,
-                                                        deprecation_reason: None,
-                                                        field_type: NamedType(
-                                                            "String",
-                                                        ),
-                                                        default_value: None,
-                                                        position: Position {
-                                                            line: 50,
-                                                            column: 5,
-                                                        },
-                                                    },
-                                                    InputValue {
-                                                        name: "int",
-                                                        description: None,
-                                                        deprecation_reason: None,
-                                                        field_type: NamedType(
-                                                            "Int",
-                                                        ),
-                                                        default_value: None,
-                                                        position: Position {
-                                                            line: 51,
-                                                            column: 5,
-                                                        },
-                                                    },
-                                                    InputValue {
-                                                        name: "float",
-                                                        description: None,
-                                                        deprecation_reason: None,
-                                                        field_type: NamedType(
-                                                            "Float",
-                                                        ),
-                                                        default_value: None,
-                                                        position: Position {
-                                                            line: 52,
-                                                            column: 5,
-                                                        },
-                                                    },
-                                                    InputValue {
-                                                        name: "boolean",
-                                                        description: None,
-                                                        deprecation_reason: None,
-                                                        field_type: NamedType(
-                                                            "Boolean",
-                                                        ),
-                                                        default_value: None,
-                                                        position: Position {
-                                                            line: 53,
-                                                            column: 5,
-                                                        },
-                                                    },
-                                                    InputValue {
-                                                        name: "basicScalar",
-                                                        description: None,
-                                                        deprecation_reason: None,
-                                                        field_type: NamedType(
-                                                            "BasicScalar",
-                                                        ),
-                                                        default_value: None,
-                                                        position: Position {
-                                                            line: 54,
-                                                            column: 5,
-                                                        },
-                                                    },
-                                                ],
-                                                position: Position {
-                                                    line: 42,
-                                                    column: 1,
-                                                },
-                                            },
-                                        ),
-                                    ),
-                                    Definition(
-                                        ScalarDefinition(
-                                            ScalarDefinition {
-                                                name: "BasicScalar",
-                                                description: Some(
-                                                    "BasicScalar description\n",
-                                                ),
-                                                position: Position {
-                                                    line: 60,
-                                                    column: 1,
-                                                },
-                                                type_aliases: {
-                                                    "swift": "String",
-                                                    "java": "java.lang.String",
-                                                    "python": "str",
-                                                },
-                                            },
-                                        ),
-                                    ),
-                                ],
-                                def_idx: {
-                                    "BasicInterface": 1,
-                                    "BasicInterfaceImpl": 2,
-                                    "BasicUnion": 3,
-                                    "BasicObject": 0,
-                                    "BasicEnum": 4,
-                                    "BasicInput": 5,
-                                    "BasicScalar": 6,
-                                },
-                                ext_idx: {},
-                            },
-                        ),
-                        Module(
-                            Module {
-                                name: "Extension",
-                                schema_definition: None,
-                                children: [
-                                    Extension(
-                                        ObjectExtension(
-                                            ObjectExtension {
-                                                name: "BasicObject",
-                                                interfaces: [],
-                                                fields: [
-                                                    Field {
-                                                        name: "extendedField",
-                                                        description: None,
-                                                        deprecation_reason: None,
-                                                        args: [],
-                                                        field_type: NonNullType(
-                                                            NamedType(
-                                                                "ID",
-                                                            ),
-                                                        ),
-                                                        resolve: None,
-                                                        source_configs: [],
-                                                        position: Position {
-                                                            line: 2,
-                                                            column: 5,
-                                                        },
-                                                    },
-                                                    Field {
-                                                        name: "extendedFieldWithArg",
-                                                        description: None,
-                                                        deprecation_reason: None,
-                                                        args: [
-                                                            InputValue {
-                                                                name: "idNonNull",
-                                                                description: None,
-                                                                deprecation_reason: None,
-                                                                field_type: NonNullType(
-                                                                    NamedType(
-                                                                        "ID",
-                                                                    ),
-                                                                ),
-                                                                default_value: None,
-                                                                position: Position {
-                                                                    line: 3,
-                                                                    column: 26,
-                                                                },
-                                                            },
-                                                        ],
-                                                        field_type: NonNullType(
-                                                            NamedType(
-                                                                "ID",
-                                                            ),
-                                                        ),
-                                                        resolve: None,
-                                                        source_configs: [],
-                                                        position: Position {
-                                                            line: 3,
-                                                            column: 5,
-                                                        },
-                                                    },
-                                                ],
-                                                position: Position {
-                                                    line: 1,
-                                                    column: 8,
-                                                },
-                                            },
-                                        ),
-                                    ),
-                                    Definition(
-                                        InterfaceDefinition(
-                                            InterfaceDefinition {
-                                                name: "AnotherInterface",
-                                                description: None,
-                                                fields: [
-                                                    Field {
-                                                        name: "anotherField",
-                                                        description: None,
-                                                        deprecation_reason: None,
-                                                        args: [],
-                                                        field_type: NonNullType(
-                                                            NamedType(
-                                                                "ID",
-                                                            ),
-                                                        ),
-                                                        resolve: None,
-                                                        source_configs: [],
-                                                        position: Position {
-                                                            line: 7,
-                                                            column: 5,
-                                                        },
-                                                    },
-                                                ],
-                                                interfaces: [],
-                                                position: Position {
-                                                    line: 6,
-                                                    column: 1,
-                                                },
-                                            },
-                                        ),
-                                    ),
-                                    Extension(
-                                        InterfaceExtension(
-                                            InterfaceExtension {
-                                                name: "BasicInterface",
-                                                fields: [
-                                                    Field {
-                                                        name: "extendedField",
-                                                        description: None,
-                                                        deprecation_reason: None,
-                                                        args: [],
-                                                        field_type: NonNullType(
-                                                            NamedType(
-                                                                "ID",
-                                                            ),
-                                                        ),
-                                                        resolve: None,
-                                                        source_configs: [],
-                                                        position: Position {
-                                                            line: 11,
-                                                            column: 5,
-                                                        },
-                                                    },
-                                                    Field {
-                                                        name: "extendedFieldWithArg",
-                                                        description: None,
-                                                        deprecation_reason: None,
-                                                        args: [
-                                                            InputValue {
-                                                                name: "idNonNull",
-                                                                description: None,
-                                                                deprecation_reason: None,
-                                                                field_type: NonNullType(
-                                                                    NamedType(
-                                                                        "ID",
-                                                                    ),
-                                                                ),
-                                                                default_value: None,
-                                                                position: Position {
-                                                                    line: 12,
-                                                                    column: 26,
-                                                                },
-                                                            },
-                                                        ],
-                                                        field_type: NonNullType(
-                                                            NamedType(
-                                                                "ID",
-                                                            ),
-                                                        ),
-                                                        resolve: None,
-                                                        source_configs: [],
-                                                        position: Position {
-                                                            line: 12,
-                                                            column: 5,
-                                                        },
-                                                    },
-                                                    Field {
-                                                        name: "anotherField",
-                                                        description: None,
-                                                        deprecation_reason: None,
-                                                        args: [],
-                                                        field_type: NonNullType(
-                                                            NamedType(
-                                                                "ID",
-                                                            ),
-                                                        ),
-                                                        resolve: None,
-                                                        source_configs: [],
-                                                        position: Position {
-                                                            line: 13,
-                                                            column: 5,
-                                                        },
-                                                    },
-                                                ],
-                                                interfaces: [
-                                                    "AnotherInterface",
-                                                ],
-                                                position: Position {
-                                                    line: 10,
-                                                    column: 8,
-                                                },
-                                            },
-                                        ),
-                                    ),
-                                    Extension(
-                                        ObjectExtension(
-                                            ObjectExtension {
-                                                name: "BasicInterfaceImpl",
-                                                interfaces: [
-                                                    "AnotherInterface",
-                                                ],
-                                                fields: [
-                                                    Field {
-                                                        name: "extendedField",
-                                                        description: None,
-                                                        deprecation_reason: None,
-                                                        args: [],
-                                                        field_type: NonNullType(
-                                                            NamedType(
-                                                                "ID",
-                                                            ),
-                                                        ),
-                                                        resolve: None,
-                                                        source_configs: [],
-                                                        position: Position {
-                                                            line: 17,
-                                                            column: 5,
-                                                        },
-                                                    },
-                                                    Field {
-                                                        name: "extendedFieldWithArg",
-                                                        description: None,
-                                                        deprecation_reason: None,
-                                                        args: [
-                                                            InputValue {
-                                                                name: "idNonNull",
-                                                                description: None,
-                                                                deprecation_reason: None,
-                                                                field_type: NonNullType(
-                                                                    NamedType(
-                                                                        "ID",
-                                                                    ),
-                                                                ),
-                                                                default_value: None,
-                                                                position: Position {
-                                                                    line: 18,
-                                                                    column: 26,
-                                                                },
-                                                            },
-                                                        ],
-                                                        field_type: NonNullType(
-                                                            NamedType(
-                                                                "ID",
-                                                            ),
-                                                        ),
-                                                        resolve: None,
-                                                        source_configs: [],
-                                                        position: Position {
-                                                            line: 18,
-                                                            column: 5,
-                                                        },
-                                                    },
-                                                    Field {
-                                                        name: "anotherField",
-                                                        description: None,
-                                                        deprecation_reason: None,
-                                                        args: [],
-                                                        field_type: NonNullType(
-                                                            NamedType(
-                                                                "ID",
-                                                            ),
-                                                        ),
-                                                        resolve: None,
-                                                        source_configs: [],
-                                                        position: Position {
-                                                            line: 19,
-                                                            column: 5,
-                                                        },
-                                                    },
-                                                ],
-                                                position: Position {
-                                                    line: 16,
-                                                    column: 8,
-                                                },
-                                            },
-                                        ),
-                                    ),
-                                    Definition(
-                                        ObjectDefinition(
-                                            ObjectDefinition {
-                                                fields: [
-                                                    Field {
-                                                        name: "anotherField",
-                                                        description: None,
-                                                        deprecation_reason: None,
-                                                        args: [],
-                                                        field_type: NonNullType(
-                                                            NamedType(
-                                                                "ID",
-                                                            ),
-                                                        ),
-                                                        resolve: None,
-                                                        source_configs: [],
-                                                        position: Position {
-                                                            line: 23,
-                                                            column: 5,
-                                                        },
-                                                    },
-                                                ],
-                                                name: "AnotherType",
-                                                description: None,
-                                                interfaces: [],
-                                                position: Position {
-                                                    line: 22,
-                                                    column: 1,
-                                                },
-                                            },
-                                        ),
-                                    ),
-                                    Extension(
-                                        UnionExtension(
-                                            UnionExtension {
-                                                name: "BasicUnion",
-                                                types: [
-                                                    "AnotherType",
-                                                ],
-                                                position: Position {
-                                                    line: 26,
-                                                    column: 8,
-                                                },
-                                            },
-                                        ),
-                                    ),
-                                    Extension(
-                                        EnumExtension(
-                                            EnumExtension {
-                                                name: "BasicEnum",
-                                                values: [
-                                                    EnumValue {
-                                                        name: "EXTENDED_VALUE",
-                                                        description: None,
-                                                        deprecation_reason: None,
-                                                        position: Position {
-                                                            line: 29,
-                                                            column: 5,
-                                                        },
-                                                    },
-                                                ],
-                                                position: Position {
-                                                    line: 28,
-                                                    column: 8,
-                                                },
-                                            },
-                                        ),
-                                    ),
-                                    Extension(
-                                        InputExtension(
-                                            InputExtension {
-                                                name: "BasicInput",
-                                                fields: [
-                                                    InputValue {
-                                                        name: "extendedField",
-                                                        description: None,
-                                                        deprecation_reason: None,
-                                                        field_type: NonNullType(
-                                                            NamedType(
-                                                                "ID",
-                                                            ),
-                                                        ),
-                                                        default_value: None,
-                                                        position: Position {
-                                                            line: 33,
-                                                            column: 5,
-                                                        },
-                                                    },
-                                                ],
-                                                position: Position {
-                                                    line: 32,
-                                                    column: 8,
-                                                },
-                                            },
-                                        ),
-                                    ),
-                                    Extension(
-                                        ObjectExtension(
-                                            ObjectExtension {
-                                                name: "Query",
-                                                interfaces: [],
-                                                fields: [
-                                                    Field {
-                                                        name: "extendedHello",
-                                                        description: None,
-                                                        deprecation_reason: None,
-                                                        args: [
-                                                            InputValue {
-                                                                name: "name",
-                                                                description: None,
-                                                                deprecation_reason: None,
-                                                                field_type: NonNullType(
-                                                                    NamedType(
-                                                                        "String",
-                                                                    ),
-                                                                ),
-                                                                default_value: None,
-                                                                position: Position {
-                                                                    line: 37,
-                                                                    column: 19,
-                                                                },
-                                                            },
-                                                        ],
-                                                        field_type: NonNullType(
-                                                            NamedType(
-                                                                "String",
-                                                            ),
-                                                        ),
-                                                        resolve: None,
-                                                        source_configs: [],
-                                                        position: Position {
-                                                            line: 37,
-                                                            column: 5,
-                                                        },
-                                                    },
-                                                ],
-                                                position: Position {
-                                                    line: 36,
-                                                    column: 8,
-                                                },
-                                            },
-                                        ),
-                                    ),
-                                ],
-                                def_idx: {
-                                    "AnotherInterface": 1,
-                                    "AnotherType": 4,
-                                },
-                                ext_idx: {
-                                    "Query": 8,
-                                    "BasicInterface": 2,
-                                    "BasicUnion": 5,
-                                    "BasicInterfaceImpl": 3,
-                                    "BasicInput": 7,
-                                    "BasicObject": 0,
-                                    "BasicEnum": 6,
+                                ),
+                                resolve: None,
+                                source_configs: [],
+                                position: Position {
+                                    line: 12,
+                                    column: 5,
                                 },
                             },
-                        ),
-                    ],
-                    directories: {},
-                    modules: {
-                        "Definition": 0,
-                        "Extension": 1,
-                    },
-                    def_idx: {
-                        "AnotherInterface": "Extension",
-                        "BasicUnion": "Definition",
-                        "BasicInterface": "Definition",
-                        "BasicScalar": "Definition",
-                        "BasicInterfaceImpl": "Definition",
-                        "BasicEnum": "Definition",
-                        "BasicObject": "Definition",
-                        "BasicInput": "Definition",
-                        "AnotherType": "Extension",
-                    },
-                    ext_idx: {
-                        "BasicEnum": [
-                            "Extension",
+                            Field {
+                                name: "stringNonNullArg",
+                                description: None,
+                                deprecation_reason: None,
+                                args: [
+                                    InputValue {
+                                        name: "stringNonNull",
+                                        description: None,
+                                        deprecation_reason: None,
+                                        field_type: NonNullType(
+                                            NamedType(
+                                                "String",
+                                            ),
+                                        ),
+                                        default_value: Some(
+                                            String(
+                                                "default",
+                                            ),
+                                        ),
+                                        position: Position {
+                                            line: 13,
+                                            column: 22,
+                                        },
+                                    },
+                                ],
+                                field_type: NonNullType(
+                                    NamedType(
+                                        "String",
+                                    ),
+                                ),
+                                resolve: None,
+                                source_configs: [],
+                                position: Position {
+                                    line: 13,
+                                    column: 5,
+                                },
+                            },
+                            Field {
+                                name: "intNonNullArg",
+                                description: None,
+                                deprecation_reason: None,
+                                args: [
+                                    InputValue {
+                                        name: "intNonNull",
+                                        description: None,
+                                        deprecation_reason: None,
+                                        field_type: NonNullType(
+                                            NamedType(
+                                                "Int",
+                                            ),
+                                        ),
+                                        default_value: Some(
+                                            Int(
+                                                1,
+                                            ),
+                                        ),
+                                        position: Position {
+                                            line: 14,
+                                            column: 19,
+                                        },
+                                    },
+                                ],
+                                field_type: NonNullType(
+                                    NamedType(
+                                        "Int",
+                                    ),
+                                ),
+                                resolve: None,
+                                source_configs: [],
+                                position: Position {
+                                    line: 14,
+                                    column: 5,
+                                },
+                            },
+                            Field {
+                                name: "floatNonNullArg",
+                                description: None,
+                                deprecation_reason: None,
+                                args: [
+                                    InputValue {
+                                        name: "floatNonNull",
+                                        description: None,
+                                        deprecation_reason: None,
+                                        field_type: NonNullType(
+                                            NamedType(
+                                                "Float",
+                                            ),
+                                        ),
+                                        default_value: Some(
+                                            Float(
+                                                1.0,
+                                            ),
+                                        ),
+                                        position: Position {
+                                            line: 15,
+                                            column: 21,
+                                        },
+                                    },
+                                ],
+                                field_type: NonNullType(
+                                    NamedType(
+                                        "Float",
+                                    ),
+                                ),
+                                resolve: None,
+                                source_configs: [],
+                                position: Position {
+                                    line: 15,
+                                    column: 5,
+                                },
+                            },
+                            Field {
+                                name: "booleanNonNullArg",
+                                description: None,
+                                deprecation_reason: None,
+                                args: [
+                                    InputValue {
+                                        name: "booleanNonNull",
+                                        description: None,
+                                        deprecation_reason: None,
+                                        field_type: NonNullType(
+                                            NamedType(
+                                                "Boolean",
+                                            ),
+                                        ),
+                                        default_value: Some(
+                                            Boolean(
+                                                true,
+                                            ),
+                                        ),
+                                        position: Position {
+                                            line: 16,
+                                            column: 23,
+                                        },
+                                    },
+                                ],
+                                field_type: NonNullType(
+                                    NamedType(
+                                        "Boolean",
+                                    ),
+                                ),
+                                resolve: None,
+                                source_configs: [],
+                                position: Position {
+                                    line: 16,
+                                    column: 5,
+                                },
+                            },
+                            Field {
+                                name: "idArg",
+                                description: None,
+                                deprecation_reason: None,
+                                args: [
+                                    InputValue {
+                                        name: "id",
+                                        description: None,
+                                        deprecation_reason: None,
+                                        field_type: NamedType(
+                                            "ID",
+                                        ),
+                                        default_value: None,
+                                        position: Position {
+                                            line: 17,
+                                            column: 11,
+                                        },
+                                    },
+                                ],
+                                field_type: NamedType(
+                                    "ID",
+                                ),
+                                resolve: None,
+                                source_configs: [],
+                                position: Position {
+                                    line: 17,
+                                    column: 5,
+                                },
+                            },
+                            Field {
+                                name: "stringArg",
+                                description: None,
+                                deprecation_reason: None,
+                                args: [
+                                    InputValue {
+                                        name: "string",
+                                        description: None,
+                                        deprecation_reason: None,
+                                        field_type: NamedType(
+                                            "String",
+                                        ),
+                                        default_value: None,
+                                        position: Position {
+                                            line: 18,
+                                            column: 15,
+                                        },
+                                    },
+                                ],
+                                field_type: NamedType(
+                                    "String",
+                                ),
+                                resolve: None,
+                                source_configs: [],
+                                position: Position {
+                                    line: 18,
+                                    column: 5,
+                                },
+                            },
+                            Field {
+                                name: "intArg",
+                                description: None,
+                                deprecation_reason: None,
+                                args: [
+                                    InputValue {
+                                        name: "int",
+                                        description: None,
+                                        deprecation_reason: None,
+                                        field_type: NamedType(
+                                            "Int",
+                                        ),
+                                        default_value: None,
+                                        position: Position {
+                                            line: 19,
+                                            column: 12,
+                                        },
+                                    },
+                                ],
+                                field_type: NamedType(
+                                    "Int",
+                                ),
+                                resolve: None,
+                                source_configs: [],
+                                position: Position {
+                                    line: 19,
+                                    column: 5,
+                                },
+                            },
+                            Field {
+                                name: "floatArg",
+                                description: None,
+                                deprecation_reason: None,
+                                args: [
+                                    InputValue {
+                                        name: "float",
+                                        description: None,
+                                        deprecation_reason: None,
+                                        field_type: NamedType(
+                                            "Float",
+                                        ),
+                                        default_value: None,
+                                        position: Position {
+                                            line: 20,
+                                            column: 14,
+                                        },
+                                    },
+                                ],
+                                field_type: NamedType(
+                                    "Float",
+                                ),
+                                resolve: None,
+                                source_configs: [],
+                                position: Position {
+                                    line: 20,
+                                    column: 5,
+                                },
+                            },
+                            Field {
+                                name: "booleanArg",
+                                description: None,
+                                deprecation_reason: None,
+                                args: [
+                                    InputValue {
+                                        name: "boolean",
+                                        description: None,
+                                        deprecation_reason: None,
+                                        field_type: NamedType(
+                                            "Boolean",
+                                        ),
+                                        default_value: None,
+                                        position: Position {
+                                            line: 21,
+                                            column: 16,
+                                        },
+                                    },
+                                ],
+                                field_type: NamedType(
+                                    "Boolean",
+                                ),
+                                resolve: None,
+                                source_configs: [],
+                                position: Position {
+                                    line: 21,
+                                    column: 5,
+                                },
+                            },
+                            Field {
+                                name: "basicScalar",
+                                description: None,
+                                deprecation_reason: None,
+                                args: [],
+                                field_type: NamedType(
+                                    "BasicScalar",
+                                ),
+                                resolve: None,
+                                source_configs: [],
+                                position: Position {
+                                    line: 22,
+                                    column: 5,
+                                },
+                            },
                         ],
-                        "Query": [
-                            "Extension",
+                        name: "BasicObject",
+                        description: None,
+                        interfaces: [],
+                        module: [
+                            "Basic/Definition.graphql",
                         ],
-                        "BasicInterface": [
-                            "Extension",
-                        ],
-                        "BasicUnion": [
-                            "Extension",
-                        ],
-                        "BasicInterfaceImpl": [
-                            "Extension",
-                        ],
-                        "BasicInput": [
-                            "Extension",
-                        ],
-                        "BasicObject": [
-                            "Extension",
-                        ],
-                    },
-                },
-            ),
-            Module(
-                Module {
-                    name: "root",
-                    schema_definition: Some(
-                        SchemaDefinition {
-                            query: Some(
-                                "Query",
-                            ),
-                            mutation: Some(
-                                "Mutation",
-                            ),
-                            subscription: None,
+                        position: Position {
+                            line: 1,
+                            column: 1,
                         },
-                    ),
-                    children: [
-                        Definition(
-                            ObjectDefinition(
-                                ObjectDefinition {
-                                    fields: [
-                                        Field {
-                                            name: "version",
-                                            description: None,
-                                            deprecation_reason: None,
-                                            args: [],
-                                            field_type: NamedType(
-                                                "String",
-                                            ),
-                                            resolve: None,
-                                            source_configs: [],
-                                            position: Position {
-                                                line: 7,
-                                                column: 5,
-                                            },
-                                        },
-                                    ],
-                                    name: "Query",
-                                    description: None,
-                                    interfaces: [],
-                                    position: Position {
-                                        line: 6,
-                                        column: 1,
-                                    },
-                                },
-                            ),
-                        ),
-                        Definition(
-                            ObjectDefinition(
-                                ObjectDefinition {
-                                    fields: [
-                                        Field {
-                                            name: "version",
-                                            description: None,
-                                            deprecation_reason: None,
-                                            args: [],
-                                            field_type: NamedType(
-                                                "String",
-                                            ),
-                                            resolve: None,
-                                            source_configs: [],
-                                            position: Position {
-                                                line: 11,
-                                                column: 5,
-                                            },
-                                        },
-                                    ],
-                                    name: "Mutation",
-                                    description: None,
-                                    interfaces: [],
-                                    position: Position {
-                                        line: 10,
-                                        column: 1,
-                                    },
-                                },
-                            ),
-                        ),
-                    ],
-                    def_idx: {
-                        "Query": 0,
-                        "Mutation": 1,
                     },
-                    ext_idx: {},
-                },
+                ),
             ),
-            Directory(
-                Directory {
-                    name: "Deprecation",
-                    children: [
-                        Module(
-                            Module {
-                                name: "Definition",
-                                schema_definition: None,
-                                children: [
-                                    Definition(
-                                        ObjectDefinition(
-                                            ObjectDefinition {
-                                                fields: [
-                                                    Field {
-                                                        name: "deprecatedField",
-                                                        description: None,
-                                                        deprecation_reason: Some(
-                                                            "No longer supported",
-                                                        ),
-                                                        args: [],
-                                                        field_type: NamedType(
-                                                            "String",
-                                                        ),
-                                                        resolve: None,
-                                                        source_configs: [],
-                                                        position: Position {
-                                                            line: 2,
-                                                            column: 3,
-                                                        },
-                                                    },
-                                                ],
-                                                name: "DeprecatedFieldObject",
-                                                description: None,
-                                                interfaces: [],
-                                                position: Position {
-                                                    line: 1,
-                                                    column: 1,
-                                                },
-                                            },
-                                        ),
-                                    ),
-                                ],
-                                def_idx: {
-                                    "DeprecatedFieldObject": 0,
+            Definition(
+                InterfaceDefinition(
+                    InterfaceDefinition {
+                        name: "BasicInterface",
+                        description: None,
+                        fields: [
+                            Field {
+                                name: "interfaceField",
+                                description: None,
+                                deprecation_reason: None,
+                                args: [],
+                                field_type: NamedType(
+                                    "String",
+                                ),
+                                resolve: None,
+                                source_configs: [],
+                                position: Position {
+                                    line: 26,
+                                    column: 5,
                                 },
-                                ext_idx: {},
                             },
+                            Field {
+                                name: "basicScalar",
+                                description: None,
+                                deprecation_reason: None,
+                                args: [],
+                                field_type: NamedType(
+                                    "BasicScalar",
+                                ),
+                                resolve: None,
+                                source_configs: [],
+                                position: Position {
+                                    line: 27,
+                                    column: 5,
+                                },
+                            },
+                        ],
+                        interfaces: [],
+                        module: [
+                            "Basic/Definition.graphql",
+                        ],
+                        position: Position {
+                            line: 25,
+                            column: 1,
+                        },
+                    },
+                ),
+            ),
+            Definition(
+                ObjectDefinition(
+                    ObjectDefinition {
+                        fields: [
+                            Field {
+                                name: "interfaceField",
+                                description: None,
+                                deprecation_reason: None,
+                                args: [],
+                                field_type: NamedType(
+                                    "String",
+                                ),
+                                resolve: None,
+                                source_configs: [],
+                                position: Position {
+                                    line: 31,
+                                    column: 5,
+                                },
+                            },
+                            Field {
+                                name: "basicScalar",
+                                description: None,
+                                deprecation_reason: None,
+                                args: [],
+                                field_type: NamedType(
+                                    "BasicScalar",
+                                ),
+                                resolve: None,
+                                source_configs: [],
+                                position: Position {
+                                    line: 32,
+                                    column: 5,
+                                },
+                            },
+                        ],
+                        name: "BasicInterfaceImpl",
+                        description: None,
+                        interfaces: [
+                            "BasicInterface",
+                        ],
+                        module: [
+                            "Basic/Definition.graphql",
+                        ],
+                        position: Position {
+                            line: 30,
+                            column: 1,
+                        },
+                    },
+                ),
+            ),
+            Definition(
+                UnionDefinition(
+                    UnionDefinition {
+                        name: "BasicUnion",
+                        description: None,
+                        types: [
+                            "BasicObject",
+                            "BasicInterfaceImpl",
+                        ],
+                        module: [
+                            "Basic/Definition.graphql",
+                        ],
+                        position: Position {
+                            line: 35,
+                            column: 1,
+                        },
+                    },
+                ),
+            ),
+            Definition(
+                EnumDefinition(
+                    EnumDefinition {
+                        name: "BasicEnum",
+                        description: None,
+                        values: [
+                            EnumValue {
+                                name: "ENUM_VALUE_1",
+                                description: None,
+                                deprecation_reason: None,
+                                position: Position {
+                                    line: 38,
+                                    column: 5,
+                                },
+                            },
+                            EnumValue {
+                                name: "ENUM_VALUE_2",
+                                description: None,
+                                deprecation_reason: None,
+                                position: Position {
+                                    line: 39,
+                                    column: 5,
+                                },
+                            },
+                        ],
+                        module: [
+                            "Basic/Definition.graphql",
+                        ],
+                        position: Position {
+                            line: 37,
+                            column: 1,
+                        },
+                    },
+                ),
+            ),
+            Definition(
+                InputDefinition(
+                    InputDefinition {
+                        name: "BasicInput",
+                        description: None,
+                        fields: [
+                            InputValue {
+                                name: "idNonNull",
+                                description: None,
+                                deprecation_reason: None,
+                                field_type: NonNullType(
+                                    NamedType(
+                                        "ID",
+                                    ),
+                                ),
+                                default_value: Some(
+                                    String(
+                                        "default",
+                                    ),
+                                ),
+                                position: Position {
+                                    line: 43,
+                                    column: 5,
+                                },
+                            },
+                            InputValue {
+                                name: "stringNonNull",
+                                description: None,
+                                deprecation_reason: None,
+                                field_type: NonNullType(
+                                    NamedType(
+                                        "String",
+                                    ),
+                                ),
+                                default_value: Some(
+                                    String(
+                                        "default",
+                                    ),
+                                ),
+                                position: Position {
+                                    line: 44,
+                                    column: 5,
+                                },
+                            },
+                            InputValue {
+                                name: "intNonNull",
+                                description: None,
+                                deprecation_reason: None,
+                                field_type: NonNullType(
+                                    NamedType(
+                                        "Int",
+                                    ),
+                                ),
+                                default_value: Some(
+                                    Int(
+                                        1,
+                                    ),
+                                ),
+                                position: Position {
+                                    line: 45,
+                                    column: 5,
+                                },
+                            },
+                            InputValue {
+                                name: "floatNonNull",
+                                description: None,
+                                deprecation_reason: None,
+                                field_type: NonNullType(
+                                    NamedType(
+                                        "Float",
+                                    ),
+                                ),
+                                default_value: Some(
+                                    Float(
+                                        1.0,
+                                    ),
+                                ),
+                                position: Position {
+                                    line: 46,
+                                    column: 5,
+                                },
+                            },
+                            InputValue {
+                                name: "booleanNonNull",
+                                description: None,
+                                deprecation_reason: None,
+                                field_type: NonNullType(
+                                    NamedType(
+                                        "Boolean",
+                                    ),
+                                ),
+                                default_value: Some(
+                                    Boolean(
+                                        true,
+                                    ),
+                                ),
+                                position: Position {
+                                    line: 47,
+                                    column: 5,
+                                },
+                            },
+                            InputValue {
+                                name: "basicScalarNotNull",
+                                description: None,
+                                deprecation_reason: None,
+                                field_type: NonNullType(
+                                    NamedType(
+                                        "BasicScalar",
+                                    ),
+                                ),
+                                default_value: Some(
+                                    String(
+                                        "123",
+                                    ),
+                                ),
+                                position: Position {
+                                    line: 48,
+                                    column: 5,
+                                },
+                            },
+                            InputValue {
+                                name: "id",
+                                description: None,
+                                deprecation_reason: None,
+                                field_type: NamedType(
+                                    "ID",
+                                ),
+                                default_value: None,
+                                position: Position {
+                                    line: 49,
+                                    column: 5,
+                                },
+                            },
+                            InputValue {
+                                name: "string",
+                                description: None,
+                                deprecation_reason: None,
+                                field_type: NamedType(
+                                    "String",
+                                ),
+                                default_value: None,
+                                position: Position {
+                                    line: 50,
+                                    column: 5,
+                                },
+                            },
+                            InputValue {
+                                name: "int",
+                                description: None,
+                                deprecation_reason: None,
+                                field_type: NamedType(
+                                    "Int",
+                                ),
+                                default_value: None,
+                                position: Position {
+                                    line: 51,
+                                    column: 5,
+                                },
+                            },
+                            InputValue {
+                                name: "float",
+                                description: None,
+                                deprecation_reason: None,
+                                field_type: NamedType(
+                                    "Float",
+                                ),
+                                default_value: None,
+                                position: Position {
+                                    line: 52,
+                                    column: 5,
+                                },
+                            },
+                            InputValue {
+                                name: "boolean",
+                                description: None,
+                                deprecation_reason: None,
+                                field_type: NamedType(
+                                    "Boolean",
+                                ),
+                                default_value: None,
+                                position: Position {
+                                    line: 53,
+                                    column: 5,
+                                },
+                            },
+                            InputValue {
+                                name: "basicScalar",
+                                description: None,
+                                deprecation_reason: None,
+                                field_type: NamedType(
+                                    "BasicScalar",
+                                ),
+                                default_value: None,
+                                position: Position {
+                                    line: 54,
+                                    column: 5,
+                                },
+                            },
+                        ],
+                        module: [
+                            "Basic/Definition.graphql",
+                        ],
+                        position: Position {
+                            line: 42,
+                            column: 1,
+                        },
+                    },
+                ),
+            ),
+            Definition(
+                ScalarDefinition(
+                    ScalarDefinition {
+                        name: "BasicScalar",
+                        description: Some(
+                            "BasicScalar description\n",
                         ),
-                    ],
-                    directories: {},
-                    modules: {
-                        "Definition": 0,
+                        module: [
+                            "Basic/Definition.graphql",
+                        ],
+                        position: Position {
+                            line: 60,
+                            column: 1,
+                        },
+                        type_aliases: {
+                            "swift": "String",
+                            "java": "java.lang.String",
+                            "python": "str",
+                        },
                     },
-                    def_idx: {
-                        "DeprecatedFieldObject": "Definition",
-                    },
-                    ext_idx: {},
-                },
+                ),
             ),
         ],
-        directories: {
-            "Nested1": 0,
-            "Basic": 1,
-            "Deprecation": 3,
-        },
-        modules: {
-            "root": 2,
-        },
-        def_idx: {
-            "Nested1": "Nested1",
-            "Nested2": "Nested1",
-            "Query": "root",
-            "Mutation": "root",
-            "BasicUnion": "Basic",
-            "BasicInterface": "Basic",
-            "BasicEnum": "Basic",
-            "AnotherInterface": "Basic",
-            "BasicInterfaceImpl": "Basic",
-            "AnotherType": "Basic",
-            "BasicInput": "Basic",
-            "BasicScalar": "Basic",
-            "BasicObject": "Basic",
-            "DeprecatedFieldObject": "Deprecation",
-        },
-        ext_idx: {
-            "BasicUnion": [
-                "Basic",
+        [
+            "Basic/Extension.graphql",
+        ]: [
+            Extension(
+                ObjectExtension(
+                    ObjectExtension {
+                        name: "BasicObject",
+                        interfaces: [],
+                        fields: [
+                            Field {
+                                name: "extendedField",
+                                description: None,
+                                deprecation_reason: None,
+                                args: [],
+                                field_type: NonNullType(
+                                    NamedType(
+                                        "ID",
+                                    ),
+                                ),
+                                resolve: None,
+                                source_configs: [],
+                                position: Position {
+                                    line: 2,
+                                    column: 5,
+                                },
+                            },
+                            Field {
+                                name: "extendedFieldWithArg",
+                                description: None,
+                                deprecation_reason: None,
+                                args: [
+                                    InputValue {
+                                        name: "idNonNull",
+                                        description: None,
+                                        deprecation_reason: None,
+                                        field_type: NonNullType(
+                                            NamedType(
+                                                "ID",
+                                            ),
+                                        ),
+                                        default_value: None,
+                                        position: Position {
+                                            line: 3,
+                                            column: 26,
+                                        },
+                                    },
+                                ],
+                                field_type: NonNullType(
+                                    NamedType(
+                                        "ID",
+                                    ),
+                                ),
+                                resolve: None,
+                                source_configs: [],
+                                position: Position {
+                                    line: 3,
+                                    column: 5,
+                                },
+                            },
+                        ],
+                        module: [
+                            "Basic/Extension.graphql",
+                        ],
+                        position: Position {
+                            line: 1,
+                            column: 8,
+                        },
+                    },
+                ),
+            ),
+            Definition(
+                InterfaceDefinition(
+                    InterfaceDefinition {
+                        name: "AnotherInterface",
+                        description: None,
+                        fields: [
+                            Field {
+                                name: "anotherField",
+                                description: None,
+                                deprecation_reason: None,
+                                args: [],
+                                field_type: NonNullType(
+                                    NamedType(
+                                        "ID",
+                                    ),
+                                ),
+                                resolve: None,
+                                source_configs: [],
+                                position: Position {
+                                    line: 7,
+                                    column: 5,
+                                },
+                            },
+                        ],
+                        interfaces: [],
+                        module: [
+                            "Basic/Extension.graphql",
+                        ],
+                        position: Position {
+                            line: 6,
+                            column: 1,
+                        },
+                    },
+                ),
+            ),
+            Extension(
+                InterfaceExtension(
+                    InterfaceExtension {
+                        name: "BasicInterface",
+                        fields: [
+                            Field {
+                                name: "extendedField",
+                                description: None,
+                                deprecation_reason: None,
+                                args: [],
+                                field_type: NonNullType(
+                                    NamedType(
+                                        "ID",
+                                    ),
+                                ),
+                                resolve: None,
+                                source_configs: [],
+                                position: Position {
+                                    line: 11,
+                                    column: 5,
+                                },
+                            },
+                            Field {
+                                name: "extendedFieldWithArg",
+                                description: None,
+                                deprecation_reason: None,
+                                args: [
+                                    InputValue {
+                                        name: "idNonNull",
+                                        description: None,
+                                        deprecation_reason: None,
+                                        field_type: NonNullType(
+                                            NamedType(
+                                                "ID",
+                                            ),
+                                        ),
+                                        default_value: None,
+                                        position: Position {
+                                            line: 12,
+                                            column: 26,
+                                        },
+                                    },
+                                ],
+                                field_type: NonNullType(
+                                    NamedType(
+                                        "ID",
+                                    ),
+                                ),
+                                resolve: None,
+                                source_configs: [],
+                                position: Position {
+                                    line: 12,
+                                    column: 5,
+                                },
+                            },
+                            Field {
+                                name: "anotherField",
+                                description: None,
+                                deprecation_reason: None,
+                                args: [],
+                                field_type: NonNullType(
+                                    NamedType(
+                                        "ID",
+                                    ),
+                                ),
+                                resolve: None,
+                                source_configs: [],
+                                position: Position {
+                                    line: 13,
+                                    column: 5,
+                                },
+                            },
+                        ],
+                        interfaces: [
+                            "AnotherInterface",
+                        ],
+                        module: [
+                            "Basic/Extension.graphql",
+                        ],
+                        position: Position {
+                            line: 10,
+                            column: 8,
+                        },
+                    },
+                ),
+            ),
+            Extension(
+                ObjectExtension(
+                    ObjectExtension {
+                        name: "BasicInterfaceImpl",
+                        interfaces: [
+                            "AnotherInterface",
+                        ],
+                        fields: [
+                            Field {
+                                name: "extendedField",
+                                description: None,
+                                deprecation_reason: None,
+                                args: [],
+                                field_type: NonNullType(
+                                    NamedType(
+                                        "ID",
+                                    ),
+                                ),
+                                resolve: None,
+                                source_configs: [],
+                                position: Position {
+                                    line: 17,
+                                    column: 5,
+                                },
+                            },
+                            Field {
+                                name: "extendedFieldWithArg",
+                                description: None,
+                                deprecation_reason: None,
+                                args: [
+                                    InputValue {
+                                        name: "idNonNull",
+                                        description: None,
+                                        deprecation_reason: None,
+                                        field_type: NonNullType(
+                                            NamedType(
+                                                "ID",
+                                            ),
+                                        ),
+                                        default_value: None,
+                                        position: Position {
+                                            line: 18,
+                                            column: 26,
+                                        },
+                                    },
+                                ],
+                                field_type: NonNullType(
+                                    NamedType(
+                                        "ID",
+                                    ),
+                                ),
+                                resolve: None,
+                                source_configs: [],
+                                position: Position {
+                                    line: 18,
+                                    column: 5,
+                                },
+                            },
+                            Field {
+                                name: "anotherField",
+                                description: None,
+                                deprecation_reason: None,
+                                args: [],
+                                field_type: NonNullType(
+                                    NamedType(
+                                        "ID",
+                                    ),
+                                ),
+                                resolve: None,
+                                source_configs: [],
+                                position: Position {
+                                    line: 19,
+                                    column: 5,
+                                },
+                            },
+                        ],
+                        module: [
+                            "Basic/Extension.graphql",
+                        ],
+                        position: Position {
+                            line: 16,
+                            column: 8,
+                        },
+                    },
+                ),
+            ),
+            Definition(
+                ObjectDefinition(
+                    ObjectDefinition {
+                        fields: [
+                            Field {
+                                name: "anotherField",
+                                description: None,
+                                deprecation_reason: None,
+                                args: [],
+                                field_type: NonNullType(
+                                    NamedType(
+                                        "ID",
+                                    ),
+                                ),
+                                resolve: None,
+                                source_configs: [],
+                                position: Position {
+                                    line: 23,
+                                    column: 5,
+                                },
+                            },
+                        ],
+                        name: "AnotherType",
+                        description: None,
+                        interfaces: [],
+                        module: [
+                            "Basic/Extension.graphql",
+                        ],
+                        position: Position {
+                            line: 22,
+                            column: 1,
+                        },
+                    },
+                ),
+            ),
+            Extension(
+                UnionExtension(
+                    UnionExtension {
+                        name: "BasicUnion",
+                        types: [
+                            "AnotherType",
+                        ],
+                        module: [
+                            "Basic/Extension.graphql",
+                        ],
+                        position: Position {
+                            line: 26,
+                            column: 8,
+                        },
+                    },
+                ),
+            ),
+            Extension(
+                EnumExtension(
+                    EnumExtension {
+                        name: "BasicEnum",
+                        values: [
+                            EnumValue {
+                                name: "EXTENDED_VALUE",
+                                description: None,
+                                deprecation_reason: None,
+                                position: Position {
+                                    line: 29,
+                                    column: 5,
+                                },
+                            },
+                        ],
+                        module: [
+                            "Basic/Extension.graphql",
+                        ],
+                        position: Position {
+                            line: 28,
+                            column: 8,
+                        },
+                    },
+                ),
+            ),
+            Extension(
+                InputExtension(
+                    InputExtension {
+                        name: "BasicInput",
+                        fields: [
+                            InputValue {
+                                name: "extendedField",
+                                description: None,
+                                deprecation_reason: None,
+                                field_type: NonNullType(
+                                    NamedType(
+                                        "ID",
+                                    ),
+                                ),
+                                default_value: None,
+                                position: Position {
+                                    line: 33,
+                                    column: 5,
+                                },
+                            },
+                        ],
+                        module: [
+                            "Basic/Extension.graphql",
+                        ],
+                        position: Position {
+                            line: 32,
+                            column: 8,
+                        },
+                    },
+                ),
+            ),
+            Extension(
+                ObjectExtension(
+                    ObjectExtension {
+                        name: "Query",
+                        interfaces: [],
+                        fields: [
+                            Field {
+                                name: "extendedHello",
+                                description: None,
+                                deprecation_reason: None,
+                                args: [
+                                    InputValue {
+                                        name: "name",
+                                        description: None,
+                                        deprecation_reason: None,
+                                        field_type: NonNullType(
+                                            NamedType(
+                                                "String",
+                                            ),
+                                        ),
+                                        default_value: None,
+                                        position: Position {
+                                            line: 37,
+                                            column: 19,
+                                        },
+                                    },
+                                ],
+                                field_type: NonNullType(
+                                    NamedType(
+                                        "String",
+                                    ),
+                                ),
+                                resolve: None,
+                                source_configs: [],
+                                position: Position {
+                                    line: 37,
+                                    column: 5,
+                                },
+                            },
+                        ],
+                        module: [
+                            "Basic/Extension.graphql",
+                        ],
+                        position: Position {
+                            line: 36,
+                            column: 8,
+                        },
+                    },
+                ),
+            ),
+        ],
+        [
+            "Deprecation/Definition.graphql",
+        ]: [
+            Definition(
+                ObjectDefinition(
+                    ObjectDefinition {
+                        fields: [
+                            Field {
+                                name: "deprecatedField",
+                                description: None,
+                                deprecation_reason: Some(
+                                    "No longer supported",
+                                ),
+                                args: [],
+                                field_type: NamedType(
+                                    "String",
+                                ),
+                                resolve: None,
+                                source_configs: [],
+                                position: Position {
+                                    line: 2,
+                                    column: 3,
+                                },
+                            },
+                        ],
+                        name: "DeprecatedFieldObject",
+                        description: None,
+                        interfaces: [],
+                        module: [
+                            "Deprecation/Definition.graphql",
+                        ],
+                        position: Position {
+                            line: 1,
+                            column: 1,
+                        },
+                    },
+                ),
+            ),
+        ],
+        [
+            "Nested1/Nested2/nested2.graphql",
+        ]: [
+            Definition(
+                ObjectDefinition(
+                    ObjectDefinition {
+                        fields: [
+                            Field {
+                                name: "value",
+                                description: None,
+                                deprecation_reason: None,
+                                args: [],
+                                field_type: NamedType(
+                                    "String",
+                                ),
+                                resolve: None,
+                                source_configs: [],
+                                position: Position {
+                                    line: 2,
+                                    column: 5,
+                                },
+                            },
+                        ],
+                        name: "Nested2",
+                        description: None,
+                        interfaces: [],
+                        module: [
+                            "Nested1/Nested2/nested2.graphql",
+                        ],
+                        position: Position {
+                            line: 1,
+                            column: 1,
+                        },
+                    },
+                ),
+            ),
+        ],
+        [
+            "Nested1/nested1.graphql",
+        ]: [
+            Definition(
+                ObjectDefinition(
+                    ObjectDefinition {
+                        fields: [
+                            Field {
+                                name: "nested2",
+                                description: None,
+                                deprecation_reason: None,
+                                args: [],
+                                field_type: NamedType(
+                                    "Nested2",
+                                ),
+                                resolve: None,
+                                source_configs: [],
+                                position: Position {
+                                    line: 2,
+                                    column: 5,
+                                },
+                            },
+                        ],
+                        name: "Nested1",
+                        description: None,
+                        interfaces: [],
+                        module: [
+                            "Nested1/nested1.graphql",
+                        ],
+                        position: Position {
+                            line: 1,
+                            column: 1,
+                        },
+                    },
+                ),
+            ),
+        ],
+        [
+            "root.graphql",
+        ]: [
+            Definition(
+                ObjectDefinition(
+                    ObjectDefinition {
+                        fields: [
+                            Field {
+                                name: "version",
+                                description: None,
+                                deprecation_reason: None,
+                                args: [],
+                                field_type: NamedType(
+                                    "String",
+                                ),
+                                resolve: None,
+                                source_configs: [],
+                                position: Position {
+                                    line: 7,
+                                    column: 5,
+                                },
+                            },
+                        ],
+                        name: "Query",
+                        description: None,
+                        interfaces: [],
+                        module: [
+                            "root.graphql",
+                        ],
+                        position: Position {
+                            line: 6,
+                            column: 1,
+                        },
+                    },
+                ),
+            ),
+            Definition(
+                ObjectDefinition(
+                    ObjectDefinition {
+                        fields: [
+                            Field {
+                                name: "version",
+                                description: None,
+                                deprecation_reason: None,
+                                args: [],
+                                field_type: NamedType(
+                                    "String",
+                                ),
+                                resolve: None,
+                                source_configs: [],
+                                position: Position {
+                                    line: 11,
+                                    column: 5,
+                                },
+                            },
+                        ],
+                        name: "Mutation",
+                        description: None,
+                        interfaces: [],
+                        module: [
+                            "root.graphql",
+                        ],
+                        position: Position {
+                            line: 10,
+                            column: 1,
+                        },
+                    },
+                ),
+            ),
+        ],
+    },
+    def_locs: {
+        "BasicUnion": (
+            [
+                "Basic/Definition.graphql",
             ],
-            "BasicInput": [
-                "Basic",
+            3,
+        ),
+        "BasicInterface": (
+            [
+                "Basic/Definition.graphql",
             ],
-            "BasicInterfaceImpl": [
-                "Basic",
+            1,
+        ),
+        "BasicObject": (
+            [
+                "Basic/Definition.graphql",
             ],
-            "BasicInterface": [
-                "Basic",
+            0,
+        ),
+        "Nested2": (
+            [
+                "Nested1/Nested2/nested2.graphql",
             ],
-            "BasicObject": [
-                "Basic",
+            0,
+        ),
+        "Query": (
+            [
+                "root.graphql",
             ],
-            "BasicEnum": [
-                "Basic",
+            0,
+        ),
+        "BasicInput": (
+            [
+                "Basic/Definition.graphql",
             ],
-            "Query": [
-                "Basic",
+            5,
+        ),
+        "Mutation": (
+            [
+                "root.graphql",
             ],
-        },
+            1,
+        ),
+        "AnotherInterface": (
+            [
+                "Basic/Extension.graphql",
+            ],
+            1,
+        ),
+        "BasicScalar": (
+            [
+                "Basic/Definition.graphql",
+            ],
+            6,
+        ),
+        "Nested1": (
+            [
+                "Nested1/nested1.graphql",
+            ],
+            0,
+        ),
+        "AnotherType": (
+            [
+                "Basic/Extension.graphql",
+            ],
+            4,
+        ),
+        "BasicEnum": (
+            [
+                "Basic/Definition.graphql",
+            ],
+            4,
+        ),
+        "DeprecatedFieldObject": (
+            [
+                "Deprecation/Definition.graphql",
+            ],
+            0,
+        ),
+        "BasicInterfaceImpl": (
+            [
+                "Basic/Definition.graphql",
+            ],
+            2,
+        ),
+    },
+    ext_locs: {
+        "BasicInterface": [
+            (
+                [
+                    "Basic/Extension.graphql",
+                ],
+                2,
+            ),
+        ],
+        "BasicInterfaceImpl": [
+            (
+                [
+                    "Basic/Extension.graphql",
+                ],
+                3,
+            ),
+        ],
+        "BasicEnum": [
+            (
+                [
+                    "Basic/Extension.graphql",
+                ],
+                6,
+            ),
+        ],
+        "BasicInput": [
+            (
+                [
+                    "Basic/Extension.graphql",
+                ],
+                7,
+            ),
+        ],
+        "Query": [
+            (
+                [
+                    "Basic/Extension.graphql",
+                ],
+                8,
+            ),
+        ],
+        "BasicObject": [
+            (
+                [
+                    "Basic/Extension.graphql",
+                ],
+                0,
+            ),
+        ],
+        "BasicUnion": [
+            (
+                [
+                    "Basic/Extension.graphql",
+                ],
+                5,
+            ),
+        ],
+    },
+    module_children: {
+        []: [
+            "Nested1/Nested2/nested2.graphql",
+            "Nested1/nested1.graphql",
+            "Basic/Definition.graphql",
+            "Basic/Definition.graphql",
+            "Basic/Definition.graphql",
+            "Basic/Definition.graphql",
+            "Basic/Definition.graphql",
+            "Basic/Definition.graphql",
+            "Basic/Definition.graphql",
+            "Basic/Extension.graphql",
+            "Basic/Extension.graphql",
+            "Basic/Extension.graphql",
+            "Basic/Extension.graphql",
+            "Basic/Extension.graphql",
+            "Basic/Extension.graphql",
+            "Basic/Extension.graphql",
+            "Basic/Extension.graphql",
+            "Basic/Extension.graphql",
+            "root.graphql",
+            "root.graphql",
+            "Deprecation/Definition.graphql",
+        ],
     },
 }

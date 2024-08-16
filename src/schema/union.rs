@@ -1,10 +1,11 @@
-use super::{Position, Schema};
+use super::{Module, Position};
 
 #[derive(Debug)]
 pub struct UnionDefinition {
     pub name: String,
     pub description: Option<String>,
     pub types: Vec<String>,
+    pub module: Module,
     pub position: Position,
 }
 
@@ -18,6 +19,7 @@ impl UnionDefinition {
 pub struct UnionExtension {
     pub name: String,
     pub types: Vec<String>,
+    pub module: Module,
     pub position: Position,
 }
 

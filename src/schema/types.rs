@@ -1,5 +1,7 @@
 use std::collections::HashMap;
 
+pub type Module = Vec<String>;
+
 #[derive(Debug)]
 pub struct Position {
     // pub directory: Vec<String>,

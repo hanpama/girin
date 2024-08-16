@@ -1,73 +1,3 @@
-type Nested1 {
-  nested2: Nested2
-}
-
-type Nested2 {
-  value: String
-}
-
-type Query {
-  version: String
-  extendedHello(name: String!): String!
-}
-
-type Mutation {
-  version: String
-}
-
-union BasicUnion = BasicObject | BasicInterfaceImpl | AnotherType
-
-interface BasicInterface implements AnotherInterface {
-  interfaceField: String
-  basicScalar: BasicScalar
-  extendedField: ID!
-  extendedFieldWithArg(idNonNull: ID!): ID!
-  anotherField: ID!
-}
-
-enum BasicEnum {
-  ENUM_VALUE_1
-  ENUM_VALUE_2
-  EXTENDED_VALUE
-}
-
-interface AnotherInterface {
-  anotherField: ID!
-}
-
-type BasicInterfaceImpl implements BasicInterface & AnotherInterface {
-  interfaceField: String
-  basicScalar: BasicScalar
-  extendedField: ID!
-  extendedFieldWithArg(idNonNull: ID!): ID!
-  anotherField: ID!
-}
-
-type AnotherType {
-  anotherField: ID!
-}
-
-input BasicInput {
-  idNonNull: ID! = "default"
-  stringNonNull: String! = "default"
-  intNonNull: Int! = 1
-  floatNonNull: Float! = 1
-  booleanNonNull: Boolean! = true
-  basicScalarNotNull: BasicScalar! = "123"
-  id: ID
-  string: String
-  int: Int
-  float: Float
-  boolean: Boolean
-  basicScalar: BasicScalar
-  extendedField: ID!
-}
-
-"""
-  BasicScalar description
-"""
-scalar BasicScalar
-
 type BasicObject {
   idNonNull: ID!
   stringNonNull: String!
@@ -94,6 +24,76 @@ type BasicObject {
   extendedFieldWithArg(idNonNull: ID!): ID!
 }
 
+interface BasicInterface implements AnotherInterface {
+  interfaceField: String
+  basicScalar: BasicScalar
+  extendedField: ID!
+  extendedFieldWithArg(idNonNull: ID!): ID!
+  anotherField: ID!
+}
+
+type BasicInterfaceImpl implements BasicInterface & AnotherInterface {
+  interfaceField: String
+  basicScalar: BasicScalar
+  extendedField: ID!
+  extendedFieldWithArg(idNonNull: ID!): ID!
+  anotherField: ID!
+}
+
+union BasicUnion = BasicObject | BasicInterfaceImpl | AnotherType
+
+enum BasicEnum {
+  ENUM_VALUE_1
+  ENUM_VALUE_2
+  EXTENDED_VALUE
+}
+
+input BasicInput {
+  idNonNull: ID! = "default"
+  stringNonNull: String! = "default"
+  intNonNull: Int! = 1
+  floatNonNull: Float! = 1
+  booleanNonNull: Boolean! = true
+  basicScalarNotNull: BasicScalar! = "123"
+  id: ID
+  string: String
+  int: Int
+  float: Float
+  boolean: Boolean
+  basicScalar: BasicScalar
+  extendedField: ID!
+}
+
+"""
+  BasicScalar description
+"""
+scalar BasicScalar
+
+interface AnotherInterface {
+  anotherField: ID!
+}
+
+type AnotherType {
+  anotherField: ID!
+}
+
 type DeprecatedFieldObject {
   deprecatedField: String @deprecated(reason: "No longer supported")
+}
+
+type Nested2 {
+  value: String
+}
+
+type Nested1 {
+  nested2: Nested2
+}
+
+type Query {
+  version: String
+  extendedHello(name: String!): String!
+}
+
+type Mutation {
+  version: String
 }
