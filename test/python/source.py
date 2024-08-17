@@ -3,18 +3,6 @@
 import typing
 
 
-class Nested2Source(typing.Protocol):
-    value: "typing.Optional[str]"
-
-
-class AnotherInterfaceSource(typing.Protocol):
-    anotherField: "typing.Any"
-
-
-class AnotherTypeSource(typing.Protocol):
-    anotherField: "typing.Any"
-
-
 class BasicObjectSource(typing.Protocol):
     idNonNull: "typing.Any"
     stringNonNull: "str"
@@ -26,18 +14,20 @@ class BasicObjectSource(typing.Protocol):
     int: "typing.Optional[int]"
     float: "typing.Optional[float]"
     boolean: "typing.Optional[bool]"
-    basicScalar: "typing.Optional[typing.Any]"
+    basicScalar: "typing.Optional[BasicScalarSource]"
     extendedField: "typing.Any"
 
 
 class BasicInterfaceSource(typing.Protocol):
     interfaceField: "typing.Optional[str]"
-    basicScalar: "typing.Optional[typing.Any]"
+    basicScalar: "typing.Optional[BasicScalarSource]"
+    extendedField: "typing.Any"
+    anotherField: "typing.Any"
 
 
 class BasicInterfaceImplSource(BasicInterfaceSource, typing.Protocol):
     interfaceField: "typing.Optional[str]"
-    basicScalar: "typing.Optional[typing.Any]"
+    basicScalar: "typing.Optional[BasicScalarSource]"
     extendedField: "typing.Any"
     anotherField: "typing.Any"
 
@@ -55,24 +45,37 @@ class BasicInputSource:
     intNonNull: "int"
     floatNonNull: "float"
     booleanNonNull: "bool"
-    basicScalarNotNull: "typing.Any"
+    basicScalarNotNull: "BasicScalarSource"
     id: "typing.Optional[typing.Any]"
     string: "typing.Optional[str]"
     int: "typing.Optional[int]"
     float: "typing.Optional[float]"
     boolean: "typing.Optional[bool]"
-    basicScalar: "typing.Optional[typing.Any]"
+    basicScalar: "typing.Optional[BasicScalarSource]"
+    extendedField: "typing.Any"
 
 
 BasicScalarSource = str
 
 
-class Nested1Source(typing.Protocol):
-    nested2: "typing.Optional[typing.Any]"
+class AnotherInterfaceSource(typing.Protocol):
+    anotherField: "typing.Any"
+
+
+class AnotherTypeSource(typing.Protocol):
+    anotherField: "typing.Any"
 
 
 class DeprecatedFieldObjectSource(typing.Protocol):
     deprecatedField: "typing.Optional[str]"
+
+
+class Nested2Source(typing.Protocol):
+    value: "typing.Optional[str]"
+
+
+class Nested1Source(typing.Protocol):
+    nested2: "typing.Optional[Nested2Source]"
 
 
 class QuerySource(typing.Protocol):

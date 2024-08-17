@@ -6,30 +6,6 @@ from .protocol import Config
 
 
 def build_schema(config: Config) -> graphql.GraphQLSchema:
-    Nested2 = graphql.GraphQLObjectType(
-        name="Nested2",
-        fields=lambda: {
-            "value": graphql.GraphQLField(
-                type_=graphql.GraphQLString,
-            ),
-        },
-    )
-    AnotherInterface = graphql.GraphQLInterfaceType(
-        name="AnotherInterface",
-        fields=lambda: {
-            "anotherField": graphql.GraphQLField(
-                type_=graphql.GraphQLNonNull(graphql.GraphQLID),
-            ),
-        },
-    )
-    AnotherType = graphql.GraphQLObjectType(
-        name="AnotherType",
-        fields=lambda: {
-            "anotherField": graphql.GraphQLField(
-                type_=graphql.GraphQLNonNull(graphql.GraphQLID),
-            ),
-        },
-    )
     BasicObject = graphql.GraphQLObjectType(
         name="BasicObject",
         fields=lambda: {
@@ -171,7 +147,7 @@ def build_schema(config: Config) -> graphql.GraphQLSchema:
                         type_=graphql.GraphQLNonNull(graphql.GraphQLID),
                     ),
                 },
-                resolve=config.Basic.Definition.BasicObject.extended_field_with_arg,
+                resolve=config.Basic.Extension.BasicObject.extended_field_with_arg,
             ),
         },
     )
@@ -194,7 +170,7 @@ def build_schema(config: Config) -> graphql.GraphQLSchema:
                         type_=graphql.GraphQLNonNull(graphql.GraphQLID),
                     ),
                 },
-                resolve=config.Basic.Definition.BasicInterface.extended_field_with_arg,
+                resolve=config.Basic.Extension.BasicInterface.extended_field_with_arg,
             ),
             "anotherField": graphql.GraphQLField(
                 type_=graphql.GraphQLNonNull(graphql.GraphQLID),
@@ -220,7 +196,7 @@ def build_schema(config: Config) -> graphql.GraphQLSchema:
                         type_=graphql.GraphQLNonNull(graphql.GraphQLID),
                     ),
                 },
-                resolve=config.Basic.Definition.BasicInterfaceImpl.extended_field_with_arg,
+                resolve=config.Basic.Extension.BasicInterfaceImpl.extended_field_with_arg,
             ),
             "anotherField": graphql.GraphQLField(
                 type_=graphql.GraphQLNonNull(graphql.GraphQLID),
@@ -281,11 +257,19 @@ def build_schema(config: Config) -> graphql.GraphQLSchema:
         parse_value=config.Basic.Definition.BasicScalar.parse_value,
         parse_literal=config.Basic.Definition.BasicScalar.parse_literal,
     )
-    Nested1 = graphql.GraphQLObjectType(
-        name="Nested1",
+    AnotherInterface = graphql.GraphQLInterfaceType(
+        name="AnotherInterface",
         fields=lambda: {
-            "nested2": graphql.GraphQLField(
-                type_=Nested2,
+            "anotherField": graphql.GraphQLField(
+                type_=graphql.GraphQLNonNull(graphql.GraphQLID),
+            ),
+        },
+    )
+    AnotherType = graphql.GraphQLObjectType(
+        name="AnotherType",
+        fields=lambda: {
+            "anotherField": graphql.GraphQLField(
+                type_=graphql.GraphQLNonNull(graphql.GraphQLID),
             ),
         },
     )
@@ -295,6 +279,22 @@ def build_schema(config: Config) -> graphql.GraphQLSchema:
             "deprecatedField": graphql.GraphQLField(
                 type_=graphql.GraphQLString,
                 deprecation_reason="No longer supported",
+            ),
+        },
+    )
+    Nested2 = graphql.GraphQLObjectType(
+        name="Nested2",
+        fields=lambda: {
+            "value": graphql.GraphQLField(
+                type_=graphql.GraphQLString,
+            ),
+        },
+    )
+    Nested1 = graphql.GraphQLObjectType(
+        name="Nested1",
+        fields=lambda: {
+            "nested2": graphql.GraphQLField(
+                type_=Nested2,
             ),
         },
     )
@@ -311,7 +311,7 @@ def build_schema(config: Config) -> graphql.GraphQLSchema:
                         type_=graphql.GraphQLNonNull(graphql.GraphQLString),
                     ),
                 },
-                resolve=config.root.Query.extended_hello,
+                resolve=config.Basic.Extension.Query.extended_hello,
             ),
         },
     )

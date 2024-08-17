@@ -8,7 +8,8 @@ Schema {
     subscription: None,
     types: {
         [
-            "Basic/Definition.graphql",
+            "Basic",
+            "Definition",
         ]: [
             Definition(
                 ObjectDefinition(
@@ -26,6 +27,10 @@ Schema {
                                 ),
                                 resolve: None,
                                 source_configs: [],
+                                module: [
+                                    "Basic",
+                                    "Definition",
+                                ],
                                 position: Position {
                                     line: 2,
                                     column: 5,
@@ -43,6 +48,10 @@ Schema {
                                 ),
                                 resolve: None,
                                 source_configs: [],
+                                module: [
+                                    "Basic",
+                                    "Definition",
+                                ],
                                 position: Position {
                                     line: 3,
                                     column: 5,
@@ -60,6 +69,10 @@ Schema {
                                 ),
                                 resolve: None,
                                 source_configs: [],
+                                module: [
+                                    "Basic",
+                                    "Definition",
+                                ],
                                 position: Position {
                                     line: 4,
                                     column: 5,
@@ -77,6 +90,10 @@ Schema {
                                 ),
                                 resolve: None,
                                 source_configs: [],
+                                module: [
+                                    "Basic",
+                                    "Definition",
+                                ],
                                 position: Position {
                                     line: 5,
                                     column: 5,
@@ -94,6 +111,10 @@ Schema {
                                 ),
                                 resolve: None,
                                 source_configs: [],
+                                module: [
+                                    "Basic",
+                                    "Definition",
+                                ],
                                 position: Position {
                                     line: 6,
                                     column: 5,
@@ -109,6 +130,10 @@ Schema {
                                 ),
                                 resolve: None,
                                 source_configs: [],
+                                module: [
+                                    "Basic",
+                                    "Definition",
+                                ],
                                 position: Position {
                                     line: 7,
                                     column: 5,
@@ -124,6 +149,10 @@ Schema {
                                 ),
                                 resolve: None,
                                 source_configs: [],
+                                module: [
+                                    "Basic",
+                                    "Definition",
+                                ],
                                 position: Position {
                                     line: 8,
                                     column: 5,
@@ -139,6 +168,10 @@ Schema {
                                 ),
                                 resolve: None,
                                 source_configs: [],
+                                module: [
+                                    "Basic",
+                                    "Definition",
+                                ],
                                 position: Position {
                                     line: 9,
                                     column: 5,
@@ -154,6 +187,10 @@ Schema {
                                 ),
                                 resolve: None,
                                 source_configs: [],
+                                module: [
+                                    "Basic",
+                                    "Definition",
+                                ],
                                 position: Position {
                                     line: 10,
                                     column: 5,
@@ -169,6 +206,10 @@ Schema {
                                 ),
                                 resolve: None,
                                 source_configs: [],
+                                module: [
+                                    "Basic",
+                                    "Definition",
+                                ],
                                 position: Position {
                                     line: 11,
                                     column: 5,
@@ -206,6 +247,10 @@ Schema {
                                 ),
                                 resolve: None,
                                 source_configs: [],
+                                module: [
+                                    "Basic",
+                                    "Definition",
+                                ],
                                 position: Position {
                                     line: 12,
                                     column: 5,
@@ -243,6 +288,10 @@ Schema {
                                 ),
                                 resolve: None,
                                 source_configs: [],
+                                module: [
+                                    "Basic",
+                                    "Definition",
+                                ],
                                 position: Position {
                                     line: 13,
                                     column: 5,
@@ -280,6 +329,10 @@ Schema {
                                 ),
                                 resolve: None,
                                 source_configs: [],
+                                module: [
+                                    "Basic",
+                                    "Definition",
+                                ],
                                 position: Position {
                                     line: 14,
                                     column: 5,
@@ -317,6 +370,10 @@ Schema {
                                 ),
                                 resolve: None,
                                 source_configs: [],
+                                module: [
+                                    "Basic",
+                                    "Definition",
+                                ],
                                 position: Position {
                                     line: 15,
                                     column: 5,
@@ -354,6 +411,10 @@ Schema {
                                 ),
                                 resolve: None,
                                 source_configs: [],
+                                module: [
+                                    "Basic",
+                                    "Definition",
+                                ],
                                 position: Position {
                                     line: 16,
                                     column: 5,
@@ -383,6 +444,10 @@ Schema {
                                 ),
                                 resolve: None,
                                 source_configs: [],
+                                module: [
+                                    "Basic",
+                                    "Definition",
+                                ],
                                 position: Position {
                                     line: 17,
                                     column: 5,
@@ -412,6 +477,10 @@ Schema {
                                 ),
                                 resolve: None,
                                 source_configs: [],
+                                module: [
+                                    "Basic",
+                                    "Definition",
+                                ],
                                 position: Position {
                                     line: 18,
                                     column: 5,
@@ -441,6 +510,10 @@ Schema {
                                 ),
                                 resolve: None,
                                 source_configs: [],
+                                module: [
+                                    "Basic",
+                                    "Definition",
+                                ],
                                 position: Position {
                                     line: 19,
                                     column: 5,
@@ -470,6 +543,10 @@ Schema {
                                 ),
                                 resolve: None,
                                 source_configs: [],
+                                module: [
+                                    "Basic",
+                                    "Definition",
+                                ],
                                 position: Position {
                                     line: 20,
                                     column: 5,
@@ -499,6 +576,10 @@ Schema {
                                 ),
                                 resolve: None,
                                 source_configs: [],
+                                module: [
+                                    "Basic",
+                                    "Definition",
+                                ],
                                 position: Position {
                                     line: 21,
                                     column: 5,
@@ -514,6 +595,10 @@ Schema {
                                 ),
                                 resolve: None,
                                 source_configs: [],
+                                module: [
+                                    "Basic",
+                                    "Definition",
+                                ],
                                 position: Position {
                                     line: 22,
                                     column: 5,
@@ -524,7 +609,8 @@ Schema {
                         description: None,
                         interfaces: [],
                         module: [
-                            "Basic/Definition.graphql",
+                            "Basic",
+                            "Definition",
                         ],
                         position: Position {
                             line: 1,
@@ -549,6 +635,10 @@ Schema {
                                 ),
                                 resolve: None,
                                 source_configs: [],
+                                module: [
+                                    "Basic",
+                                    "Definition",
+                                ],
                                 position: Position {
                                     line: 26,
                                     column: 5,
@@ -564,6 +654,10 @@ Schema {
                                 ),
                                 resolve: None,
                                 source_configs: [],
+                                module: [
+                                    "Basic",
+                                    "Definition",
+                                ],
                                 position: Position {
                                     line: 27,
                                     column: 5,
@@ -572,7 +666,8 @@ Schema {
                         ],
                         interfaces: [],
                         module: [
-                            "Basic/Definition.graphql",
+                            "Basic",
+                            "Definition",
                         ],
                         position: Position {
                             line: 25,
@@ -595,6 +690,10 @@ Schema {
                                 ),
                                 resolve: None,
                                 source_configs: [],
+                                module: [
+                                    "Basic",
+                                    "Definition",
+                                ],
                                 position: Position {
                                     line: 31,
                                     column: 5,
@@ -610,6 +709,10 @@ Schema {
                                 ),
                                 resolve: None,
                                 source_configs: [],
+                                module: [
+                                    "Basic",
+                                    "Definition",
+                                ],
                                 position: Position {
                                     line: 32,
                                     column: 5,
@@ -622,7 +725,8 @@ Schema {
                             "BasicInterface",
                         ],
                         module: [
-                            "Basic/Definition.graphql",
+                            "Basic",
+                            "Definition",
                         ],
                         position: Position {
                             line: 30,
@@ -641,7 +745,8 @@ Schema {
                             "BasicInterfaceImpl",
                         ],
                         module: [
-                            "Basic/Definition.graphql",
+                            "Basic",
+                            "Definition",
                         ],
                         position: Position {
                             line: 35,
@@ -676,7 +781,8 @@ Schema {
                             },
                         ],
                         module: [
-                            "Basic/Definition.graphql",
+                            "Basic",
+                            "Definition",
                         ],
                         position: Position {
                             line: 37,
@@ -885,7 +991,8 @@ Schema {
                             },
                         ],
                         module: [
-                            "Basic/Definition.graphql",
+                            "Basic",
+                            "Definition",
                         ],
                         position: Position {
                             line: 42,
@@ -902,15 +1009,16 @@ Schema {
                             "BasicScalar description\n",
                         ),
                         module: [
-                            "Basic/Definition.graphql",
+                            "Basic",
+                            "Definition",
                         ],
                         position: Position {
                             line: 60,
                             column: 1,
                         },
                         type_aliases: {
-                            "swift": "String",
                             "java": "java.lang.String",
+                            "swift": "String",
                             "python": "str",
                         },
                     },
@@ -918,7 +1026,8 @@ Schema {
             ),
         ],
         [
-            "Basic/Extension.graphql",
+            "Basic",
+            "Extension",
         ]: [
             Extension(
                 ObjectExtension(
@@ -938,6 +1047,10 @@ Schema {
                                 ),
                                 resolve: None,
                                 source_configs: [],
+                                module: [
+                                    "Basic",
+                                    "Extension",
+                                ],
                                 position: Position {
                                     line: 2,
                                     column: 5,
@@ -971,6 +1084,10 @@ Schema {
                                 ),
                                 resolve: None,
                                 source_configs: [],
+                                module: [
+                                    "Basic",
+                                    "Extension",
+                                ],
                                 position: Position {
                                     line: 3,
                                     column: 5,
@@ -978,7 +1095,8 @@ Schema {
                             },
                         ],
                         module: [
-                            "Basic/Extension.graphql",
+                            "Basic",
+                            "Extension",
                         ],
                         position: Position {
                             line: 1,
@@ -1005,6 +1123,10 @@ Schema {
                                 ),
                                 resolve: None,
                                 source_configs: [],
+                                module: [
+                                    "Basic",
+                                    "Extension",
+                                ],
                                 position: Position {
                                     line: 7,
                                     column: 5,
@@ -1013,7 +1135,8 @@ Schema {
                         ],
                         interfaces: [],
                         module: [
-                            "Basic/Extension.graphql",
+                            "Basic",
+                            "Extension",
                         ],
                         position: Position {
                             line: 6,
@@ -1039,6 +1162,10 @@ Schema {
                                 ),
                                 resolve: None,
                                 source_configs: [],
+                                module: [
+                                    "Basic",
+                                    "Extension",
+                                ],
                                 position: Position {
                                     line: 11,
                                     column: 5,
@@ -1072,6 +1199,10 @@ Schema {
                                 ),
                                 resolve: None,
                                 source_configs: [],
+                                module: [
+                                    "Basic",
+                                    "Extension",
+                                ],
                                 position: Position {
                                     line: 12,
                                     column: 5,
@@ -1089,6 +1220,10 @@ Schema {
                                 ),
                                 resolve: None,
                                 source_configs: [],
+                                module: [
+                                    "Basic",
+                                    "Extension",
+                                ],
                                 position: Position {
                                     line: 13,
                                     column: 5,
@@ -1099,7 +1234,8 @@ Schema {
                             "AnotherInterface",
                         ],
                         module: [
-                            "Basic/Extension.graphql",
+                            "Basic",
+                            "Extension",
                         ],
                         position: Position {
                             line: 10,
@@ -1128,6 +1264,10 @@ Schema {
                                 ),
                                 resolve: None,
                                 source_configs: [],
+                                module: [
+                                    "Basic",
+                                    "Extension",
+                                ],
                                 position: Position {
                                     line: 17,
                                     column: 5,
@@ -1161,6 +1301,10 @@ Schema {
                                 ),
                                 resolve: None,
                                 source_configs: [],
+                                module: [
+                                    "Basic",
+                                    "Extension",
+                                ],
                                 position: Position {
                                     line: 18,
                                     column: 5,
@@ -1178,6 +1322,10 @@ Schema {
                                 ),
                                 resolve: None,
                                 source_configs: [],
+                                module: [
+                                    "Basic",
+                                    "Extension",
+                                ],
                                 position: Position {
                                     line: 19,
                                     column: 5,
@@ -1185,7 +1333,8 @@ Schema {
                             },
                         ],
                         module: [
-                            "Basic/Extension.graphql",
+                            "Basic",
+                            "Extension",
                         ],
                         position: Position {
                             line: 16,
@@ -1210,6 +1359,10 @@ Schema {
                                 ),
                                 resolve: None,
                                 source_configs: [],
+                                module: [
+                                    "Basic",
+                                    "Extension",
+                                ],
                                 position: Position {
                                     line: 23,
                                     column: 5,
@@ -1220,7 +1373,8 @@ Schema {
                         description: None,
                         interfaces: [],
                         module: [
-                            "Basic/Extension.graphql",
+                            "Basic",
+                            "Extension",
                         ],
                         position: Position {
                             line: 22,
@@ -1237,7 +1391,8 @@ Schema {
                             "AnotherType",
                         ],
                         module: [
-                            "Basic/Extension.graphql",
+                            "Basic",
+                            "Extension",
                         ],
                         position: Position {
                             line: 26,
@@ -1262,7 +1417,8 @@ Schema {
                             },
                         ],
                         module: [
-                            "Basic/Extension.graphql",
+                            "Basic",
+                            "Extension",
                         ],
                         position: Position {
                             line: 28,
@@ -1293,7 +1449,8 @@ Schema {
                             },
                         ],
                         module: [
-                            "Basic/Extension.graphql",
+                            "Basic",
+                            "Extension",
                         ],
                         position: Position {
                             line: 32,
@@ -1336,6 +1493,10 @@ Schema {
                                 ),
                                 resolve: None,
                                 source_configs: [],
+                                module: [
+                                    "Basic",
+                                    "Extension",
+                                ],
                                 position: Position {
                                     line: 37,
                                     column: 5,
@@ -1343,7 +1504,8 @@ Schema {
                             },
                         ],
                         module: [
-                            "Basic/Extension.graphql",
+                            "Basic",
+                            "Extension",
                         ],
                         position: Position {
                             line: 36,
@@ -1354,7 +1516,8 @@ Schema {
             ),
         ],
         [
-            "Deprecation/Definition.graphql",
+            "Deprecation",
+            "Definition",
         ]: [
             Definition(
                 ObjectDefinition(
@@ -1372,6 +1535,10 @@ Schema {
                                 ),
                                 resolve: None,
                                 source_configs: [],
+                                module: [
+                                    "Deprecation",
+                                    "Definition",
+                                ],
                                 position: Position {
                                     line: 2,
                                     column: 3,
@@ -1382,7 +1549,8 @@ Schema {
                         description: None,
                         interfaces: [],
                         module: [
-                            "Deprecation/Definition.graphql",
+                            "Deprecation",
+                            "Definition",
                         ],
                         position: Position {
                             line: 1,
@@ -1393,7 +1561,9 @@ Schema {
             ),
         ],
         [
-            "Nested1/Nested2/nested2.graphql",
+            "Nested1",
+            "Nested2",
+            "nested2",
         ]: [
             Definition(
                 ObjectDefinition(
@@ -1409,6 +1579,11 @@ Schema {
                                 ),
                                 resolve: None,
                                 source_configs: [],
+                                module: [
+                                    "Nested1",
+                                    "Nested2",
+                                    "nested2",
+                                ],
                                 position: Position {
                                     line: 2,
                                     column: 5,
@@ -1419,7 +1594,9 @@ Schema {
                         description: None,
                         interfaces: [],
                         module: [
-                            "Nested1/Nested2/nested2.graphql",
+                            "Nested1",
+                            "Nested2",
+                            "nested2",
                         ],
                         position: Position {
                             line: 1,
@@ -1430,7 +1607,8 @@ Schema {
             ),
         ],
         [
-            "Nested1/nested1.graphql",
+            "Nested1",
+            "nested1",
         ]: [
             Definition(
                 ObjectDefinition(
@@ -1446,6 +1624,10 @@ Schema {
                                 ),
                                 resolve: None,
                                 source_configs: [],
+                                module: [
+                                    "Nested1",
+                                    "nested1",
+                                ],
                                 position: Position {
                                     line: 2,
                                     column: 5,
@@ -1456,7 +1638,8 @@ Schema {
                         description: None,
                         interfaces: [],
                         module: [
-                            "Nested1/nested1.graphql",
+                            "Nested1",
+                            "nested1",
                         ],
                         position: Position {
                             line: 1,
@@ -1467,7 +1650,7 @@ Schema {
             ),
         ],
         [
-            "root.graphql",
+            "root",
         ]: [
             Definition(
                 ObjectDefinition(
@@ -1483,6 +1666,9 @@ Schema {
                                 ),
                                 resolve: None,
                                 source_configs: [],
+                                module: [
+                                    "root",
+                                ],
                                 position: Position {
                                     line: 7,
                                     column: 5,
@@ -1493,7 +1679,7 @@ Schema {
                         description: None,
                         interfaces: [],
                         module: [
-                            "root.graphql",
+                            "root",
                         ],
                         position: Position {
                             line: 6,
@@ -1516,6 +1702,9 @@ Schema {
                                 ),
                                 resolve: None,
                                 source_configs: [],
+                                module: [
+                                    "root",
+                                ],
                                 position: Position {
                                     line: 11,
                                     column: 5,
@@ -1526,7 +1715,7 @@ Schema {
                         description: None,
                         interfaces: [],
                         module: [
-                            "root.graphql",
+                            "root",
                         ],
                         position: Position {
                             line: 10,
@@ -1538,136 +1727,110 @@ Schema {
         ],
     },
     def_locs: {
-        "BasicUnion": (
-            [
-                "Basic/Definition.graphql",
-            ],
-            3,
-        ),
-        "BasicInterface": (
-            [
-                "Basic/Definition.graphql",
-            ],
-            1,
-        ),
-        "BasicObject": (
-            [
-                "Basic/Definition.graphql",
-            ],
-            0,
-        ),
         "Nested2": (
             [
-                "Nested1/Nested2/nested2.graphql",
+                "Nested1",
+                "Nested2",
+                "nested2",
             ],
             0,
-        ),
-        "Query": (
-            [
-                "root.graphql",
-            ],
-            0,
-        ),
-        "BasicInput": (
-            [
-                "Basic/Definition.graphql",
-            ],
-            5,
-        ),
-        "Mutation": (
-            [
-                "root.graphql",
-            ],
-            1,
-        ),
-        "AnotherInterface": (
-            [
-                "Basic/Extension.graphql",
-            ],
-            1,
-        ),
-        "BasicScalar": (
-            [
-                "Basic/Definition.graphql",
-            ],
-            6,
-        ),
-        "Nested1": (
-            [
-                "Nested1/nested1.graphql",
-            ],
-            0,
-        ),
-        "AnotherType": (
-            [
-                "Basic/Extension.graphql",
-            ],
-            4,
         ),
         "BasicEnum": (
             [
-                "Basic/Definition.graphql",
+                "Basic",
+                "Definition",
             ],
             4,
         ),
         "DeprecatedFieldObject": (
             [
-                "Deprecation/Definition.graphql",
+                "Deprecation",
+                "Definition",
             ],
             0,
         ),
         "BasicInterfaceImpl": (
             [
-                "Basic/Definition.graphql",
+                "Basic",
+                "Definition",
             ],
             2,
         ),
+        "AnotherInterface": (
+            [
+                "Basic",
+                "Extension",
+            ],
+            1,
+        ),
+        "Mutation": (
+            [
+                "root",
+            ],
+            1,
+        ),
+        "Nested1": (
+            [
+                "Nested1",
+                "nested1",
+            ],
+            0,
+        ),
+        "BasicScalar": (
+            [
+                "Basic",
+                "Definition",
+            ],
+            6,
+        ),
+        "AnotherType": (
+            [
+                "Basic",
+                "Extension",
+            ],
+            4,
+        ),
+        "BasicObject": (
+            [
+                "Basic",
+                "Definition",
+            ],
+            0,
+        ),
+        "BasicInterface": (
+            [
+                "Basic",
+                "Definition",
+            ],
+            1,
+        ),
+        "BasicInput": (
+            [
+                "Basic",
+                "Definition",
+            ],
+            5,
+        ),
+        "Query": (
+            [
+                "root",
+            ],
+            0,
+        ),
+        "BasicUnion": (
+            [
+                "Basic",
+                "Definition",
+            ],
+            3,
+        ),
     },
     ext_locs: {
-        "BasicInterface": [
-            (
-                [
-                    "Basic/Extension.graphql",
-                ],
-                2,
-            ),
-        ],
-        "BasicInterfaceImpl": [
-            (
-                [
-                    "Basic/Extension.graphql",
-                ],
-                3,
-            ),
-        ],
-        "BasicEnum": [
-            (
-                [
-                    "Basic/Extension.graphql",
-                ],
-                6,
-            ),
-        ],
-        "BasicInput": [
-            (
-                [
-                    "Basic/Extension.graphql",
-                ],
-                7,
-            ),
-        ],
-        "Query": [
-            (
-                [
-                    "Basic/Extension.graphql",
-                ],
-                8,
-            ),
-        ],
         "BasicObject": [
             (
                 [
-                    "Basic/Extension.graphql",
+                    "Basic",
+                    "Extension",
                 ],
                 0,
             ),
@@ -1675,35 +1838,87 @@ Schema {
         "BasicUnion": [
             (
                 [
-                    "Basic/Extension.graphql",
+                    "Basic",
+                    "Extension",
                 ],
                 5,
             ),
         ],
+        "BasicEnum": [
+            (
+                [
+                    "Basic",
+                    "Extension",
+                ],
+                6,
+            ),
+        ],
+        "Query": [
+            (
+                [
+                    "Basic",
+                    "Extension",
+                ],
+                8,
+            ),
+        ],
+        "BasicInput": [
+            (
+                [
+                    "Basic",
+                    "Extension",
+                ],
+                7,
+            ),
+        ],
+        "BasicInterfaceImpl": [
+            (
+                [
+                    "Basic",
+                    "Extension",
+                ],
+                3,
+            ),
+        ],
+        "BasicInterface": [
+            (
+                [
+                    "Basic",
+                    "Extension",
+                ],
+                2,
+            ),
+        ],
     },
     module_children: {
-        []: [
-            "Nested1/Nested2/nested2.graphql",
-            "Nested1/nested1.graphql",
-            "Basic/Definition.graphql",
-            "Basic/Definition.graphql",
-            "Basic/Definition.graphql",
-            "Basic/Definition.graphql",
-            "Basic/Definition.graphql",
-            "Basic/Definition.graphql",
-            "Basic/Definition.graphql",
-            "Basic/Extension.graphql",
-            "Basic/Extension.graphql",
-            "Basic/Extension.graphql",
-            "Basic/Extension.graphql",
-            "Basic/Extension.graphql",
-            "Basic/Extension.graphql",
-            "Basic/Extension.graphql",
-            "Basic/Extension.graphql",
-            "Basic/Extension.graphql",
-            "root.graphql",
-            "root.graphql",
-            "Deprecation/Definition.graphql",
-        ],
+        [
+            "Basic",
+        ]: {
+            "Definition",
+            "Extension",
+        },
+        []: {
+            "Basic",
+            "Deprecation",
+            "Nested1",
+            "root",
+        },
+        [
+            "Nested1",
+        ]: {
+            "Nested2",
+            "nested1",
+        },
+        [
+            "Nested1",
+            "Nested2",
+        ]: {
+            "nested2",
+        },
+        [
+            "Deprecation",
+        ]: {
+            "Definition",
+        },
     },
 }

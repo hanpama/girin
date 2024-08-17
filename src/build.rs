@@ -11,7 +11,7 @@ use graphql_parser::schema;
 use crate::schema::{
     Definition, EnumDefinition, EnumExtension, EnumValue, Extension, Field, InputDefinition,
     InputExtension, InputValue, InterfaceDefinition, InterfaceExtension, ObjectDefinition,
-    ObjectExtension, Position, ResolverConfig, ScalarDefinition, Schema, SourceConfig,
+    ObjectExtension, Position, ResolveConfig, ScalarDefinition, Schema, SourceConfig,
     TypeExpression, UnionDefinition, UnionExtension, Value,
 };
 
@@ -40,9 +40,12 @@ fn build_file(s: &mut Schema, root: &Path, file: &Path) -> Result<(), SchemaBuil
     let document = parse_schema::<String>(&buf)?;
     let module: Vec<String> = file
         .strip_prefix(root)
-        .iter()
-        .map(|p| p.to_str().unwrap().to_owned())
+        .unwrap()
+        .with_extension("")
+        .components()
+        .map(|p| p.as_os_str().to_str().unwrap().to_owned())
         .collect();
+    println!("module: {:?}", module);
 
     let mut violations = vec![];
     for def in document.definitions {
@@ -168,7 +171,7 @@ fn build_object_type_definition(
     let mut fields = vec![];
 
     for fdef in def.fields.iter() {
-        match build_field_definition(&fdef) {
+        match build_field_definition(module, &fdef) {
             Ok(fdef) => fields.push(fdef),
             Err(err) => violations.extend(err.violations),
         }
@@ -196,7 +199,7 @@ fn build_object_type_extension(
     let mut fields = vec![];
 
     for fdef in def.fields.iter() {
-        match build_field_definition(&fdef) {
+        match build_field_definition(module, &fdef) {
             Ok(fdef) => fields.push(fdef),
             Err(err) => violations.extend(err.violations),
         }
@@ -216,10 +219,11 @@ fn build_object_type_extension(
 }
 
 fn build_field_definition(
+    module: &[String],
     def: &schema::Field<String>,
 ) -> Result<Field, GraphQLSchemaValidationError> {
     let mut deprecation_reason: Option<String> = None;
-    let mut resolve: Option<ResolverConfig> = None;
+    let mut resolve: Option<ResolveConfig> = None;
     let mut source_configs: Vec<SourceConfig> = Vec::new();
     let mut violations = vec![];
     let mut args = vec![];
@@ -263,6 +267,7 @@ fn build_field_definition(
         field_type: build_type_expression(&def.field_type),
         resolve,
         source_configs,
+        module: module.to_vec(),
         position: build_position(&def.position),
     });
 }
@@ -275,7 +280,7 @@ fn build_interface_type_definition(
     let mut fields = vec![];
 
     for fdef in def.fields.iter() {
-        match build_field_definition(&fdef) {
+        match build_field_definition(module, &fdef) {
             Ok(fdef) => fields.push(fdef),
             Err(err) => violations.extend(err.violations),
         }
@@ -303,7 +308,7 @@ fn build_interface_extension(
     let mut fields = vec![];
 
     for fdef in def.fields.iter() {
-        match build_field_definition(&fdef) {
+        match build_field_definition(module, &fdef) {
             Ok(fdef) => fields.push(fdef),
             Err(err) => violations.extend(err.violations),
         }
@@ -575,8 +580,8 @@ fn handle_deprecate(
 
 fn handle_resolve(
     directive: &schema::Directive<String>,
-) -> Result<ResolverConfig, GraphQLSchemaValidationError> {
-    let mut def = ResolverConfig { sync: false };
+) -> Result<ResolveConfig, GraphQLSchemaValidationError> {
+    let mut def = ResolveConfig { sync: false };
     let mut violations = vec![];
 
     for (key, value) in directive.arguments.iter() {

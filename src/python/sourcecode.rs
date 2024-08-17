@@ -1,11 +1,12 @@
-use std::collections::HashMap;
+use std::collections::BTreeMap;
 
 pub struct SourceCode {
     prelude: String,
     indent_unit: String,
     indent_level: i32,
-    first_imports: HashMap<String, Import>,
-    third_imports: HashMap<String, Import>,
+    std_imports: BTreeMap<String, Import>,
+    first_imports: BTreeMap<String, Import>,
+    third_imports: BTreeMap<String, Import>,
     body: Vec<String>,
     list_index: i32,
 }
@@ -55,11 +56,20 @@ impl SourceCode {
             prelude: "# GENERATED. DO NOT EDIT.\n# fmt: off".to_string(),
             indent_unit: "    ".to_string(),
             indent_level: 0,
-            first_imports: HashMap::new(),
-            third_imports: HashMap::new(),
+            std_imports: BTreeMap::new(),
+            first_imports: BTreeMap::new(),
+            third_imports: BTreeMap::new(),
             body: Vec::new(),
             list_index: 0,
         }
+    }
+
+    pub fn import_std(&mut self, module: &str) -> String {
+        if !self.std_imports.contains_key(module) {
+            self.std_imports
+                .insert(module.to_string(), Import::from_expr(module));
+        }
+        self.std_imports.get(module).unwrap().import.clone()
     }
 
     pub fn import_first(&mut self, module: &str) -> String {
@@ -99,6 +109,12 @@ impl SourceCode {
 
     pub fn write_to<W: std::io::Write>(&self, out: &mut W) -> std::io::Result<()> {
         writeln!(out, "{}", self.prelude)?;
+        for i in self.std_imports.values() {
+            writeln!(out, "{}", i.to_string())?;
+        }
+        if !self.std_imports.is_empty() {
+            writeln!(out)?;
+        }
         for i in self.third_imports.values() {
             writeln!(out, "{}", i.to_string())?;
         }
@@ -111,7 +127,10 @@ impl SourceCode {
         if !self.first_imports.is_empty() {
             writeln!(out)?;
         }
-        if !self.third_imports.is_empty() || !self.first_imports.is_empty() {
+        if !self.std_imports.is_empty()
+            || !self.third_imports.is_empty()
+            || !self.first_imports.is_empty()
+        {
             writeln!(out)?;
         }
         for line in &self.body {

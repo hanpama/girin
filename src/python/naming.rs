@@ -32,6 +32,10 @@ pub fn ext_interface_resolver_type(def: &InterfaceExtension) -> String {
     format!("{}Config", def.name)
 }
 
+pub fn config_type(def_name: &str) -> String {
+    format!("{}Config", def_name)
+}
+
 pub fn object_source(def: &ObjectDefinition) -> String {
     format!("{}Source", def.name)
 }

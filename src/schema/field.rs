@@ -1,4 +1,4 @@
-use super::{InputValue, Position, ResolverConfig, SourceConfig, TypeExpression};
+use super::{InputValue, Module, Position, ResolveConfig, SourceConfig, TypeExpression};
 
 #[derive(Debug)]
 pub struct Field {
@@ -7,8 +7,10 @@ pub struct Field {
     pub deprecation_reason: Option<String>,
     pub args: Vec<InputValue>,
     pub field_type: TypeExpression,
-    pub resolve: Option<ResolverConfig>,
+    pub resolve: Option<ResolveConfig>,
     pub source_configs: Vec<SourceConfig>,
+    pub module: Module,
+    pub type_name: String,
     pub position: Position,
 }
 
@@ -25,26 +27,6 @@ impl Field {
                 name: self.name.clone(),
                 type_: self.field_type.clone(),
             }]
-        }
-    }
-
-    pub fn get_resolve_option(&self) -> Option<ResolveOption> {
-        if let Some(resolve) = &self.resolve {
-            Some(ResolveOption {
-                name: self.name.clone(),
-                args: &self.args,
-                field_type: &self.field_type,
-                sync: resolve.sync,
-            })
-        } else if !self.args.is_empty() {
-            Some(ResolveOption {
-                name: self.name.clone(),
-                args: &self.args,
-                field_type: &self.field_type,
-                sync: false,
-            })
-        } else {
-            None
         }
     }
 }

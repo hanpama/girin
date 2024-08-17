@@ -67,17 +67,17 @@ fn render_object_type(src: &mut SourceCode, s: &Schema, def: &ObjectDefinition) 
     src.line("fields=lambda: {");
     src.indent();
     for field in &def.fields {
-        render_field(src, s, &def.module, &def.name, field)
+        render_field(src, s, &def.name, field)
     }
     for ext in s.collect_extentions(&def.name) {
         for field in &ext.as_object_ext().fields {
-            render_field(src, s, &def.module, &def.name, field)
+            render_field(src, s, &def.name, field)
         }
     }
     src.dedent();
     src.line("},");
 
-    let interfaces = s.collect_object_interfaces(&def.name);
+    let interfaces = s.collect_interfaces(&def.name);
 
     if interfaces.len() > 0 {
         src.line("interfaces=lambda: [");
@@ -101,8 +101,8 @@ fn render_interface_type(src: &mut SourceCode, s: &Schema, def: &InterfaceDefini
 
     src.line("fields=lambda: {");
     src.indent();
-    for field in s.collect_interface_fields(&def.name) {
-        render_field(src, s, &def.module, &def.name, field)
+    for field in s.collect_fields(&def.name) {
+        render_field(src, s, &def.name, field)
     }
     src.dedent();
     src.line("},");
@@ -110,7 +110,7 @@ fn render_interface_type(src: &mut SourceCode, s: &Schema, def: &InterfaceDefini
     if def.interfaces.len() > 0 {
         src.line("interfaces=lambda: [");
         src.indent();
-        for interface in s.collect_interface_interfaces(&def.name) {
+        for interface in s.collect_interfaces(&def.name) {
             src.line(format!("{},", naming::type_instance(interface)));
         }
         src.dedent();
@@ -158,13 +158,7 @@ fn render_scalar_type(src: &mut SourceCode, s: &Schema, def: &ScalarDefinition) 
     src.line(")");
 }
 
-fn render_field(
-    src: &mut SourceCode,
-    s: &Schema,
-    parent_module: &Module,
-    parent_name: &str,
-    def: &Field,
-) {
+fn render_field(src: &mut SourceCode, s: &Schema, def_name: &str, def: &Field) {
     src.line(format!("\"{}\": graphql.GraphQLField(", def.name));
     src.indent();
 
@@ -183,7 +177,7 @@ fn render_field(
         src.line("},");
     }
     if let Some(opt) = def.get_resolve_option() {
-        let def_config_path = format_definition_config_path(parent_module, parent_name);
+        let def_config_path = format_definition_config_path(&def.module, def_name);
 
         src.line(format!(
             "resolve={}.{},",

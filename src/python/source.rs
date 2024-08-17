@@ -11,7 +11,7 @@ pub fn render_source_defintiion(outdir: &PathBuf, s: &Schema) -> Result<(), Erro
     let mut file = File::create(outfile)?;
     let mut src = SourceCode::new();
 
-    for def in s.iter_all_definitions() {
+    for def in s.iter_definitions() {
         match def {
             Definition::ObjectDefinition(inner) => {
                 render_object_source(&mut src, s, inner);
@@ -48,7 +48,7 @@ pub fn render_source_defintiion(outdir: &PathBuf, s: &Schema) -> Result<(), Erro
 }
 
 fn render_object_source(src: &mut SourceCode, s: &Schema, def: &ObjectDefinition) {
-    src.import_third("typing");
+    src.import_std("typing");
 
     let mut superclasses = vec!["typing.Protocol".to_owned()];
     for interface in &def.interfaces {
@@ -65,7 +65,12 @@ fn render_object_source(src: &mut SourceCode, s: &Schema, def: &ObjectDefinition
 
     let mut pass = true;
 
-    for conf in s.collect_object_source_configs(def) {
+    let source_configs = s
+        .collect_fields(&def.name)
+        .into_iter()
+        .flat_map(|f| f.collect_source_configs());
+
+    for conf in source_configs {
         pass = false;
         src.line(&format!(
             "{name}: {type}",
@@ -82,7 +87,7 @@ fn render_object_source(src: &mut SourceCode, s: &Schema, def: &ObjectDefinition
 }
 
 fn render_interface_source(src: &mut SourceCode, s: &Schema, def: &InterfaceDefinition) {
-    src.import_third("typing");
+    src.import_std("typing");
 
     let mut superclasses = vec!["typing.Protocol".to_owned()];
     for interface in &def.interfaces {
@@ -98,7 +103,13 @@ fn render_interface_source(src: &mut SourceCode, s: &Schema, def: &InterfaceDefi
     src.indent();
 
     let mut pass = true;
-    for conf in s.collect_interface_source_configs(def) {
+
+    let source_configs = s
+        .collect_fields(&def.name)
+        .into_iter()
+        .flat_map(|f| f.collect_source_configs());
+
+    for conf in source_configs {
         pass = false;
         src.line(&format!(
             "{name}: {type}",
@@ -115,18 +126,18 @@ fn render_interface_source(src: &mut SourceCode, s: &Schema, def: &InterfaceDefi
 }
 
 fn render_input_source(src: &mut SourceCode, s: &Schema, def: &InputDefinition) {
-    src.import_third("typing");
+    src.import_std("typing");
 
     src.line(&format!("class {name}:", name = naming::input_source(def)));
     src.indent();
 
     let mut pass = true;
-    for conf in s.collect_input_source_configs(def) {
+    for conf in s.collect_input_fields(&def.name) {
         pass = false;
         src.line(&format!(
             "{name}: {type}",
-            name = conf.name,
-            type = format_type_expression(s, &conf.type_)
+            name = &conf.name,
+            type = format_type_expression(s, &conf.field_type)
         ));
     }
 
@@ -138,14 +149,14 @@ fn render_input_source(src: &mut SourceCode, s: &Schema, def: &InputDefinition) 
 }
 
 fn render_enum_source(src: &mut SourceCode, s: &Schema, def: &EnumDefinition) {
-    src.import_third("typing");
+    src.import_std("typing");
 
     src.line(&format!(
         "{name} = typing.Literal[",
         name = naming::enum_source(def)
     ));
     src.indent();
-    for value in s.collect_enum_values(def) {
+    for value in s.collect_enum_values(&def.name) {
         src.line(&format!("\"{}\",", value.name));
     }
     src.dedent();
@@ -153,7 +164,7 @@ fn render_enum_source(src: &mut SourceCode, s: &Schema, def: &EnumDefinition) {
 }
 
 fn render_scalar_source(src: &mut SourceCode, s: &Schema, def: &ScalarDefinition) {
-    src.import_third("typing");
+    src.import_std("typing");
 
     let alias = def.type_aliases.get("python");
     if let Some(alias) = alias {
@@ -199,7 +210,7 @@ fn _format_type_expression(s: &Schema, expr: &TypeExpression) -> String {
 
 fn format_type_alias(src: &mut SourceCode, expr: String) -> String {
     if expr.contains(".") {
-        return src.import_third(&expr);
+        return src.import_first(&expr);
     }
     return expr;
 }
@@ -213,15 +224,5 @@ fn format_named_type(s: &Schema, name: &str) -> String {
         "ID" => return "typing.Any".to_owned(),
         _ => {}
     }
-
-    let definition = s.get_definition(name);
-    if definition.is_none() {
-        return "typing.Any".to_owned();
-    }
-    match definition.unwrap() {
-        Definition::Object(inner) => naming::object_source(inner),
-        Definition::Interface(inner) => naming::interface_source(inner),
-        Definition::Scalar(inner) => naming::scalar_source(inner),
-        _ => unimplemented!(),
-    }
+    naming::source(s.get_definition(name).get_name())
 }

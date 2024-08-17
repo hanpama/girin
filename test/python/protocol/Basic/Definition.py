@@ -2,6 +2,8 @@
 # fmt: off
 import typing
 
+import graphql
+
 from ... import source
 
 
@@ -24,6 +26,12 @@ class Config(typing.NamedTuple):
     class BasicInterfaceImplConfig(typing.Protocol):
         pass
     
+    class BasicScalarConfig(typing.Protocol):
+        def serialize(self, value: typing.Any) -> typing.Any: ...
+        def parse_value(self, value: typing.Any) -> typing.Any: ...
+        def parse_literal(self, node: graphql.ValueNode, variables) -> typing.Any: ...
+    
     BasicObject: BasicObjectConfig
     BasicInterface: BasicInterfaceConfig
     BasicInterfaceImpl: BasicInterfaceImplConfig
+    BasicScalar: BasicScalarConfig

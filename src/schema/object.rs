@@ -25,14 +25,6 @@ impl ObjectDefinition {
             .flat_map(|field| field.collect_source_configs())
             .collect()
     }
-
-    pub fn collect_resolve_configs(&self) -> Vec<ResolveOption> {
-        self.fields
-            .iter()
-            .map(|field| field.get_resolve_option())
-            .filter_map(|opt| opt)
-            .collect()
-    }
 }
 
 #[derive(Debug)]
@@ -56,14 +48,6 @@ impl ObjectExtension {
         self.fields
             .iter()
             .flat_map(|field| field.collect_source_configs())
-            .collect()
-    }
-
-    pub fn collect_resolve_configs(&self) -> Vec<ResolveOption> {
-        self.fields
-            .iter()
-            .map(|field| field.get_resolve_option())
-            .filter_map(|opt| opt)
             .collect()
     }
 }

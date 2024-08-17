@@ -84,10 +84,11 @@ fn format_object_definition<'a>(
         position: graphql_parser::Pos::default(),
         name: def.name.as_str(),
         description: def.description.clone(),
-        implements_interfaces: s.collect_object_interfaces(&def.name),
+        implements_interfaces: s.collect_interfaces(&def.name),
         directives: format_directives(&None),
         fields: s
-            .collect_object_fields(&def.name)
+            .collect_fields(&def.name)
+            .into_iter()
             .map(|f| format_field_definition(f))
             .collect(),
     }
@@ -101,9 +102,10 @@ fn format_interface_definition<'a>(
         position: graphql_parser::Pos::default(),
         name: def.name.as_str(),
         description: def.description.clone(),
-        implements_interfaces: s.collect_interface_interfaces(&def.name),
+        implements_interfaces: s.collect_interfaces(&def.name),
         fields: s
-            .collect_interface_fields(&def.name)
+            .collect_fields(&def.name)
+            .into_iter()
             .map(|f| format_field_definition(f))
             .collect(),
         directives: format_directives(&None),
