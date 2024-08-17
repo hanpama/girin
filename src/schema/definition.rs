@@ -1,5 +1,7 @@
+use std::iter::empty;
+
 use super::{
-    EnumDefinition, EnumExtension, InputDefinition, InputExtension, InterfaceDefinition,
+    EnumDefinition, EnumExtension, Field, InputDefinition, InputExtension, InterfaceDefinition,
     InterfaceExtension, Module, ObjectDefinition, ObjectExtension, ScalarDefinition,
     UnionDefinition, UnionExtension,
 };
@@ -36,6 +38,27 @@ impl Type {
         match self {
             Type::Extension(ext) => ext,
             _ => unreachable!(),
+        }
+    }
+
+    pub fn get_field(&self, name: &str) -> Option<&Field> {
+        match self {
+            Type::Definition(def) => def.get_field(name),
+            Type::Extension(ext) => ext.get_field(name),
+        }
+    }
+
+    pub fn iter_fields(&self) -> impl Iterator<Item = &Field> {
+        match self {
+            Type::Definition(def) => def.iter_fields(),
+            Type::Extension(ext) => ext.iter_fields(),
+        }
+    }
+
+    pub fn iter_interfaces(&self) -> impl Iterator<Item = &str> {
+        match self {
+            Type::Definition(def) => def.iter_interfaces(),
+            Type::Extension(ext) => ext.iter_interfaces(),
         }
     }
 }
@@ -113,6 +136,30 @@ impl Definition {
             _ => unreachable!(),
         }
     }
+
+    pub fn get_field(&self, name: &str) -> Option<&Field> {
+        match self {
+            Definition::ObjectDefinition(object) => object.get_field(name),
+            Definition::InterfaceDefinition(interface) => interface.get_field(name),
+            _ => None,
+        }
+    }
+
+    pub fn iter_fields<'a>(&'a self) -> Box<dyn Iterator<Item = &Field> + 'a> {
+        match self {
+            Definition::ObjectDefinition(object) => Box::new(object.iter_fields()),
+            Definition::InterfaceDefinition(interface) => Box::new(interface.iter_fields()),
+            _ => Box::new(empty()),
+        }
+    }
+
+    pub fn iter_interfaces<'a>(&'a self) -> Box<dyn Iterator<Item = &str> + 'a> {
+        match self {
+            Definition::ObjectDefinition(object) => Box::new(object.iter_interfaces()),
+            Definition::InterfaceDefinition(interface) => Box::new(interface.iter_interfaces()),
+            _ => Box::new(empty()),
+        }
+    }
 }
 
 #[derive(Debug)]
@@ -177,6 +224,30 @@ impl Extension {
         match self {
             Extension::InputExtension(input) => input,
             _ => unreachable!(),
+        }
+    }
+
+    pub fn get_field(&self, name: &str) -> Option<&Field> {
+        match self {
+            Extension::ObjectExtension(object) => object.get_field(name),
+            Extension::InterfaceExtension(interface) => interface.get_field(name),
+            _ => None,
+        }
+    }
+
+    pub fn iter_fields<'a>(&'a self) -> Box<dyn Iterator<Item = &Field> + 'a> {
+        match self {
+            Extension::ObjectExtension(object) => Box::new(object.iter_fields()),
+            Extension::InterfaceExtension(interface) => Box::new(interface.iter_fields()),
+            _ => Box::new(empty()),
+        }
+    }
+
+    pub fn iter_interfaces<'a>(&'a self) -> Box<dyn Iterator<Item = &str> + 'a> {
+        match self {
+            Extension::ObjectExtension(object) => Box::new(object.iter_interfaces()),
+            Extension::InterfaceExtension(interface) => Box::new(interface.iter_interfaces()),
+            _ => Box::new(empty()),
         }
     }
 }

@@ -171,7 +171,7 @@ fn build_object_type_definition(
     let mut fields = vec![];
 
     for fdef in def.fields.iter() {
-        match build_field_definition(module, &fdef) {
+        match build_field_definition(module, &def.name, &fdef) {
             Ok(fdef) => fields.push(fdef),
             Err(err) => violations.extend(err.violations),
         }
@@ -199,7 +199,7 @@ fn build_object_type_extension(
     let mut fields = vec![];
 
     for fdef in def.fields.iter() {
-        match build_field_definition(module, &fdef) {
+        match build_field_definition(module, &def.name, &fdef) {
             Ok(fdef) => fields.push(fdef),
             Err(err) => violations.extend(err.violations),
         }
@@ -220,6 +220,7 @@ fn build_object_type_extension(
 
 fn build_field_definition(
     module: &[String],
+    type_name: &str,
     def: &schema::Field<String>,
 ) -> Result<Field, GraphQLSchemaValidationError> {
     let mut deprecation_reason: Option<String> = None;
@@ -268,6 +269,7 @@ fn build_field_definition(
         resolve,
         source_configs,
         module: module.to_vec(),
+        type_name: type_name.to_string(),
         position: build_position(&def.position),
     });
 }
@@ -280,7 +282,7 @@ fn build_interface_type_definition(
     let mut fields = vec![];
 
     for fdef in def.fields.iter() {
-        match build_field_definition(module, &fdef) {
+        match build_field_definition(module, &def.name, &fdef) {
             Ok(fdef) => fields.push(fdef),
             Err(err) => violations.extend(err.violations),
         }
@@ -308,7 +310,7 @@ fn build_interface_extension(
     let mut fields = vec![];
 
     for fdef in def.fields.iter() {
-        match build_field_definition(module, &fdef) {
+        match build_field_definition(module, &def.name, &fdef) {
             Ok(fdef) => fields.push(fdef),
             Err(err) => violations.extend(err.violations),
         }

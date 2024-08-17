@@ -190,14 +190,14 @@ fn format_type_expression(s: &Schema, expr: &TypeExpression) -> String {
 fn _format_type_expression(s: &Schema, expr: &TypeExpression) -> String {
     match expr {
         TypeExpression::NonNullType(inner) => match inner.borrow() {
-            TypeExpression::NamedType(ref name) => format_named_type(s, name),
+            TypeExpression::NamedType(ref name) => format_named_type(name),
             TypeExpression::ListType(inner) => {
                 format!("typing.List[{}]", format_type_expression(s, inner.borrow()))
             }
             _ => unreachable!(),
         },
         TypeExpression::NamedType(name) => {
-            format!("typing.Optional[{}]", format_named_type(s, name))
+            format!("typing.Optional[{}]", format_named_type(name))
         }
         TypeExpression::ListType(inner) => {
             format!(
@@ -215,7 +215,7 @@ fn format_type_alias(src: &mut SourceCode, expr: String) -> String {
     return expr;
 }
 
-fn format_named_type(s: &Schema, name: &str) -> String {
+fn format_named_type(name: &str) -> String {
     match name {
         "String" => return "str".to_owned(),
         "Int" => return "int".to_owned(),
@@ -224,5 +224,5 @@ fn format_named_type(s: &Schema, name: &str) -> String {
         "ID" => return "typing.Any".to_owned(),
         _ => {}
     }
-    naming::source(s.get_definition(name).get_name())
+    naming::source(name)
 }

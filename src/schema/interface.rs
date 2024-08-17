@@ -1,4 +1,4 @@
-use super::{field::ResolveOption, Field, Module, Position, SourceConfig};
+use super::{Field, Module, Position, SourceConfig};
 
 #[derive(Debug)]
 pub struct InterfaceDefinition {
@@ -13,6 +13,10 @@ pub struct InterfaceDefinition {
 impl InterfaceDefinition {
     pub fn iter_interfaces(&self) -> impl Iterator<Item = &str> {
         self.interfaces.iter().map(|s| s.as_str())
+    }
+
+    pub fn get_field(&self, name: &str) -> Option<&Field> {
+        self.fields.iter().find(|field| field.name == name)
     }
 
     pub fn iter_fields(&self) -> impl Iterator<Item = &Field> {
@@ -39,6 +43,10 @@ pub struct InterfaceExtension {
 impl InterfaceExtension {
     pub fn iter_interfaces(&self) -> impl Iterator<Item = &str> {
         self.interfaces.iter().map(|s| s.as_str())
+    }
+
+    pub fn get_field(&self, name: &str) -> Option<&Field> {
+        self.fields.iter().find(|field| field.name == name)
     }
 
     pub fn iter_fields(&self) -> impl Iterator<Item = &Field> {

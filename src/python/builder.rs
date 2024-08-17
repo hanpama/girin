@@ -66,13 +66,8 @@ fn render_object_type(src: &mut SourceCode, s: &Schema, def: &ObjectDefinition) 
 
     src.line("fields=lambda: {");
     src.indent();
-    for field in &def.fields {
+    for field in s.collect_fields(&def.name) {
         render_field(src, s, &def.name, field)
-    }
-    for ext in s.collect_extentions(&def.name) {
-        for field in &ext.as_object_ext().fields {
-            render_field(src, s, &def.name, field)
-        }
     }
     src.dedent();
     src.line("},");
@@ -176,13 +171,14 @@ fn render_field(src: &mut SourceCode, s: &Schema, def_name: &str, def: &Field) {
         src.dedent();
         src.line("},");
     }
-    if let Some(opt) = def.get_resolve_option() {
-        let def_config_path = format_definition_config_path(&def.module, def_name);
+    if let Some(opt) = s.resolve_field_resolve(def) {
+        let def_config_path =
+            format_definition_config_path(&opt.field.module, &opt.field.type_name);
 
         src.line(format!(
             "resolve={}.{},",
             def_config_path,
-            naming::resolver_name(&opt.name)
+            naming::resolver_name(&def.name)
         ));
     }
     if let Some(deprecation_reason) = &def.deprecation_reason {

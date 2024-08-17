@@ -1,8 +1,7 @@
 use std::collections::{BTreeMap, BTreeSet, HashMap};
 
 use super::{
-    definition::Extension, Definition, EnumValue, Field, InputValue, Module, Resolve,
-    ResolveConfig, Type,
+    definition::Extension, Definition, EnumValue, Field, InputValue, Module, Resolve, Type,
 };
 
 #[derive(Debug)]
@@ -12,9 +11,10 @@ pub struct Schema {
     subscription: Option<String>,
 
     types: BTreeMap<Module, Vec<Type>>,
-    def_locs: HashMap<String, (Module, usize)>,
-    ext_locs: HashMap<String, Vec<(Module, usize)>>,
+    def_locs: HashMap<String, Loc>,
+    ext_locs: HashMap<String, Vec<Loc>>,
     module_children: HashMap<Module, BTreeSet<String>>,
+    type_field_locs: HashMap<(String, String), Loc>,
 }
 
 impl Schema {
@@ -27,6 +27,7 @@ impl Schema {
             def_locs: HashMap::new(),
             ext_locs: HashMap::new(),
             module_children: HashMap::new(),
+            type_field_locs: HashMap::new(),
         }
     }
     pub fn get_query(&self) -> Option<&str> {
@@ -54,37 +55,6 @@ impl Schema {
         self.add_type(Type::Extension(extension));
     }
 
-    fn add_type(&mut self, type_: Type) {
-        let name = type_.get_name().to_owned();
-        let module = type_.get_module().clone();
-        let module_types = self.types.entry(module.clone()).or_insert_with(Vec::new);
-        let loc = (module.clone(), module_types.len());
-
-        match type_ {
-            Type::Definition(_) => {
-                self.def_locs.insert(name, loc);
-            }
-            Type::Extension(_) => {
-                self.ext_locs.entry(name).or_insert_with(Vec::new).push(loc);
-            }
-        }
-        module_types.push(type_);
-        self.index_module(&module);
-    }
-
-    fn index_module(&mut self, module: &Module) {
-        if module.len() == 0 {
-            return;
-        }
-        let mut module = module.clone();
-        let name = module.pop().unwrap();
-        self.module_children
-            .entry(module.clone())
-            .or_insert_with(BTreeSet::new)
-            .insert(name);
-        self.index_module(&module);
-    }
-
     pub fn iter_definitions(&self) -> impl Iterator<Item = &Definition> {
         self.types.values().flat_map(|types| {
             types.iter().filter_map(|type_| match type_ {
@@ -94,19 +64,6 @@ impl Schema {
         })
     }
 
-    pub fn get_definition(&self, name: &str) -> &Definition {
-        let (module, idx) = self.def_locs.get(name).unwrap();
-        self.types[module][*idx].as_definition()
-    }
-
-    pub fn collect_extentions<'a>(&'a self, name: &'a str) -> impl Iterator<Item = &Extension> {
-        self.ext_locs
-            .get(name)
-            .into_iter()
-            .flat_map(|locs| locs.iter())
-            .map(|(module, idx)| self.types[module][*idx].as_extension())
-    }
-
     pub fn collect_interfaces<'a>(&'a self, name: &'a str) -> Vec<&'a str> {
         let definition_interfaces = match self.get_definition(name) {
             Definition::ObjectDefinition(object) => object.iter_interfaces().collect(),
@@ -114,7 +71,7 @@ impl Schema {
             _ => vec![],
         };
 
-        let extension_interfaces = self.collect_extentions(name).flat_map(|ext| match ext {
+        let extension_interfaces = self.get_extentions(name).flat_map(|ext| match ext {
             Extension::ObjectExtension(object) => object.iter_interfaces().collect(),
             Extension::InterfaceExtension(interface) => interface.iter_interfaces().collect(),
             _ => vec![],
@@ -133,7 +90,7 @@ impl Schema {
             _ => vec![],
         };
 
-        let extension_fields = self.collect_extentions(name).flat_map(|ext| match ext {
+        let extension_fields = self.get_extentions(name).flat_map(|ext| match ext {
             Extension::ObjectExtension(object) => object.iter_fields().collect(),
             Extension::InterfaceExtension(interface) => interface.iter_fields().collect(),
             _ => vec![],
@@ -145,34 +102,11 @@ impl Schema {
             .collect()
     }
 
-    // pub fn collect_interface_interfaces<'a>(&'a self, name: &'a str) -> Vec<&'a str> {
-    //     let definition_interfaces = self.get_definition(name).as_interface().iter_interfaces();
-
-    //     let extension_interfaces = self
-    //         .collect_extentions(name)
-    //         .flat_map(|ext| ext.as_interface_ext().iter_interfaces());
-
-    //     definition_interfaces.chain(extension_interfaces).collect()
-    // }
-
-    // pub fn collect_interface_fields<'a>(
-    //     &'a self,
-    //     name: &'a str,
-    // ) -> impl Iterator<Item = &'a Field> {
-    //     let definition_fields = self.get_definition(name).as_interface().iter_fields();
-
-    //     let extension_fields = self
-    //         .collect_extentions(name)
-    //         .flat_map(|ext| ext.as_interface_ext().iter_fields());
-
-    //     definition_fields.chain(extension_fields)
-    // }
-
     pub fn collect_union_types<'a>(&'a self, name: &'a str) -> Vec<&'a str> {
         let definition_types = self.get_definition(name).as_union().iter_types();
 
         let extension_types = self
-            .collect_extentions(name)
+            .get_extentions(name)
             .flat_map(|ext| ext.as_union_ext().iter_types());
 
         definition_types.chain(extension_types).collect()
@@ -182,7 +116,7 @@ impl Schema {
         let definition_values = self.get_definition(name).as_enum().iter_values();
 
         let extension_values = self
-            .collect_extentions(name)
+            .get_extentions(name)
             .flat_map(|ext| ext.as_enum_ext().iter_values());
 
         definition_values.chain(extension_values)
@@ -195,7 +129,7 @@ impl Schema {
         let definition_fields = self.get_definition(name).as_input().iter_fields();
 
         let extension_fields = self
-            .collect_extentions(name)
+            .get_extentions(name)
             .flat_map(|ext| ext.as_input_ext().iter_fields());
 
         definition_fields.chain(extension_fields)
@@ -211,43 +145,77 @@ impl Schema {
         self.types.get(module)
     }
 
-    // pub fn resolve_field_resolve<'a>(&'a self, field: &'a Field) -> Option<Resolve<'a>> {
-    //     // 내가 명시적인 resolver config를 가지고 있으면 그거 반환
-    //     if let Some(conf) = &field.resolve {
-    //         return Some(Resolve::new(conf.sync, field));
-    //     }
-    //     // 내가 구현하는 인터페이스를 순회하며 해당 필드에 resolve 가진 경우 그거 반환
-    //     for interface in self.collect_object_interfaces(&field.type_name) {
-    //         if let Some(conf) = self.resolve_interface_field_resolver_config(field) {
-    //             return Some(Resolve::new(conf.sync, field));
-    //         }
-    //     }
-    //     // self.collect_object_interfaces(&field.type_name)
-    //     //     .iter()
-    //     //     .flat_map(|interface| {
-    //     //         self.resolve_interface_field_resolver_config(interface, field.name)
-    //     //     })
-    //     //     .next()
-    //     // field.defni
-    //     let typ = &self.types[&field.module][&field.type_name];
+    pub fn resolve_field_resolve<'a>(&'a self, field: &'a Field) -> Option<Resolve<'a>> {
+        // If the field has a resolve config, return it
+        if let Some(conf) = &field.resolve {
+            return Some(Resolve::new(conf.sync, field));
+        }
 
-    //     // field에 argument가 있는 경우 암시적 resolver config를 만들어 반환
+        // Iterate over the interfaces that the field's type implements and
+        // return the first one that has a resolve config for the field
+        for interface in self.collect_interfaces(&field.type_name) {
+            let key = (interface.to_owned(), field.name.to_owned());
+            if let Some(loc) = self.type_field_locs.get(&key) {
+                if let Some(field) = self.get_type(loc).get_field(&field.name) {
+                    self.resolve_field_resolve(field);
+                };
+            }
+        }
 
-    //     // None 반환
+        // If the field's owner is an object type and the field has arguments,
+        // create an implicit resolver config and return it
+        if let Definition::ObjectDefinition(_) = self.get_definition(&field.type_name) {
+            if field.args.len() > 0 {
+                return Some(Resolve::new(false, field));
+            }
+        }
 
-    //     unimplemented!()
-    // }
+        None
+    }
 
-    // pub fn resolve_interface_field_resolver_config<'a>(
-    //     &'a self,
-    //     field: &'a Field,
-    // ) -> Option<&'a Resolve> {
-    //     // 내가 명시적인 resolver config를 가지고 있으면 그거 반환
+    fn add_type(&mut self, type_: Type) {
+        let name = type_.get_name().to_owned();
+        let module = type_.get_module().clone();
+        let module_types = self.types.entry(module.clone()).or_insert_with(Vec::new);
 
-    //     // 내가 구현하는 인터페이스를 순회하며 해당 필드에 resolve 가진 경우 그거 반환
+        for field in type_.iter_fields() {
+            let type_field = (name.clone(), field.name.clone());
+            let loc = Loc(module.clone(), module_types.len());
+            self.type_field_locs.insert(type_field, loc);
+        }
+        module_types.push(type_);
+        self.index_module(&module);
+    }
 
-    //     // None 반환
+    fn index_module(&mut self, module: &Module) {
+        if module.len() == 0 {
+            return;
+        }
+        let mut module = module.clone();
+        let name = module.pop().unwrap();
+        self.module_children
+            .entry(module.clone())
+            .or_insert_with(BTreeSet::new)
+            .insert(name);
+        self.index_module(&module);
+    }
 
-    //     unimplemented!()
-    // }
+    fn get_definition(&self, name: &str) -> &Definition {
+        self.get_type(&self.def_locs[name]).as_definition()
+    }
+
+    fn get_type(&self, loc: &Loc) -> &Type {
+        &self.types[&loc.0][loc.1]
+    }
+
+    fn get_extentions<'a>(&'a self, name: &'a str) -> impl Iterator<Item = &Extension> {
+        self.ext_locs
+            .get(name)
+            .into_iter()
+            .flat_map(|locs| locs.iter())
+            .map(|loc| self.get_type(loc).as_extension())
+    }
 }
+
+#[derive(Debug)]
+struct Loc(Module, usize);

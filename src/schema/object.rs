@@ -15,6 +15,10 @@ impl ObjectDefinition {
         self.interfaces.iter().map(|s| s.as_str())
     }
 
+    pub fn get_field(&self, name: &str) -> Option<&Field> {
+        self.fields.iter().find(|field| field.name == name)
+    }
+
     pub fn iter_fields(&self) -> impl Iterator<Item = &Field> {
         self.fields.iter()
     }
@@ -40,6 +44,11 @@ impl ObjectExtension {
     pub fn iter_interfaces(&self) -> impl Iterator<Item = &str> {
         self.interfaces.iter().map(|s| s.as_str())
     }
+
+    pub fn get_field(&self, name: &str) -> Option<&Field> {
+        self.fields.iter().find(|field| field.name == name)
+    }
+    
     pub fn iter_fields(&self) -> impl Iterator<Item = &Field> {
         self.fields.iter()
     }
