@@ -1,15 +1,24 @@
+"""BasicObject description"""
 type BasicObject {
     idNonNull: ID!
     stringNonNull: String!
     intNonNull: Int!
     floatNonNull: Float!
     booleanNonNull: Boolean!
+    """id description"""
     id: ID
+    """string description"""
     string: String
+    """int description"""
     int: Int
+    """float description"""
     float: Float
+    """boolean description"""
     boolean: Boolean
-    idNonNullArg(idNonNull: ID! = "default"): ID!
+    idNonNullArg(
+        """idNonNull description"""
+        idNonNull: ID! = "default"
+    ): ID!
     stringNonNullArg(stringNonNull: String! = "default"): String!
     intNonNullArg(intNonNull: Int! = 1): Int!
     floatNonNullArg(floatNonNull: Float! = 1.0): Float!
@@ -20,6 +29,16 @@ type BasicObject {
     floatArg(float: Float): Float
     booleanArg(boolean: Boolean): Boolean
     basicScalar: BasicScalar
+    
+    basicInputArg(basicInput: BasicInput): String
+    basicInputArgWithDefault(basicInput: BasicInput = {
+        id: "default",
+        string: "default",
+        int: 1,
+        float: 1.0,
+        boolean: true,
+        basicScalar: "123"
+    }): String
 }
 
 interface BasicInterface {
@@ -35,11 +54,13 @@ type BasicInterfaceImpl implements BasicInterface {
 union BasicUnion = BasicObject | BasicInterfaceImpl
 
 enum BasicEnum {
+    """ENUM_VALUE_1 description"""
     ENUM_VALUE_1
     ENUM_VALUE_2
 }
 
 input BasicInput {
+    """idNonNull description"""
     idNonNull: ID! = "default"
     stringNonNull: String! = "default"
     intNonNull: Int! = 1

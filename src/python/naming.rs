@@ -3,37 +3,11 @@ use crate::schema::{
     ObjectExtension, ScalarDefinition,
 };
 
-// pub fn module_config_type(md: &Module) -> String {
-//     format!("{}", md.name)
-// }
-
-// pub fn module_config_field_name(md: &Module) -> String {
-//     format!("_{}", md.name)
-// }
-
-// pub fn submodule_config_type(smd: &Submodule) -> String {
-//     format!("{}", smd.name)
-// }
-
-// pub fn submodule_config_field_name(smd: &Submodule) -> String {
-//     format!("_{}", smd.name)
-// }
-
-pub fn def_object_resolver_type(def: &ObjectDefinition) -> String {
-    format!("{}Config", def.name)
+pub fn spec_type(def_name: &str) -> String {
+    format!("{}Spec", def_name)
 }
-pub fn def_interface_resolver_type(def: &InterfaceDefinition) -> String {
-    format!("{}Config", def.name)
-}
-pub fn ext_object_resolver_type(def: &ObjectExtension) -> String {
-    format!("{}Config", def.name)
-}
-pub fn ext_interface_resolver_type(def: &InterfaceExtension) -> String {
-    format!("{}Config", def.name)
-}
-
-pub fn config_type(def_name: &str) -> String {
-    format!("{}Config", def_name)
+pub fn impl_type(def_name: &str) -> String {
+    format!("{}Impl", def_name)
 }
 
 pub fn object_source(def: &ObjectDefinition) -> String {
@@ -73,7 +47,7 @@ pub fn interface_type_instance(def: &InterfaceDefinition) -> String {
     format!("{}", def.name)
 }
 
-pub fn resolver_name(in_schema_name: &str) -> String {
+pub fn field_name(in_schema_name: &str) -> String {
     to_snake_case(in_schema_name)
 }
 

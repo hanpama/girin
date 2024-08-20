@@ -1,0 +1,4 @@
+type ModuleA {
+    id: ID!
+    name: String!
+}

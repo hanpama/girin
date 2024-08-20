@@ -18,5 +18,5 @@ fn main() {
         .unwrap();
 
     graphql::render(&result, PathBuf::from("test/schema.graphql")).unwrap();
-    python::generate_python_code(PathBuf::from("test/python"), &result).unwrap();
+    python::generate_python_code(PathBuf::from("test/python/grava"), &result).unwrap();
 }

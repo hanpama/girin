@@ -31,8 +31,9 @@ Schema {
                                     "Basic",
                                     "Definition",
                                 ],
+                                type_name: "BasicObject",
                                 position: Position {
-                                    line: 2,
+                                    line: 3,
                                     column: 5,
                                 },
                             },
@@ -52,8 +53,9 @@ Schema {
                                     "Basic",
                                     "Definition",
                                 ],
+                                type_name: "BasicObject",
                                 position: Position {
-                                    line: 3,
+                                    line: 4,
                                     column: 5,
                                 },
                             },
@@ -73,8 +75,9 @@ Schema {
                                     "Basic",
                                     "Definition",
                                 ],
+                                type_name: "BasicObject",
                                 position: Position {
-                                    line: 4,
+                                    line: 5,
                                     column: 5,
                                 },
                             },
@@ -94,8 +97,9 @@ Schema {
                                     "Basic",
                                     "Definition",
                                 ],
+                                type_name: "BasicObject",
                                 position: Position {
-                                    line: 5,
+                                    line: 6,
                                     column: 5,
                                 },
                             },
@@ -115,14 +119,17 @@ Schema {
                                     "Basic",
                                     "Definition",
                                 ],
+                                type_name: "BasicObject",
                                 position: Position {
-                                    line: 6,
+                                    line: 7,
                                     column: 5,
                                 },
                             },
                             Field {
                                 name: "id",
-                                description: None,
+                                description: Some(
+                                    "id description\n",
+                                ),
                                 deprecation_reason: None,
                                 args: [],
                                 field_type: NamedType(
@@ -134,14 +141,17 @@ Schema {
                                     "Basic",
                                     "Definition",
                                 ],
+                                type_name: "BasicObject",
                                 position: Position {
-                                    line: 7,
+                                    line: 8,
                                     column: 5,
                                 },
                             },
                             Field {
                                 name: "string",
-                                description: None,
+                                description: Some(
+                                    "string description\n",
+                                ),
                                 deprecation_reason: None,
                                 args: [],
                                 field_type: NamedType(
@@ -153,14 +163,17 @@ Schema {
                                     "Basic",
                                     "Definition",
                                 ],
+                                type_name: "BasicObject",
                                 position: Position {
-                                    line: 8,
+                                    line: 10,
                                     column: 5,
                                 },
                             },
                             Field {
                                 name: "int",
-                                description: None,
+                                description: Some(
+                                    "int description\n",
+                                ),
                                 deprecation_reason: None,
                                 args: [],
                                 field_type: NamedType(
@@ -172,14 +185,17 @@ Schema {
                                     "Basic",
                                     "Definition",
                                 ],
+                                type_name: "BasicObject",
                                 position: Position {
-                                    line: 9,
+                                    line: 12,
                                     column: 5,
                                 },
                             },
                             Field {
                                 name: "float",
-                                description: None,
+                                description: Some(
+                                    "float description\n",
+                                ),
                                 deprecation_reason: None,
                                 args: [],
                                 field_type: NamedType(
@@ -191,14 +207,17 @@ Schema {
                                     "Basic",
                                     "Definition",
                                 ],
+                                type_name: "BasicObject",
                                 position: Position {
-                                    line: 10,
+                                    line: 14,
                                     column: 5,
                                 },
                             },
                             Field {
                                 name: "boolean",
-                                description: None,
+                                description: Some(
+                                    "boolean description\n",
+                                ),
                                 deprecation_reason: None,
                                 args: [],
                                 field_type: NamedType(
@@ -210,8 +229,9 @@ Schema {
                                     "Basic",
                                     "Definition",
                                 ],
+                                type_name: "BasicObject",
                                 position: Position {
-                                    line: 11,
+                                    line: 16,
                                     column: 5,
                                 },
                             },
@@ -222,7 +242,9 @@ Schema {
                                 args: [
                                     InputValue {
                                         name: "idNonNull",
-                                        description: None,
+                                        description: Some(
+                                            "idNonNull description\n",
+                                        ),
                                         deprecation_reason: None,
                                         field_type: NonNullType(
                                             NamedType(
@@ -235,8 +257,8 @@ Schema {
                                             ),
                                         ),
                                         position: Position {
-                                            line: 12,
-                                            column: 18,
+                                            line: 19,
+                                            column: 9,
                                         },
                                     },
                                 ],
@@ -251,8 +273,9 @@ Schema {
                                     "Basic",
                                     "Definition",
                                 ],
+                                type_name: "BasicObject",
                                 position: Position {
-                                    line: 12,
+                                    line: 18,
                                     column: 5,
                                 },
                             },
@@ -276,7 +299,7 @@ Schema {
                                             ),
                                         ),
                                         position: Position {
-                                            line: 13,
+                                            line: 22,
                                             column: 22,
                                         },
                                     },
@@ -292,8 +315,9 @@ Schema {
                                     "Basic",
                                     "Definition",
                                 ],
+                                type_name: "BasicObject",
                                 position: Position {
-                                    line: 13,
+                                    line: 22,
                                     column: 5,
                                 },
                             },
@@ -317,7 +341,7 @@ Schema {
                                             ),
                                         ),
                                         position: Position {
-                                            line: 14,
+                                            line: 23,
                                             column: 19,
                                         },
                                     },
@@ -333,8 +357,9 @@ Schema {
                                     "Basic",
                                     "Definition",
                                 ],
+                                type_name: "BasicObject",
                                 position: Position {
-                                    line: 14,
+                                    line: 23,
                                     column: 5,
                                 },
                             },
@@ -358,7 +383,7 @@ Schema {
                                             ),
                                         ),
                                         position: Position {
-                                            line: 15,
+                                            line: 24,
                                             column: 21,
                                         },
                                     },
@@ -374,8 +399,9 @@ Schema {
                                     "Basic",
                                     "Definition",
                                 ],
+                                type_name: "BasicObject",
                                 position: Position {
-                                    line: 15,
+                                    line: 24,
                                     column: 5,
                                 },
                             },
@@ -399,7 +425,7 @@ Schema {
                                             ),
                                         ),
                                         position: Position {
-                                            line: 16,
+                                            line: 25,
                                             column: 23,
                                         },
                                     },
@@ -415,8 +441,9 @@ Schema {
                                     "Basic",
                                     "Definition",
                                 ],
+                                type_name: "BasicObject",
                                 position: Position {
-                                    line: 16,
+                                    line: 25,
                                     column: 5,
                                 },
                             },
@@ -434,7 +461,7 @@ Schema {
                                         ),
                                         default_value: None,
                                         position: Position {
-                                            line: 17,
+                                            line: 26,
                                             column: 11,
                                         },
                                     },
@@ -448,8 +475,9 @@ Schema {
                                     "Basic",
                                     "Definition",
                                 ],
+                                type_name: "BasicObject",
                                 position: Position {
-                                    line: 17,
+                                    line: 26,
                                     column: 5,
                                 },
                             },
@@ -467,7 +495,7 @@ Schema {
                                         ),
                                         default_value: None,
                                         position: Position {
-                                            line: 18,
+                                            line: 27,
                                             column: 15,
                                         },
                                     },
@@ -481,8 +509,9 @@ Schema {
                                     "Basic",
                                     "Definition",
                                 ],
+                                type_name: "BasicObject",
                                 position: Position {
-                                    line: 18,
+                                    line: 27,
                                     column: 5,
                                 },
                             },
@@ -500,7 +529,7 @@ Schema {
                                         ),
                                         default_value: None,
                                         position: Position {
-                                            line: 19,
+                                            line: 28,
                                             column: 12,
                                         },
                                     },
@@ -514,8 +543,9 @@ Schema {
                                     "Basic",
                                     "Definition",
                                 ],
+                                type_name: "BasicObject",
                                 position: Position {
-                                    line: 19,
+                                    line: 28,
                                     column: 5,
                                 },
                             },
@@ -533,7 +563,7 @@ Schema {
                                         ),
                                         default_value: None,
                                         position: Position {
-                                            line: 20,
+                                            line: 29,
                                             column: 14,
                                         },
                                     },
@@ -547,8 +577,9 @@ Schema {
                                     "Basic",
                                     "Definition",
                                 ],
+                                type_name: "BasicObject",
                                 position: Position {
-                                    line: 20,
+                                    line: 29,
                                     column: 5,
                                 },
                             },
@@ -566,7 +597,7 @@ Schema {
                                         ),
                                         default_value: None,
                                         position: Position {
-                                            line: 21,
+                                            line: 30,
                                             column: 16,
                                         },
                                     },
@@ -580,8 +611,9 @@ Schema {
                                     "Basic",
                                     "Definition",
                                 ],
+                                type_name: "BasicObject",
                                 position: Position {
-                                    line: 21,
+                                    line: 30,
                                     column: 5,
                                 },
                             },
@@ -599,21 +631,115 @@ Schema {
                                     "Basic",
                                     "Definition",
                                 ],
+                                type_name: "BasicObject",
                                 position: Position {
-                                    line: 22,
+                                    line: 31,
+                                    column: 5,
+                                },
+                            },
+                            Field {
+                                name: "basicInputArg",
+                                description: None,
+                                deprecation_reason: None,
+                                args: [
+                                    InputValue {
+                                        name: "basicInput",
+                                        description: None,
+                                        deprecation_reason: None,
+                                        field_type: NamedType(
+                                            "BasicInput",
+                                        ),
+                                        default_value: None,
+                                        position: Position {
+                                            line: 33,
+                                            column: 19,
+                                        },
+                                    },
+                                ],
+                                field_type: NamedType(
+                                    "String",
+                                ),
+                                resolve: None,
+                                source_configs: [],
+                                module: [
+                                    "Basic",
+                                    "Definition",
+                                ],
+                                type_name: "BasicObject",
+                                position: Position {
+                                    line: 33,
+                                    column: 5,
+                                },
+                            },
+                            Field {
+                                name: "basicInputArgWithDefault",
+                                description: None,
+                                deprecation_reason: None,
+                                args: [
+                                    InputValue {
+                                        name: "basicInput",
+                                        description: None,
+                                        deprecation_reason: None,
+                                        field_type: NamedType(
+                                            "BasicInput",
+                                        ),
+                                        default_value: Some(
+                                            Object(
+                                                {
+                                                    "int": Int(
+                                                        1,
+                                                    ),
+                                                    "basicScalar": String(
+                                                        "123",
+                                                    ),
+                                                    "id": String(
+                                                        "default",
+                                                    ),
+                                                    "string": String(
+                                                        "default",
+                                                    ),
+                                                    "boolean": Boolean(
+                                                        true,
+                                                    ),
+                                                    "float": Float(
+                                                        1.0,
+                                                    ),
+                                                },
+                                            ),
+                                        ),
+                                        position: Position {
+                                            line: 34,
+                                            column: 30,
+                                        },
+                                    },
+                                ],
+                                field_type: NamedType(
+                                    "String",
+                                ),
+                                resolve: None,
+                                source_configs: [],
+                                module: [
+                                    "Basic",
+                                    "Definition",
+                                ],
+                                type_name: "BasicObject",
+                                position: Position {
+                                    line: 34,
                                     column: 5,
                                 },
                             },
                         ],
                         name: "BasicObject",
-                        description: None,
+                        description: Some(
+                            "BasicObject description\n",
+                        ),
                         interfaces: [],
                         module: [
                             "Basic",
                             "Definition",
                         ],
                         position: Position {
-                            line: 1,
+                            line: 2,
                             column: 1,
                         },
                     },
@@ -639,8 +765,9 @@ Schema {
                                     "Basic",
                                     "Definition",
                                 ],
+                                type_name: "BasicInterface",
                                 position: Position {
-                                    line: 26,
+                                    line: 45,
                                     column: 5,
                                 },
                             },
@@ -658,8 +785,9 @@ Schema {
                                     "Basic",
                                     "Definition",
                                 ],
+                                type_name: "BasicInterface",
                                 position: Position {
-                                    line: 27,
+                                    line: 46,
                                     column: 5,
                                 },
                             },
@@ -670,7 +798,7 @@ Schema {
                             "Definition",
                         ],
                         position: Position {
-                            line: 25,
+                            line: 44,
                             column: 1,
                         },
                     },
@@ -694,8 +822,9 @@ Schema {
                                     "Basic",
                                     "Definition",
                                 ],
+                                type_name: "BasicInterfaceImpl",
                                 position: Position {
-                                    line: 31,
+                                    line: 50,
                                     column: 5,
                                 },
                             },
@@ -713,8 +842,9 @@ Schema {
                                     "Basic",
                                     "Definition",
                                 ],
+                                type_name: "BasicInterfaceImpl",
                                 position: Position {
-                                    line: 32,
+                                    line: 51,
                                     column: 5,
                                 },
                             },
@@ -729,7 +859,7 @@ Schema {
                             "Definition",
                         ],
                         position: Position {
-                            line: 30,
+                            line: 49,
                             column: 1,
                         },
                     },
@@ -749,7 +879,7 @@ Schema {
                             "Definition",
                         ],
                         position: Position {
-                            line: 35,
+                            line: 54,
                             column: 1,
                         },
                     },
@@ -763,10 +893,12 @@ Schema {
                         values: [
                             EnumValue {
                                 name: "ENUM_VALUE_1",
-                                description: None,
+                                description: Some(
+                                    "ENUM_VALUE_1 description\n",
+                                ),
                                 deprecation_reason: None,
                                 position: Position {
-                                    line: 38,
+                                    line: 57,
                                     column: 5,
                                 },
                             },
@@ -775,7 +907,7 @@ Schema {
                                 description: None,
                                 deprecation_reason: None,
                                 position: Position {
-                                    line: 39,
+                                    line: 59,
                                     column: 5,
                                 },
                             },
@@ -785,7 +917,7 @@ Schema {
                             "Definition",
                         ],
                         position: Position {
-                            line: 37,
+                            line: 56,
                             column: 1,
                         },
                     },
@@ -799,7 +931,9 @@ Schema {
                         fields: [
                             InputValue {
                                 name: "idNonNull",
-                                description: None,
+                                description: Some(
+                                    "idNonNull description\n",
+                                ),
                                 deprecation_reason: None,
                                 field_type: NonNullType(
                                     NamedType(
@@ -812,7 +946,7 @@ Schema {
                                     ),
                                 ),
                                 position: Position {
-                                    line: 43,
+                                    line: 63,
                                     column: 5,
                                 },
                             },
@@ -831,7 +965,7 @@ Schema {
                                     ),
                                 ),
                                 position: Position {
-                                    line: 44,
+                                    line: 65,
                                     column: 5,
                                 },
                             },
@@ -850,7 +984,7 @@ Schema {
                                     ),
                                 ),
                                 position: Position {
-                                    line: 45,
+                                    line: 66,
                                     column: 5,
                                 },
                             },
@@ -869,7 +1003,7 @@ Schema {
                                     ),
                                 ),
                                 position: Position {
-                                    line: 46,
+                                    line: 67,
                                     column: 5,
                                 },
                             },
@@ -888,7 +1022,7 @@ Schema {
                                     ),
                                 ),
                                 position: Position {
-                                    line: 47,
+                                    line: 68,
                                     column: 5,
                                 },
                             },
@@ -907,7 +1041,7 @@ Schema {
                                     ),
                                 ),
                                 position: Position {
-                                    line: 48,
+                                    line: 69,
                                     column: 5,
                                 },
                             },
@@ -920,7 +1054,7 @@ Schema {
                                 ),
                                 default_value: None,
                                 position: Position {
-                                    line: 49,
+                                    line: 70,
                                     column: 5,
                                 },
                             },
@@ -933,7 +1067,7 @@ Schema {
                                 ),
                                 default_value: None,
                                 position: Position {
-                                    line: 50,
+                                    line: 71,
                                     column: 5,
                                 },
                             },
@@ -946,7 +1080,7 @@ Schema {
                                 ),
                                 default_value: None,
                                 position: Position {
-                                    line: 51,
+                                    line: 72,
                                     column: 5,
                                 },
                             },
@@ -959,7 +1093,7 @@ Schema {
                                 ),
                                 default_value: None,
                                 position: Position {
-                                    line: 52,
+                                    line: 73,
                                     column: 5,
                                 },
                             },
@@ -972,7 +1106,7 @@ Schema {
                                 ),
                                 default_value: None,
                                 position: Position {
-                                    line: 53,
+                                    line: 74,
                                     column: 5,
                                 },
                             },
@@ -985,7 +1119,7 @@ Schema {
                                 ),
                                 default_value: None,
                                 position: Position {
-                                    line: 54,
+                                    line: 75,
                                     column: 5,
                                 },
                             },
@@ -995,7 +1129,7 @@ Schema {
                             "Definition",
                         ],
                         position: Position {
-                            line: 42,
+                            line: 62,
                             column: 1,
                         },
                     },
@@ -1013,13 +1147,13 @@ Schema {
                             "Definition",
                         ],
                         position: Position {
-                            line: 60,
+                            line: 81,
                             column: 1,
                         },
                         type_aliases: {
+                            "python": "str",
                             "java": "java.lang.String",
                             "swift": "String",
-                            "python": "str",
                         },
                     },
                 ),
@@ -1037,7 +1171,9 @@ Schema {
                         fields: [
                             Field {
                                 name: "extendedField",
-                                description: None,
+                                description: Some(
+                                    "extendedField description\n",
+                                ),
                                 deprecation_reason: None,
                                 args: [],
                                 field_type: NonNullType(
@@ -1051,6 +1187,7 @@ Schema {
                                     "Basic",
                                     "Extension",
                                 ],
+                                type_name: "BasicObject",
                                 position: Position {
                                     line: 2,
                                     column: 5,
@@ -1072,7 +1209,7 @@ Schema {
                                         ),
                                         default_value: None,
                                         position: Position {
-                                            line: 3,
+                                            line: 4,
                                             column: 26,
                                         },
                                     },
@@ -1088,8 +1225,9 @@ Schema {
                                     "Basic",
                                     "Extension",
                                 ],
+                                type_name: "BasicObject",
                                 position: Position {
-                                    line: 3,
+                                    line: 4,
                                     column: 5,
                                 },
                             },
@@ -1127,8 +1265,9 @@ Schema {
                                     "Basic",
                                     "Extension",
                                 ],
+                                type_name: "AnotherInterface",
                                 position: Position {
-                                    line: 7,
+                                    line: 8,
                                     column: 5,
                                 },
                             },
@@ -1139,7 +1278,7 @@ Schema {
                             "Extension",
                         ],
                         position: Position {
-                            line: 6,
+                            line: 7,
                             column: 1,
                         },
                     },
@@ -1166,8 +1305,9 @@ Schema {
                                     "Basic",
                                     "Extension",
                                 ],
+                                type_name: "BasicInterface",
                                 position: Position {
-                                    line: 11,
+                                    line: 12,
                                     column: 5,
                                 },
                             },
@@ -1187,7 +1327,7 @@ Schema {
                                         ),
                                         default_value: None,
                                         position: Position {
-                                            line: 12,
+                                            line: 13,
                                             column: 26,
                                         },
                                     },
@@ -1203,8 +1343,9 @@ Schema {
                                     "Basic",
                                     "Extension",
                                 ],
+                                type_name: "BasicInterface",
                                 position: Position {
-                                    line: 12,
+                                    line: 13,
                                     column: 5,
                                 },
                             },
@@ -1224,8 +1365,9 @@ Schema {
                                     "Basic",
                                     "Extension",
                                 ],
+                                type_name: "BasicInterface",
                                 position: Position {
-                                    line: 13,
+                                    line: 14,
                                     column: 5,
                                 },
                             },
@@ -1238,7 +1380,7 @@ Schema {
                             "Extension",
                         ],
                         position: Position {
-                            line: 10,
+                            line: 11,
                             column: 8,
                         },
                     },
@@ -1254,7 +1396,9 @@ Schema {
                         fields: [
                             Field {
                                 name: "extendedField",
-                                description: None,
+                                description: Some(
+                                    "extendedField description\n",
+                                ),
                                 deprecation_reason: None,
                                 args: [],
                                 field_type: NonNullType(
@@ -1268,8 +1412,9 @@ Schema {
                                     "Basic",
                                     "Extension",
                                 ],
+                                type_name: "BasicInterfaceImpl",
                                 position: Position {
-                                    line: 17,
+                                    line: 18,
                                     column: 5,
                                 },
                             },
@@ -1289,7 +1434,7 @@ Schema {
                                         ),
                                         default_value: None,
                                         position: Position {
-                                            line: 18,
+                                            line: 20,
                                             column: 26,
                                         },
                                     },
@@ -1305,8 +1450,9 @@ Schema {
                                     "Basic",
                                     "Extension",
                                 ],
+                                type_name: "BasicInterfaceImpl",
                                 position: Position {
-                                    line: 18,
+                                    line: 20,
                                     column: 5,
                                 },
                             },
@@ -1326,8 +1472,9 @@ Schema {
                                     "Basic",
                                     "Extension",
                                 ],
+                                type_name: "BasicInterfaceImpl",
                                 position: Position {
-                                    line: 19,
+                                    line: 21,
                                     column: 5,
                                 },
                             },
@@ -1337,7 +1484,7 @@ Schema {
                             "Extension",
                         ],
                         position: Position {
-                            line: 16,
+                            line: 17,
                             column: 8,
                         },
                     },
@@ -1363,8 +1510,9 @@ Schema {
                                     "Basic",
                                     "Extension",
                                 ],
+                                type_name: "AnotherType",
                                 position: Position {
-                                    line: 23,
+                                    line: 25,
                                     column: 5,
                                 },
                             },
@@ -1377,7 +1525,7 @@ Schema {
                             "Extension",
                         ],
                         position: Position {
-                            line: 22,
+                            line: 24,
                             column: 1,
                         },
                     },
@@ -1395,7 +1543,7 @@ Schema {
                             "Extension",
                         ],
                         position: Position {
-                            line: 26,
+                            line: 28,
                             column: 8,
                         },
                     },
@@ -1408,10 +1556,12 @@ Schema {
                         values: [
                             EnumValue {
                                 name: "EXTENDED_VALUE",
-                                description: None,
+                                description: Some(
+                                    "EXTENDED_VALUE description\n",
+                                ),
                                 deprecation_reason: None,
                                 position: Position {
-                                    line: 29,
+                                    line: 31,
                                     column: 5,
                                 },
                             },
@@ -1421,7 +1571,7 @@ Schema {
                             "Extension",
                         ],
                         position: Position {
-                            line: 28,
+                            line: 30,
                             column: 8,
                         },
                     },
@@ -1434,7 +1584,9 @@ Schema {
                         fields: [
                             InputValue {
                                 name: "extendedField",
-                                description: None,
+                                description: Some(
+                                    "extendedField description\n",
+                                ),
                                 deprecation_reason: None,
                                 field_type: NonNullType(
                                     NamedType(
@@ -1443,7 +1595,7 @@ Schema {
                                 ),
                                 default_value: None,
                                 position: Position {
-                                    line: 33,
+                                    line: 36,
                                     column: 5,
                                 },
                             },
@@ -1453,7 +1605,7 @@ Schema {
                             "Extension",
                         ],
                         position: Position {
-                            line: 32,
+                            line: 35,
                             column: 8,
                         },
                     },
@@ -1481,7 +1633,7 @@ Schema {
                                         ),
                                         default_value: None,
                                         position: Position {
-                                            line: 37,
+                                            line: 41,
                                             column: 19,
                                         },
                                     },
@@ -1497,8 +1649,9 @@ Schema {
                                     "Basic",
                                     "Extension",
                                 ],
+                                type_name: "Query",
                                 position: Position {
-                                    line: 37,
+                                    line: 41,
                                     column: 5,
                                 },
                             },
@@ -1508,7 +1661,7 @@ Schema {
                             "Extension",
                         ],
                         position: Position {
-                            line: 36,
+                            line: 40,
                             column: 8,
                         },
                     },
@@ -1539,6 +1692,7 @@ Schema {
                                     "Deprecation",
                                     "Definition",
                                 ],
+                                type_name: "DeprecatedFieldObject",
                                 position: Position {
                                     line: 2,
                                     column: 3,
@@ -1551,6 +1705,146 @@ Schema {
                         module: [
                             "Deprecation",
                             "Definition",
+                        ],
+                        position: Position {
+                            line: 1,
+                            column: 1,
+                        },
+                    },
+                ),
+            ),
+        ],
+        [
+            "Module",
+            "Module",
+            "module",
+        ]: [
+            Definition(
+                ObjectDefinition(
+                    ObjectDefinition {
+                        fields: [
+                            Field {
+                                name: "id",
+                                description: None,
+                                deprecation_reason: None,
+                                args: [],
+                                field_type: NonNullType(
+                                    NamedType(
+                                        "ID",
+                                    ),
+                                ),
+                                resolve: None,
+                                source_configs: [],
+                                module: [
+                                    "Module",
+                                    "Module",
+                                    "module",
+                                ],
+                                type_name: "ModuleB",
+                                position: Position {
+                                    line: 2,
+                                    column: 5,
+                                },
+                            },
+                            Field {
+                                name: "name",
+                                description: None,
+                                deprecation_reason: None,
+                                args: [],
+                                field_type: NonNullType(
+                                    NamedType(
+                                        "String",
+                                    ),
+                                ),
+                                resolve: None,
+                                source_configs: [],
+                                module: [
+                                    "Module",
+                                    "Module",
+                                    "module",
+                                ],
+                                type_name: "ModuleB",
+                                position: Position {
+                                    line: 3,
+                                    column: 5,
+                                },
+                            },
+                        ],
+                        name: "ModuleB",
+                        description: None,
+                        interfaces: [],
+                        module: [
+                            "Module",
+                            "Module",
+                            "module",
+                        ],
+                        position: Position {
+                            line: 1,
+                            column: 1,
+                        },
+                    },
+                ),
+            ),
+        ],
+        [
+            "Module",
+            "module",
+        ]: [
+            Definition(
+                ObjectDefinition(
+                    ObjectDefinition {
+                        fields: [
+                            Field {
+                                name: "id",
+                                description: None,
+                                deprecation_reason: None,
+                                args: [],
+                                field_type: NonNullType(
+                                    NamedType(
+                                        "ID",
+                                    ),
+                                ),
+                                resolve: None,
+                                source_configs: [],
+                                module: [
+                                    "Module",
+                                    "module",
+                                ],
+                                type_name: "ModuleA",
+                                position: Position {
+                                    line: 2,
+                                    column: 5,
+                                },
+                            },
+                            Field {
+                                name: "name",
+                                description: None,
+                                deprecation_reason: None,
+                                args: [],
+                                field_type: NonNullType(
+                                    NamedType(
+                                        "String",
+                                    ),
+                                ),
+                                resolve: None,
+                                source_configs: [],
+                                module: [
+                                    "Module",
+                                    "module",
+                                ],
+                                type_name: "ModuleA",
+                                position: Position {
+                                    line: 3,
+                                    column: 5,
+                                },
+                            },
+                        ],
+                        name: "ModuleA",
+                        description: None,
+                        interfaces: [],
+                        module: [
+                            "Module",
+                            "module",
                         ],
                         position: Position {
                             line: 1,
@@ -1584,6 +1878,7 @@ Schema {
                                     "Nested2",
                                     "nested2",
                                 ],
+                                type_name: "Nested2",
                                 position: Position {
                                     line: 2,
                                     column: 5,
@@ -1628,6 +1923,7 @@ Schema {
                                     "Nested1",
                                     "nested1",
                                 ],
+                                type_name: "Nested1",
                                 position: Position {
                                     line: 2,
                                     column: 5,
@@ -1643,6 +1939,633 @@ Schema {
                         ],
                         position: Position {
                             line: 1,
+                            column: 1,
+                        },
+                    },
+                ),
+            ),
+        ],
+        [
+            "Resolve",
+            "Schema",
+        ]: [
+            Definition(
+                InterfaceDefinition(
+                    InterfaceDefinition {
+                        name: "GrandParent",
+                        description: None,
+                        fields: [
+                            Field {
+                                name: "echo",
+                                description: None,
+                                deprecation_reason: None,
+                                args: [
+                                    InputValue {
+                                        name: "message",
+                                        description: None,
+                                        deprecation_reason: None,
+                                        field_type: NonNullType(
+                                            NamedType(
+                                                "String",
+                                            ),
+                                        ),
+                                        default_value: None,
+                                        position: Position {
+                                            line: 2,
+                                            column: 10,
+                                        },
+                                    },
+                                ],
+                                field_type: NonNullType(
+                                    NamedType(
+                                        "String",
+                                    ),
+                                ),
+                                resolve: Some(
+                                    ResolveConfig {
+                                        sync: false,
+                                    },
+                                ),
+                                source_configs: [],
+                                module: [
+                                    "Resolve",
+                                    "Schema",
+                                ],
+                                type_name: "GrandParent",
+                                position: Position {
+                                    line: 2,
+                                    column: 5,
+                                },
+                            },
+                            Field {
+                                name: "echoSync",
+                                description: None,
+                                deprecation_reason: None,
+                                args: [
+                                    InputValue {
+                                        name: "message",
+                                        description: None,
+                                        deprecation_reason: None,
+                                        field_type: NonNullType(
+                                            NamedType(
+                                                "String",
+                                            ),
+                                        ),
+                                        default_value: None,
+                                        position: Position {
+                                            line: 3,
+                                            column: 14,
+                                        },
+                                    },
+                                ],
+                                field_type: NonNullType(
+                                    NamedType(
+                                        "String",
+                                    ),
+                                ),
+                                resolve: Some(
+                                    ResolveConfig {
+                                        sync: true,
+                                    },
+                                ),
+                                source_configs: [],
+                                module: [
+                                    "Resolve",
+                                    "Schema",
+                                ],
+                                type_name: "GrandParent",
+                                position: Position {
+                                    line: 3,
+                                    column: 5,
+                                },
+                            },
+                        ],
+                        interfaces: [],
+                        module: [
+                            "Resolve",
+                            "Schema",
+                        ],
+                        position: Position {
+                            line: 1,
+                            column: 1,
+                        },
+                    },
+                ),
+            ),
+            Definition(
+                InterfaceDefinition(
+                    InterfaceDefinition {
+                        name: "Parent",
+                        description: None,
+                        fields: [
+                            Field {
+                                name: "echo",
+                                description: None,
+                                deprecation_reason: None,
+                                args: [
+                                    InputValue {
+                                        name: "message",
+                                        description: None,
+                                        deprecation_reason: None,
+                                        field_type: NonNullType(
+                                            NamedType(
+                                                "String",
+                                            ),
+                                        ),
+                                        default_value: None,
+                                        position: Position {
+                                            line: 7,
+                                            column: 10,
+                                        },
+                                    },
+                                ],
+                                field_type: NonNullType(
+                                    NamedType(
+                                        "String",
+                                    ),
+                                ),
+                                resolve: None,
+                                source_configs: [],
+                                module: [
+                                    "Resolve",
+                                    "Schema",
+                                ],
+                                type_name: "Parent",
+                                position: Position {
+                                    line: 7,
+                                    column: 5,
+                                },
+                            },
+                            Field {
+                                name: "echoSync",
+                                description: None,
+                                deprecation_reason: None,
+                                args: [
+                                    InputValue {
+                                        name: "message",
+                                        description: None,
+                                        deprecation_reason: None,
+                                        field_type: NonNullType(
+                                            NamedType(
+                                                "String",
+                                            ),
+                                        ),
+                                        default_value: None,
+                                        position: Position {
+                                            line: 8,
+                                            column: 14,
+                                        },
+                                    },
+                                ],
+                                field_type: NonNullType(
+                                    NamedType(
+                                        "String",
+                                    ),
+                                ),
+                                resolve: None,
+                                source_configs: [],
+                                module: [
+                                    "Resolve",
+                                    "Schema",
+                                ],
+                                type_name: "Parent",
+                                position: Position {
+                                    line: 8,
+                                    column: 5,
+                                },
+                            },
+                        ],
+                        interfaces: [
+                            "GrandParent",
+                        ],
+                        module: [
+                            "Resolve",
+                            "Schema",
+                        ],
+                        position: Position {
+                            line: 6,
+                            column: 1,
+                        },
+                    },
+                ),
+            ),
+            Definition(
+                ObjectDefinition(
+                    ObjectDefinition {
+                        fields: [
+                            Field {
+                                name: "echo",
+                                description: None,
+                                deprecation_reason: None,
+                                args: [
+                                    InputValue {
+                                        name: "message",
+                                        description: None,
+                                        deprecation_reason: None,
+                                        field_type: NonNullType(
+                                            NamedType(
+                                                "String",
+                                            ),
+                                        ),
+                                        default_value: None,
+                                        position: Position {
+                                            line: 12,
+                                            column: 10,
+                                        },
+                                    },
+                                ],
+                                field_type: NonNullType(
+                                    NamedType(
+                                        "String",
+                                    ),
+                                ),
+                                resolve: None,
+                                source_configs: [],
+                                module: [
+                                    "Resolve",
+                                    "Schema",
+                                ],
+                                type_name: "Child",
+                                position: Position {
+                                    line: 12,
+                                    column: 5,
+                                },
+                            },
+                            Field {
+                                name: "echoSync",
+                                description: None,
+                                deprecation_reason: None,
+                                args: [
+                                    InputValue {
+                                        name: "message",
+                                        description: None,
+                                        deprecation_reason: None,
+                                        field_type: NonNullType(
+                                            NamedType(
+                                                "String",
+                                            ),
+                                        ),
+                                        default_value: None,
+                                        position: Position {
+                                            line: 13,
+                                            column: 14,
+                                        },
+                                    },
+                                ],
+                                field_type: NonNullType(
+                                    NamedType(
+                                        "String",
+                                    ),
+                                ),
+                                resolve: None,
+                                source_configs: [],
+                                module: [
+                                    "Resolve",
+                                    "Schema",
+                                ],
+                                type_name: "Child",
+                                position: Position {
+                                    line: 13,
+                                    column: 5,
+                                },
+                            },
+                            Field {
+                                name: "basicInterface",
+                                description: None,
+                                deprecation_reason: None,
+                                args: [],
+                                field_type: NamedType(
+                                    "BasicInterface",
+                                ),
+                                resolve: Some(
+                                    ResolveConfig {
+                                        sync: false,
+                                    },
+                                ),
+                                source_configs: [],
+                                module: [
+                                    "Resolve",
+                                    "Schema",
+                                ],
+                                type_name: "Child",
+                                position: Position {
+                                    line: 15,
+                                    column: 5,
+                                },
+                            },
+                            Field {
+                                name: "basicInterfaceList",
+                                description: None,
+                                deprecation_reason: None,
+                                args: [],
+                                field_type: ListType(
+                                    NamedType(
+                                        "BasicInterface",
+                                    ),
+                                ),
+                                resolve: Some(
+                                    ResolveConfig {
+                                        sync: false,
+                                    },
+                                ),
+                                source_configs: [],
+                                module: [
+                                    "Resolve",
+                                    "Schema",
+                                ],
+                                type_name: "Child",
+                                position: Position {
+                                    line: 16,
+                                    column: 5,
+                                },
+                            },
+                            Field {
+                                name: "basicInterfaceNonNullList",
+                                description: None,
+                                deprecation_reason: None,
+                                args: [],
+                                field_type: NonNullType(
+                                    ListType(
+                                        NamedType(
+                                            "BasicInterface",
+                                        ),
+                                    ),
+                                ),
+                                resolve: Some(
+                                    ResolveConfig {
+                                        sync: false,
+                                    },
+                                ),
+                                source_configs: [],
+                                module: [
+                                    "Resolve",
+                                    "Schema",
+                                ],
+                                type_name: "Child",
+                                position: Position {
+                                    line: 17,
+                                    column: 5,
+                                },
+                            },
+                            Field {
+                                name: "basicInterfaceNonNullListNonNullElement",
+                                description: None,
+                                deprecation_reason: None,
+                                args: [],
+                                field_type: NonNullType(
+                                    ListType(
+                                        NonNullType(
+                                            NamedType(
+                                                "BasicInterface",
+                                            ),
+                                        ),
+                                    ),
+                                ),
+                                resolve: Some(
+                                    ResolveConfig {
+                                        sync: false,
+                                    },
+                                ),
+                                source_configs: [],
+                                module: [
+                                    "Resolve",
+                                    "Schema",
+                                ],
+                                type_name: "Child",
+                                position: Position {
+                                    line: 18,
+                                    column: 5,
+                                },
+                            },
+                            Field {
+                                name: "basicUnion",
+                                description: None,
+                                deprecation_reason: None,
+                                args: [],
+                                field_type: NamedType(
+                                    "BasicUnion",
+                                ),
+                                resolve: Some(
+                                    ResolveConfig {
+                                        sync: false,
+                                    },
+                                ),
+                                source_configs: [],
+                                module: [
+                                    "Resolve",
+                                    "Schema",
+                                ],
+                                type_name: "Child",
+                                position: Position {
+                                    line: 20,
+                                    column: 5,
+                                },
+                            },
+                            Field {
+                                name: "basicUnionList",
+                                description: None,
+                                deprecation_reason: None,
+                                args: [],
+                                field_type: ListType(
+                                    NamedType(
+                                        "BasicUnion",
+                                    ),
+                                ),
+                                resolve: Some(
+                                    ResolveConfig {
+                                        sync: false,
+                                    },
+                                ),
+                                source_configs: [],
+                                module: [
+                                    "Resolve",
+                                    "Schema",
+                                ],
+                                type_name: "Child",
+                                position: Position {
+                                    line: 21,
+                                    column: 5,
+                                },
+                            },
+                            Field {
+                                name: "basicUnionNonNullList",
+                                description: None,
+                                deprecation_reason: None,
+                                args: [],
+                                field_type: NonNullType(
+                                    ListType(
+                                        NamedType(
+                                            "BasicUnion",
+                                        ),
+                                    ),
+                                ),
+                                resolve: Some(
+                                    ResolveConfig {
+                                        sync: false,
+                                    },
+                                ),
+                                source_configs: [],
+                                module: [
+                                    "Resolve",
+                                    "Schema",
+                                ],
+                                type_name: "Child",
+                                position: Position {
+                                    line: 22,
+                                    column: 5,
+                                },
+                            },
+                            Field {
+                                name: "basicUnionNonNullListNonNullElement",
+                                description: None,
+                                deprecation_reason: None,
+                                args: [],
+                                field_type: NonNullType(
+                                    ListType(
+                                        NonNullType(
+                                            NamedType(
+                                                "BasicUnion",
+                                            ),
+                                        ),
+                                    ),
+                                ),
+                                resolve: Some(
+                                    ResolveConfig {
+                                        sync: false,
+                                    },
+                                ),
+                                source_configs: [],
+                                module: [
+                                    "Resolve",
+                                    "Schema",
+                                ],
+                                type_name: "Child",
+                                position: Position {
+                                    line: 23,
+                                    column: 5,
+                                },
+                            },
+                            Field {
+                                name: "basicEnum",
+                                description: None,
+                                deprecation_reason: None,
+                                args: [],
+                                field_type: NamedType(
+                                    "BasicEnum",
+                                ),
+                                resolve: Some(
+                                    ResolveConfig {
+                                        sync: false,
+                                    },
+                                ),
+                                source_configs: [],
+                                module: [
+                                    "Resolve",
+                                    "Schema",
+                                ],
+                                type_name: "Child",
+                                position: Position {
+                                    line: 25,
+                                    column: 5,
+                                },
+                            },
+                            Field {
+                                name: "basicEnumList",
+                                description: None,
+                                deprecation_reason: None,
+                                args: [],
+                                field_type: ListType(
+                                    NamedType(
+                                        "BasicEnum",
+                                    ),
+                                ),
+                                resolve: Some(
+                                    ResolveConfig {
+                                        sync: false,
+                                    },
+                                ),
+                                source_configs: [],
+                                module: [
+                                    "Resolve",
+                                    "Schema",
+                                ],
+                                type_name: "Child",
+                                position: Position {
+                                    line: 26,
+                                    column: 5,
+                                },
+                            },
+                            Field {
+                                name: "basicEnumNonNullList",
+                                description: None,
+                                deprecation_reason: None,
+                                args: [],
+                                field_type: NonNullType(
+                                    ListType(
+                                        NamedType(
+                                            "BasicEnum",
+                                        ),
+                                    ),
+                                ),
+                                resolve: Some(
+                                    ResolveConfig {
+                                        sync: false,
+                                    },
+                                ),
+                                source_configs: [],
+                                module: [
+                                    "Resolve",
+                                    "Schema",
+                                ],
+                                type_name: "Child",
+                                position: Position {
+                                    line: 27,
+                                    column: 5,
+                                },
+                            },
+                            Field {
+                                name: "basicEnumNonNullListNonNullElement",
+                                description: None,
+                                deprecation_reason: None,
+                                args: [],
+                                field_type: NonNullType(
+                                    ListType(
+                                        NonNullType(
+                                            NamedType(
+                                                "BasicEnum",
+                                            ),
+                                        ),
+                                    ),
+                                ),
+                                resolve: Some(
+                                    ResolveConfig {
+                                        sync: false,
+                                    },
+                                ),
+                                source_configs: [],
+                                module: [
+                                    "Resolve",
+                                    "Schema",
+                                ],
+                                type_name: "Child",
+                                position: Position {
+                                    line: 28,
+                                    column: 5,
+                                },
+                            },
+                        ],
+                        name: "Child",
+                        description: None,
+                        interfaces: [
+                            "GrandParent",
+                            "Parent",
+                        ],
+                        module: [
+                            "Resolve",
+                            "Schema",
+                        ],
+                        position: Position {
+                            line: 11,
                             column: 1,
                         },
                     },
@@ -1669,6 +2592,7 @@ Schema {
                                 module: [
                                     "root",
                                 ],
+                                type_name: "Query",
                                 position: Position {
                                     line: 7,
                                     column: 5,
@@ -1705,6 +2629,7 @@ Schema {
                                 module: [
                                     "root",
                                 ],
+                                type_name: "Mutation",
                                 position: Position {
                                     line: 11,
                                     column: 5,
@@ -1725,9 +2650,77 @@ Schema {
                 ),
             ),
         ],
+        [
+            "source",
+            "source",
+        ]: [
+            Definition(
+                ObjectDefinition(
+                    ObjectDefinition {
+                        fields: [
+                            Field {
+                                name: "a",
+                                description: None,
+                                deprecation_reason: None,
+                                args: [],
+                                field_type: NamedType(
+                                    "Int",
+                                ),
+                                resolve: Some(
+                                    ResolveConfig {
+                                        sync: false,
+                                    },
+                                ),
+                                source_configs: [],
+                                module: [
+                                    "source",
+                                    "source",
+                                ],
+                                type_name: "Source",
+                                position: Position {
+                                    line: 2,
+                                    column: 5,
+                                },
+                            },
+                        ],
+                        name: "Source",
+                        description: None,
+                        interfaces: [],
+                        module: [
+                            "source",
+                            "source",
+                        ],
+                        position: Position {
+                            line: 1,
+                            column: 1,
+                        },
+                    },
+                ),
+            ),
+        ],
     },
     def_locs: {
-        "Nested2": (
+        "Source": Loc(
+            [
+                "source",
+                "source",
+            ],
+            0,
+        ),
+        "Mutation": Loc(
+            [
+                "root",
+            ],
+            1,
+        ),
+        "DeprecatedFieldObject": Loc(
+            [
+                "Deprecation",
+                "Definition",
+            ],
+            0,
+        ),
+        "Nested2": Loc(
             [
                 "Nested1",
                 "Nested2",
@@ -1735,99 +2728,122 @@ Schema {
             ],
             0,
         ),
-        "BasicEnum": (
-            [
-                "Basic",
-                "Definition",
-            ],
-            4,
-        ),
-        "DeprecatedFieldObject": (
-            [
-                "Deprecation",
-                "Definition",
-            ],
-            0,
-        ),
-        "BasicInterfaceImpl": (
-            [
-                "Basic",
-                "Definition",
-            ],
-            2,
-        ),
-        "AnotherInterface": (
-            [
-                "Basic",
-                "Extension",
-            ],
-            1,
-        ),
-        "Mutation": (
-            [
-                "root",
-            ],
-            1,
-        ),
-        "Nested1": (
-            [
-                "Nested1",
-                "nested1",
-            ],
-            0,
-        ),
-        "BasicScalar": (
+        "BasicScalar": Loc(
             [
                 "Basic",
                 "Definition",
             ],
             6,
         ),
-        "AnotherType": (
+        "Parent": Loc(
+            [
+                "Resolve",
+                "Schema",
+            ],
+            1,
+        ),
+        "ModuleB": Loc(
+            [
+                "Module",
+                "Module",
+                "module",
+            ],
+            0,
+        ),
+        "Nested1": Loc(
+            [
+                "Nested1",
+                "nested1",
+            ],
+            0,
+        ),
+        "AnotherInterface": Loc(
+            [
+                "Basic",
+                "Extension",
+            ],
+            1,
+        ),
+        "AnotherType": Loc(
             [
                 "Basic",
                 "Extension",
             ],
             4,
         ),
-        "BasicObject": (
+        "BasicInterfaceImpl": Loc(
+            [
+                "Basic",
+                "Definition",
+            ],
+            2,
+        ),
+        "Query": Loc(
+            [
+                "root",
+            ],
+            0,
+        ),
+        "BasicEnum": Loc(
+            [
+                "Basic",
+                "Definition",
+            ],
+            4,
+        ),
+        "BasicObject": Loc(
             [
                 "Basic",
                 "Definition",
             ],
             0,
         ),
-        "BasicInterface": (
+        "BasicInterface": Loc(
             [
                 "Basic",
                 "Definition",
             ],
             1,
         ),
-        "BasicInput": (
+        "Child": Loc(
             [
-                "Basic",
-                "Definition",
+                "Resolve",
+                "Schema",
             ],
-            5,
+            2,
         ),
-        "Query": (
-            [
-                "root",
-            ],
-            0,
-        ),
-        "BasicUnion": (
+        "BasicUnion": Loc(
             [
                 "Basic",
                 "Definition",
             ],
             3,
         ),
+        "BasicInput": Loc(
+            [
+                "Basic",
+                "Definition",
+            ],
+            5,
+        ),
+        "ModuleA": Loc(
+            [
+                "Module",
+                "module",
+            ],
+            0,
+        ),
+        "GrandParent": Loc(
+            [
+                "Resolve",
+                "Schema",
+            ],
+            0,
+        ),
     },
     ext_locs: {
         "BasicObject": [
-            (
+            Loc(
                 [
                     "Basic",
                     "Extension",
@@ -1835,17 +2851,26 @@ Schema {
                 0,
             ),
         ],
-        "BasicUnion": [
-            (
+        "BasicInterface": [
+            Loc(
                 [
                     "Basic",
                     "Extension",
                 ],
-                5,
+                2,
+            ),
+        ],
+        "BasicInterfaceImpl": [
+            Loc(
+                [
+                    "Basic",
+                    "Extension",
+                ],
+                3,
             ),
         ],
         "BasicEnum": [
-            (
+            Loc(
                 [
                     "Basic",
                     "Extension",
@@ -1854,7 +2879,7 @@ Schema {
             ),
         ],
         "Query": [
-            (
+            Loc(
                 [
                     "Basic",
                     "Extension",
@@ -1863,7 +2888,7 @@ Schema {
             ),
         ],
         "BasicInput": [
-            (
+            Loc(
                 [
                     "Basic",
                     "Extension",
@@ -1871,37 +2896,58 @@ Schema {
                 7,
             ),
         ],
-        "BasicInterfaceImpl": [
-            (
+        "BasicUnion": [
+            Loc(
                 [
                     "Basic",
                     "Extension",
                 ],
-                3,
-            ),
-        ],
-        "BasicInterface": [
-            (
-                [
-                    "Basic",
-                    "Extension",
-                ],
-                2,
+                5,
             ),
         ],
     },
     module_children: {
         [
-            "Basic",
+            "Nested1",
+            "Nested2",
+        ]: {
+            "nested2",
+        },
+        [
+            "Module",
+        ]: {
+            "Module",
+            "module",
+        },
+        [
+            "Deprecation",
         ]: {
             "Definition",
-            "Extension",
+        },
+        [
+            "Resolve",
+        ]: {
+            "Schema",
         },
         []: {
             "Basic",
             "Deprecation",
+            "Module",
             "Nested1",
+            "Resolve",
             "root",
+            "source",
+        },
+        [
+            "Module",
+            "Module",
+        ]: {
+            "module",
+        },
+        [
+            "source",
+        ]: {
+            "source",
         },
         [
             "Nested1",
@@ -1910,15 +2956,673 @@ Schema {
             "nested1",
         },
         [
-            "Nested1",
-            "Nested2",
-        ]: {
-            "nested2",
-        },
-        [
-            "Deprecation",
+            "Basic",
         ]: {
             "Definition",
+            "Extension",
         },
+    },
+    type_field_locs: {
+        (
+            "BasicInterfaceImpl",
+            "extendedFieldWithArg",
+        ): Loc(
+            [
+                "Basic",
+                "Extension",
+            ],
+            3,
+        ),
+        (
+            "BasicInterface",
+            "extendedFieldWithArg",
+        ): Loc(
+            [
+                "Basic",
+                "Extension",
+            ],
+            2,
+        ),
+        (
+            "BasicObject",
+            "booleanArg",
+        ): Loc(
+            [
+                "Basic",
+                "Definition",
+            ],
+            0,
+        ),
+        (
+            "Child",
+            "basicEnumList",
+        ): Loc(
+            [
+                "Resolve",
+                "Schema",
+            ],
+            2,
+        ),
+        (
+            "BasicObject",
+            "stringNonNullArg",
+        ): Loc(
+            [
+                "Basic",
+                "Definition",
+            ],
+            0,
+        ),
+        (
+            "BasicObject",
+            "floatNonNullArg",
+        ): Loc(
+            [
+                "Basic",
+                "Definition",
+            ],
+            0,
+        ),
+        (
+            "BasicObject",
+            "float",
+        ): Loc(
+            [
+                "Basic",
+                "Definition",
+            ],
+            0,
+        ),
+        (
+            "BasicObject",
+            "id",
+        ): Loc(
+            [
+                "Basic",
+                "Definition",
+            ],
+            0,
+        ),
+        (
+            "Child",
+            "echoSync",
+        ): Loc(
+            [
+                "Resolve",
+                "Schema",
+            ],
+            2,
+        ),
+        (
+            "BasicObject",
+            "idArg",
+        ): Loc(
+            [
+                "Basic",
+                "Definition",
+            ],
+            0,
+        ),
+        (
+            "ModuleB",
+            "id",
+        ): Loc(
+            [
+                "Module",
+                "Module",
+                "module",
+            ],
+            0,
+        ),
+        (
+            "Source",
+            "a",
+        ): Loc(
+            [
+                "source",
+                "source",
+            ],
+            0,
+        ),
+        (
+            "BasicObject",
+            "floatNonNull",
+        ): Loc(
+            [
+                "Basic",
+                "Definition",
+            ],
+            0,
+        ),
+        (
+            "BasicObject",
+            "extendedFieldWithArg",
+        ): Loc(
+            [
+                "Basic",
+                "Extension",
+            ],
+            0,
+        ),
+        (
+            "Parent",
+            "echo",
+        ): Loc(
+            [
+                "Resolve",
+                "Schema",
+            ],
+            1,
+        ),
+        (
+            "ModuleA",
+            "name",
+        ): Loc(
+            [
+                "Module",
+                "module",
+            ],
+            0,
+        ),
+        (
+            "BasicObject",
+            "boolean",
+        ): Loc(
+            [
+                "Basic",
+                "Definition",
+            ],
+            0,
+        ),
+        (
+            "Query",
+            "extendedHello",
+        ): Loc(
+            [
+                "Basic",
+                "Extension",
+            ],
+            8,
+        ),
+        (
+            "Mutation",
+            "version",
+        ): Loc(
+            [
+                "root",
+            ],
+            1,
+        ),
+        (
+            "BasicObject",
+            "intNonNull",
+        ): Loc(
+            [
+                "Basic",
+                "Definition",
+            ],
+            0,
+        ),
+        (
+            "Child",
+            "basicEnumNonNullList",
+        ): Loc(
+            [
+                "Resolve",
+                "Schema",
+            ],
+            2,
+        ),
+        (
+            "Child",
+            "basicUnionList",
+        ): Loc(
+            [
+                "Resolve",
+                "Schema",
+            ],
+            2,
+        ),
+        (
+            "BasicObject",
+            "basicInputArg",
+        ): Loc(
+            [
+                "Basic",
+                "Definition",
+            ],
+            0,
+        ),
+        (
+            "BasicObject",
+            "intNonNullArg",
+        ): Loc(
+            [
+                "Basic",
+                "Definition",
+            ],
+            0,
+        ),
+        (
+            "BasicObject",
+            "string",
+        ): Loc(
+            [
+                "Basic",
+                "Definition",
+            ],
+            0,
+        ),
+        (
+            "BasicObject",
+            "extendedField",
+        ): Loc(
+            [
+                "Basic",
+                "Extension",
+            ],
+            0,
+        ),
+        (
+            "GrandParent",
+            "echoSync",
+        ): Loc(
+            [
+                "Resolve",
+                "Schema",
+            ],
+            0,
+        ),
+        (
+            "Nested2",
+            "value",
+        ): Loc(
+            [
+                "Nested1",
+                "Nested2",
+                "nested2",
+            ],
+            0,
+        ),
+        (
+            "BasicInterface",
+            "anotherField",
+        ): Loc(
+            [
+                "Basic",
+                "Extension",
+            ],
+            2,
+        ),
+        (
+            "BasicInterfaceImpl",
+            "extendedField",
+        ): Loc(
+            [
+                "Basic",
+                "Extension",
+            ],
+            3,
+        ),
+        (
+            "ModuleB",
+            "name",
+        ): Loc(
+            [
+                "Module",
+                "Module",
+                "module",
+            ],
+            0,
+        ),
+        (
+            "Child",
+            "basicUnionNonNullList",
+        ): Loc(
+            [
+                "Resolve",
+                "Schema",
+            ],
+            2,
+        ),
+        (
+            "BasicObject",
+            "stringNonNull",
+        ): Loc(
+            [
+                "Basic",
+                "Definition",
+            ],
+            0,
+        ),
+        (
+            "Child",
+            "basicInterfaceNonNullListNonNullElement",
+        ): Loc(
+            [
+                "Resolve",
+                "Schema",
+            ],
+            2,
+        ),
+        (
+            "Child",
+            "basicInterface",
+        ): Loc(
+            [
+                "Resolve",
+                "Schema",
+            ],
+            2,
+        ),
+        (
+            "BasicObject",
+            "idNonNullArg",
+        ): Loc(
+            [
+                "Basic",
+                "Definition",
+            ],
+            0,
+        ),
+        (
+            "BasicObject",
+            "stringArg",
+        ): Loc(
+            [
+                "Basic",
+                "Definition",
+            ],
+            0,
+        ),
+        (
+            "AnotherType",
+            "anotherField",
+        ): Loc(
+            [
+                "Basic",
+                "Extension",
+            ],
+            4,
+        ),
+        (
+            "Child",
+            "echo",
+        ): Loc(
+            [
+                "Resolve",
+                "Schema",
+            ],
+            2,
+        ),
+        (
+            "BasicObject",
+            "int",
+        ): Loc(
+            [
+                "Basic",
+                "Definition",
+            ],
+            0,
+        ),
+        (
+            "Nested1",
+            "nested2",
+        ): Loc(
+            [
+                "Nested1",
+                "nested1",
+            ],
+            0,
+        ),
+        (
+            "Child",
+            "basicUnionNonNullListNonNullElement",
+        ): Loc(
+            [
+                "Resolve",
+                "Schema",
+            ],
+            2,
+        ),
+        (
+            "BasicInterface",
+            "interfaceField",
+        ): Loc(
+            [
+                "Basic",
+                "Definition",
+            ],
+            1,
+        ),
+        (
+            "BasicInterfaceImpl",
+            "basicScalar",
+        ): Loc(
+            [
+                "Basic",
+                "Definition",
+            ],
+            2,
+        ),
+        (
+            "DeprecatedFieldObject",
+            "deprecatedField",
+        ): Loc(
+            [
+                "Deprecation",
+                "Definition",
+            ],
+            0,
+        ),
+        (
+            "BasicObject",
+            "floatArg",
+        ): Loc(
+            [
+                "Basic",
+                "Definition",
+            ],
+            0,
+        ),
+        (
+            "Query",
+            "version",
+        ): Loc(
+            [
+                "root",
+            ],
+            0,
+        ),
+        (
+            "BasicObject",
+            "booleanNonNull",
+        ): Loc(
+            [
+                "Basic",
+                "Definition",
+            ],
+            0,
+        ),
+        (
+            "Child",
+            "basicEnum",
+        ): Loc(
+            [
+                "Resolve",
+                "Schema",
+            ],
+            2,
+        ),
+        (
+            "Child",
+            "basicUnion",
+        ): Loc(
+            [
+                "Resolve",
+                "Schema",
+            ],
+            2,
+        ),
+        (
+            "BasicInterfaceImpl",
+            "anotherField",
+        ): Loc(
+            [
+                "Basic",
+                "Extension",
+            ],
+            3,
+        ),
+        (
+            "BasicInterface",
+            "basicScalar",
+        ): Loc(
+            [
+                "Basic",
+                "Definition",
+            ],
+            1,
+        ),
+        (
+            "ModuleA",
+            "id",
+        ): Loc(
+            [
+                "Module",
+                "module",
+            ],
+            0,
+        ),
+        (
+            "Parent",
+            "echoSync",
+        ): Loc(
+            [
+                "Resolve",
+                "Schema",
+            ],
+            1,
+        ),
+        (
+            "BasicInterfaceImpl",
+            "interfaceField",
+        ): Loc(
+            [
+                "Basic",
+                "Definition",
+            ],
+            2,
+        ),
+        (
+            "BasicObject",
+            "basicScalar",
+        ): Loc(
+            [
+                "Basic",
+                "Definition",
+            ],
+            0,
+        ),
+        (
+            "BasicObject",
+            "intArg",
+        ): Loc(
+            [
+                "Basic",
+                "Definition",
+            ],
+            0,
+        ),
+        (
+            "GrandParent",
+            "echo",
+        ): Loc(
+            [
+                "Resolve",
+                "Schema",
+            ],
+            0,
+        ),
+        (
+            "AnotherInterface",
+            "anotherField",
+        ): Loc(
+            [
+                "Basic",
+                "Extension",
+            ],
+            1,
+        ),
+        (
+            "Child",
+            "basicInterfaceNonNullList",
+        ): Loc(
+            [
+                "Resolve",
+                "Schema",
+            ],
+            2,
+        ),
+        (
+            "Child",
+            "basicEnumNonNullListNonNullElement",
+        ): Loc(
+            [
+                "Resolve",
+                "Schema",
+            ],
+            2,
+        ),
+        (
+            "BasicInterface",
+            "extendedField",
+        ): Loc(
+            [
+                "Basic",
+                "Extension",
+            ],
+            2,
+        ),
+        (
+            "Child",
+            "basicInterfaceList",
+        ): Loc(
+            [
+                "Resolve",
+                "Schema",
+            ],
+            2,
+        ),
+        (
+            "BasicObject",
+            "booleanNonNullArg",
+        ): Loc(
+            [
+                "Basic",
+                "Definition",
+            ],
+            0,
+        ),
+        (
+            "BasicObject",
+            "idNonNull",
+        ): Loc(
+            [
+                "Basic",
+                "Definition",
+            ],
+            0,
+        ),
+        (
+            "BasicObject",
+            "basicInputArgWithDefault",
+        ): Loc(
+            [
+                "Basic",
+                "Definition",
+            ],
+            0,
+        ),
     },
 }

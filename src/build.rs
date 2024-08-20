@@ -45,7 +45,6 @@ fn build_file(s: &mut Schema, root: &Path, file: &Path) -> Result<(), SchemaBuil
         .components()
         .map(|p| p.as_os_str().to_str().unwrap().to_owned())
         .collect();
-    println!("module: {:?}", module);
 
     let mut violations = vec![];
     for def in document.definitions {

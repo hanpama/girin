@@ -1,15 +1,15 @@
 use super::{error::Error, naming, sourcecode::SourceCode};
 use crate::schema::{
     Definition, EnumDefinition, InputDefinition, InterfaceDefinition, ObjectDefinition,
-    ScalarDefinition, Schema, TypeExpression,
+    ScalarDefinition, Schema, TypeExpression, UnionDefinition,
 };
 use std::{borrow::Borrow, fs::File, path::PathBuf};
 
-pub fn render_source_defintiion(outdir: &PathBuf, s: &Schema) -> Result<(), Error> {
+pub fn render(outdir: &PathBuf, s: &Schema) -> Result<(), Error> {
     let outfile = outdir.join("source.py");
 
     let mut file = File::create(outfile)?;
-    let mut src = SourceCode::new();
+    let mut src = SourceCode::new_generated();
 
     for def in s.iter_definitions() {
         match def {
@@ -38,6 +38,11 @@ pub fn render_source_defintiion(outdir: &PathBuf, s: &Schema) -> Result<(), Erro
                 src.line("");
                 src.line("");
             }
+            Definition::UnionDefinition(inner) => {
+                render_union_source(&mut src, s, inner);
+                src.line("");
+                src.line("");
+            }
             _ => {}
         }
     }
@@ -48,7 +53,7 @@ pub fn render_source_defintiion(outdir: &PathBuf, s: &Schema) -> Result<(), Erro
 }
 
 fn render_object_source(src: &mut SourceCode, s: &Schema, def: &ObjectDefinition) {
-    src.import_std("typing");
+    src.import("import typing");
 
     let mut superclasses = vec!["typing.Protocol".to_owned()];
     for interface in &def.interfaces {
@@ -74,7 +79,7 @@ fn render_object_source(src: &mut SourceCode, s: &Schema, def: &ObjectDefinition
         pass = false;
         src.line(&format!(
             "{name}: {type}",
-            name = conf.name,
+            name = naming::field_name(&conf.name),
             type = format_type_expression(s, &conf.type_)
         ));
     }
@@ -87,7 +92,7 @@ fn render_object_source(src: &mut SourceCode, s: &Schema, def: &ObjectDefinition
 }
 
 fn render_interface_source(src: &mut SourceCode, s: &Schema, def: &InterfaceDefinition) {
-    src.import_std("typing");
+    src.import("import typing");
 
     let mut superclasses = vec!["typing.Protocol".to_owned()];
     for interface in &def.interfaces {
@@ -113,7 +118,7 @@ fn render_interface_source(src: &mut SourceCode, s: &Schema, def: &InterfaceDefi
         pass = false;
         src.line(&format!(
             "{name}: {type}",
-            name = conf.name,
+            name = naming::field_name(&conf.name),
             type = format_type_expression(s, &conf.type_)
         ));
     }
@@ -126,7 +131,7 @@ fn render_interface_source(src: &mut SourceCode, s: &Schema, def: &InterfaceDefi
 }
 
 fn render_input_source(src: &mut SourceCode, s: &Schema, def: &InputDefinition) {
-    src.import_std("typing");
+    src.import("import typing");
 
     src.line(&format!("class {name}:", name = naming::input_source(def)));
     src.indent();
@@ -136,7 +141,7 @@ fn render_input_source(src: &mut SourceCode, s: &Schema, def: &InputDefinition) 
         pass = false;
         src.line(&format!(
             "{name}: {type}",
-            name = &conf.name,
+            name = naming::field_name(&conf.name),
             type = format_type_expression(s, &conf.field_type)
         ));
     }
@@ -149,7 +154,7 @@ fn render_input_source(src: &mut SourceCode, s: &Schema, def: &InputDefinition) 
 }
 
 fn render_enum_source(src: &mut SourceCode, s: &Schema, def: &EnumDefinition) {
-    src.import_std("typing");
+    src.import("import typing");
 
     src.line(&format!(
         "{name} = typing.Literal[",
@@ -164,7 +169,7 @@ fn render_enum_source(src: &mut SourceCode, s: &Schema, def: &EnumDefinition) {
 }
 
 fn render_scalar_source(src: &mut SourceCode, s: &Schema, def: &ScalarDefinition) {
-    src.import_std("typing");
+    src.import("import typing");
 
     let alias = def.type_aliases.get("python");
     if let Some(alias) = alias {
@@ -181,6 +186,29 @@ fn render_scalar_source(src: &mut SourceCode, s: &Schema, def: &ScalarDefinition
             name = naming::scalar_source(def)
         ));
     }
+}
+
+fn render_union_source(src: &mut SourceCode, s: &Schema, def: &UnionDefinition) {
+    src.import("import typing");
+
+    let mut types = vec![];
+    for type_name in s.collect_union_types(&def.name) {
+        types.push(format!("\"{}\"", naming::source(type_name)));
+    }
+
+    src.line(&format!(
+        "{name} = typing.Union[{types}]",
+        name = naming::source(&def.name),
+        types = types.join(", ")
+    ));
+}
+
+fn format_type_alias(src: &mut SourceCode, expr: String) -> String {
+    if expr.contains(".") {
+        todo!();
+        return src.import(&expr);
+    }
+    return expr;
 }
 
 fn format_type_expression(s: &Schema, expr: &TypeExpression) -> String {
@@ -206,13 +234,6 @@ fn _format_type_expression(s: &Schema, expr: &TypeExpression) -> String {
             )
         }
     }
-}
-
-fn format_type_alias(src: &mut SourceCode, expr: String) -> String {
-    if expr.contains(".") {
-        return src.import_first(&expr);
-    }
-    return expr;
 }
 
 fn format_named_type(name: &str) -> String {

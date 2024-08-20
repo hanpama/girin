@@ -146,21 +146,23 @@ impl Schema {
     }
 
     pub fn resolve_field_resolve<'a>(&'a self, field: &'a Field) -> Option<Resolve<'a>> {
+        // println!("resolve_field_resolve: {:?}", field);
         // If the field has a resolve config, return it
         if let Some(conf) = &field.resolve {
             return Some(Resolve::new(conf.sync, field));
         }
 
-        // Iterate over the interfaces that the field's type implements and
-        // return the first one that has a resolve config for the field
-        for interface in self.collect_interfaces(&field.type_name) {
-            let key = (interface.to_owned(), field.name.to_owned());
-            if let Some(loc) = self.type_field_locs.get(&key) {
-                if let Some(field) = self.get_type(loc).get_field(&field.name) {
-                    self.resolve_field_resolve(field);
-                };
-            }
-        }
+        // // Iterate over the interfaces that the field's type implements and
+        // // return the first one that has a resolve config for the field
+        // for interface in self.collect_interfaces(&field.type_name) {
+        //     let key = (interface.to_owned(), field.name.to_owned());
+        //     if let Some(loc) = self.type_field_locs.get(&key) {
+        //         if let Some(field) = self.get_type(loc).get_field(&field.name) {
+        //             println!("found field: {:?}", field);
+        //             self.resolve_field_resolve(field);
+        //         };
+        //     }
+        // }
 
         // If the field's owner is an object type and the field has arguments,
         // create an implicit resolver config and return it
@@ -182,6 +184,18 @@ impl Schema {
             let type_field = (name.clone(), field.name.clone());
             let loc = Loc(module.clone(), module_types.len());
             self.type_field_locs.insert(type_field, loc);
+        }
+        match &type_ {
+            Type::Definition(_) => {
+                self.def_locs
+                    .insert(name.clone(), Loc(module.clone(), module_types.len()));
+            }
+            Type::Extension(_) => {
+                self.ext_locs
+                    .entry(name.clone())
+                    .or_insert_with(Vec::new)
+                    .push(Loc(module.clone(), module_types.len()));
+            }
         }
         module_types.push(type_);
         self.index_module(&module);

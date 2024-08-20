@@ -1,15 +1,35 @@
+"""
+  BasicObject description
+"""
 type BasicObject {
   idNonNull: ID!
   stringNonNull: String!
   intNonNull: Int!
   floatNonNull: Float!
   booleanNonNull: Boolean!
+  """
+    id description
+  """
   id: ID
+  """
+    string description
+  """
   string: String
+  """
+    int description
+  """
   int: Int
+  """
+    float description
+  """
   float: Float
+  """
+    boolean description
+  """
   boolean: Boolean
-  idNonNullArg(idNonNull: ID! = "default"): ID!
+  idNonNullArg("""
+    idNonNull description
+  """ idNonNull: ID! = "default"): ID!
   stringNonNullArg(stringNonNull: String! = "default"): String!
   intNonNullArg(intNonNull: Int! = 1): Int!
   floatNonNullArg(floatNonNull: Float! = 1): Float!
@@ -20,6 +40,11 @@ type BasicObject {
   floatArg(float: Float): Float
   booleanArg(boolean: Boolean): Boolean
   basicScalar: BasicScalar
+  basicInputArg(basicInput: BasicInput): String
+  basicInputArgWithDefault(basicInput: BasicInput = {basicScalar: "123", boolean: true, float: 1, id: "default", int: 1, string: "default"}): String
+  """
+    extendedField description
+  """
   extendedField: ID!
   extendedFieldWithArg(idNonNull: ID!): ID!
 }
@@ -35,6 +60,9 @@ interface BasicInterface implements AnotherInterface {
 type BasicInterfaceImpl implements BasicInterface & AnotherInterface {
   interfaceField: String
   basicScalar: BasicScalar
+  """
+    extendedField description
+  """
   extendedField: ID!
   extendedFieldWithArg(idNonNull: ID!): ID!
   anotherField: ID!
@@ -43,13 +71,19 @@ type BasicInterfaceImpl implements BasicInterface & AnotherInterface {
 union BasicUnion = BasicObject | BasicInterfaceImpl | AnotherType
 
 enum BasicEnum {
-  ENUM_VALUE_1
+  """
+    ENUM_VALUE_1 description
+  """ ENUM_VALUE_1
   ENUM_VALUE_2
-  EXTENDED_VALUE
+  """
+    EXTENDED_VALUE description
+  """ EXTENDED_VALUE
 }
 
 input BasicInput {
-  idNonNull: ID! = "default"
+  """
+    idNonNull description
+  """ idNonNull: ID! = "default"
   stringNonNull: String! = "default"
   intNonNull: Int! = 1
   floatNonNull: Float! = 1
@@ -61,7 +95,9 @@ input BasicInput {
   float: Float
   boolean: Boolean
   basicScalar: BasicScalar
-  extendedField: ID!
+  """
+    extendedField description
+  """ extendedField: ID!
 }
 
 """
@@ -81,12 +117,49 @@ type DeprecatedFieldObject {
   deprecatedField: String @deprecated(reason: "No longer supported")
 }
 
+type ModuleB {
+  id: ID!
+  name: String!
+}
+
+type ModuleA {
+  id: ID!
+  name: String!
+}
+
 type Nested2 {
   value: String
 }
 
 type Nested1 {
   nested2: Nested2
+}
+
+interface GrandParent {
+  echo(message: String!): String!
+  echoSync(message: String!): String!
+}
+
+interface Parent implements GrandParent {
+  echo(message: String!): String!
+  echoSync(message: String!): String!
+}
+
+type Child implements GrandParent & Parent {
+  echo(message: String!): String!
+  echoSync(message: String!): String!
+  basicInterface: BasicInterface
+  basicInterfaceList: [BasicInterface]
+  basicInterfaceNonNullList: [BasicInterface]!
+  basicInterfaceNonNullListNonNullElement: [BasicInterface!]!
+  basicUnion: BasicUnion
+  basicUnionList: [BasicUnion]
+  basicUnionNonNullList: [BasicUnion]!
+  basicUnionNonNullListNonNullElement: [BasicUnion!]!
+  basicEnum: BasicEnum
+  basicEnumList: [BasicEnum]
+  basicEnumNonNullList: [BasicEnum]!
+  basicEnumNonNullListNonNullElement: [BasicEnum!]!
 }
 
 type Query {
@@ -96,4 +169,8 @@ type Query {
 
 type Mutation {
   version: String
+}
+
+type Source {
+  a: Int
 }

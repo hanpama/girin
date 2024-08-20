@@ -1,20 +1,20 @@
 use super::{error::Error, naming, sourcecode::SourceCode};
 use crate::schema::{
-    Definition, Field, InputDefinition, InputValue, InterfaceDefinition, Module, ObjectDefinition,
-    ScalarDefinition, Schema, TypeExpression, Value,
+    Definition, EnumDefinition, EnumValue, Field, InputDefinition, InputValue, InterfaceDefinition,
+    Module, ObjectDefinition, ScalarDefinition, Schema, TypeExpression, UnionDefinition, Value,
 };
 use std::{fs::File, path::PathBuf};
 
-pub fn render_builder(outdir: &PathBuf, s: &Schema) -> Result<(), Error> {
+pub fn render(outdir: &PathBuf, s: &Schema) -> Result<(), Error> {
     let outfile = outdir.join("builder.py");
 
     let mut file = File::create(outfile)?;
-    let mut src = SourceCode::new();
+    let mut src = SourceCode::new_generated();
 
-    src.import_third("graphql");
-    src.import_first(".protocol.Config");
+    src.import("import graphql");
+    src.import("from .builder_config import BuilderConfig");
 
-    src.line("def build_schema(config: Config) -> graphql.GraphQLSchema:");
+    src.line("def build_schema(config: BuilderConfig) -> graphql.GraphQLSchema:");
     src.indent();
 
     for def in s.iter_definitions() {
@@ -23,7 +23,8 @@ pub fn render_builder(outdir: &PathBuf, s: &Schema) -> Result<(), Error> {
             Definition::InterfaceDefinition(inner) => render_interface_type(&mut src, s, inner),
             Definition::InputDefinition(inner) => render_input_type(&mut src, s, inner),
             Definition::ScalarDefinition(inner) => render_scalar_type(&mut src, s, inner),
-            _ => {}
+            Definition::EnumDefinition(inner) => render_enum_type(&mut src, s, inner),
+            Definition::UnionDefinition(inner) => render_union_type(&mut src, s, inner),
         }
     }
 
@@ -44,7 +45,9 @@ pub fn render_builder(outdir: &PathBuf, s: &Schema) -> Result<(), Error> {
     }
     src.line("types=[");
     src.indent();
-    //
+    for def in s.iter_definitions() {
+        src.line(format!("{},", naming::type_instance(def.get_name())));
+    }
     src.dedent();
     src.line("],");
 
@@ -64,10 +67,14 @@ fn render_object_type(src: &mut SourceCode, s: &Schema, def: &ObjectDefinition) 
     src.indent();
     src.line(format!("name=\"{}\",", def.name));
 
+    if let Some(description) = &def.description {
+        src.line(format!("description={:?},", description));
+    }
+
     src.line("fields=lambda: {");
     src.indent();
     for field in s.collect_fields(&def.name) {
-        render_field(src, s, &def.name, field)
+        render_field(src, s, field)
     }
     src.dedent();
     src.line("},");
@@ -94,10 +101,14 @@ fn render_interface_type(src: &mut SourceCode, s: &Schema, def: &InterfaceDefini
     src.indent();
     src.line(format!("name=\"{}\",", def.name));
 
+    if let Some(description) = &def.description {
+        src.line(format!("description={:?},", description));
+    }
+
     src.line("fields=lambda: {");
     src.indent();
     for field in s.collect_fields(&def.name) {
-        render_field(src, s, &def.name, field)
+        render_field(src, s, field)
     }
     src.dedent();
     src.line("},");
@@ -122,10 +133,14 @@ fn render_input_type(src: &mut SourceCode, s: &Schema, def: &InputDefinition) {
     src.indent();
     src.line(format!("name=\"{}\",", def.name));
 
+    if let Some(description) = &def.description {
+        src.line(format!("description={:?},", description));
+    }
+
     src.line("fields=lambda: {");
     src.indent();
     for field in s.collect_input_fields(&def.name) {
-        render_input_field(src, s, field)
+        render_input_field(src, field)
     }
     src.dedent();
     src.line("},");
@@ -140,20 +155,78 @@ fn render_scalar_type(src: &mut SourceCode, s: &Schema, def: &ScalarDefinition) 
     src.indent();
     src.line(format!("name=\"{}\",", def.name));
 
+    if let Some(description) = &def.description {
+        src.line(format!("description={:?},", description));
+    }
+
     let config_path = format_definition_config_path(&def.module, &def.name);
     src.line(format!("serialize={config_path}.serialize,"));
     src.line(format!("parse_value={config_path}.parse_value,"));
     src.line(format!("parse_literal={config_path}.parse_literal,"));
-    //     serialize
-    // parse_value
-    // parse_literal
-    // return self.parse_value(graphql.value_from_ast_untyped(node, variables))
 
     src.dedent();
     src.line(")");
 }
 
-fn render_field(src: &mut SourceCode, s: &Schema, def_name: &str, def: &Field) {
+fn render_enum_type(src: &mut SourceCode, s: &Schema, def: &EnumDefinition) {
+    let name = naming::type_instance(&def.name);
+    src.line(format!("{} = graphql.GraphQLEnumType(", name));
+    src.indent();
+    src.line(format!("name=\"{}\",", def.name));
+
+    if let Some(description) = &def.description {
+        src.line(format!("description={:?},", description));
+    }
+
+    src.line("values={");
+    src.indent();
+    for value in s.collect_enum_values(&def.name) {
+        render_enum_value(src, s, value)
+    }
+    src.dedent();
+    src.line("}");
+
+    src.dedent();
+    src.line(")");
+}
+
+fn render_enum_value(src: &mut SourceCode, s: &Schema, def: &EnumValue) {
+    src.line(format!("{:?}: graphql.GraphQLEnumValue(", def.name));
+    src.indent();
+    src.line(format!("value={:?},", &def.name));
+    if let Some(description) = &def.description {
+        src.line(format!("description={:?},", description));
+    }
+    if let Some(deprecation_reason) = &def.deprecation_reason {
+        src.line(format!("deprecation_reason={:?},", deprecation_reason));
+    }
+    src.dedent();
+    src.line("),");
+}
+
+fn render_union_type(src: &mut SourceCode, s: &Schema, def: &UnionDefinition) {
+    let name = naming::type_instance(&def.name);
+    src.line(format!("{} = graphql.GraphQLUnionType(", name));
+    src.indent();
+    src.line(format!("name=\"{}\",", def.name));
+
+    if let Some(description) = &def.description {
+        src.line(format!("description={:?},", description));
+    }
+
+    src.line("types=lambda: [");
+    src.indent();
+    for value in s.collect_union_types(&def.name) {
+        src.line(format!("{},", naming::type_instance(value)));
+    }
+    src.dedent();
+    src.line("]");
+
+    src.dedent();
+    src.line(")");
+}
+
+fn render_field(src: &mut SourceCode, s: &Schema, def: &Field) {
     src.line(format!("\"{}\": graphql.GraphQLField(", def.name));
     src.indent();
 
@@ -161,12 +234,18 @@ fn render_field(src: &mut SourceCode, s: &Schema, def_name: &str, def: &Field) {
         "type_={},",
         format_type_expression(&def.field_type)
     ));
+    if let Some(deprecation_reason) = &def.deprecation_reason {
+        src.line(format!("deprecation_reason={:?},", deprecation_reason));
+    }
+    if let Some(description) = &def.description {
+        src.line(format!("description={:?},", description));
+    }
 
     if !def.args.is_empty() {
         src.line("args={");
         src.indent();
         for arg in &def.args {
-            render_arg(src, s, arg);
+            render_arg(src, arg);
         }
         src.dedent();
         src.line("},");
@@ -178,31 +257,26 @@ fn render_field(src: &mut SourceCode, s: &Schema, def_name: &str, def: &Field) {
         src.line(format!(
             "resolve={}.{},",
             def_config_path,
-            naming::resolver_name(&def.name)
+            naming::field_name(&def.name)
         ));
-    }
-    if let Some(deprecation_reason) = &def.deprecation_reason {
-        src.line(format!("deprecation_reason={:?},", deprecation_reason));
-    }
-    if let Some(description) = &def.description {
-        src.line(format!("description={:?},", description));
+    } else {
+        src.line(format!(
+            "resolve=lambda src, _: getattr(src, \"{}\"),",
+            naming::field_name(&def.name)
+        ));
     }
 
     src.dedent();
     src.line("),");
 }
 
-fn render_arg(src: &mut SourceCode, s: &Schema, def: &InputValue) {
+fn render_arg(src: &mut SourceCode, def: &InputValue) {
     src.line(format!("\"{}\": graphql.GraphQLArgument(", def.name));
     src.indent();
     src.line(format!(
         "type_={},",
         format_type_expression(&def.field_type)
     ));
-
-    if let Some(default_value) = &def.default_value {
-        src.line(format!("default_value={},", format_value(default_value)));
-    }
     if let Some(deprecation_reason) = &def.deprecation_reason {
         src.line(format!("deprecation_reason={:?},", deprecation_reason));
     }
@@ -210,11 +284,16 @@ fn render_arg(src: &mut SourceCode, s: &Schema, def: &InputValue) {
         src.line(format!("description={:?},", description));
     }
 
+    if let Some(default_value) = &def.default_value {
+        src.line(format!("default_value={},", format_value(default_value)));
+    }
+    src.line(format!("out_name=\"{}\",", naming::field_name(&def.name)));
+
     src.dedent();
     src.line("),");
 }
 
-fn render_input_field(src: &mut SourceCode, s: &Schema, def: &InputValue) {
+fn render_input_field(src: &mut SourceCode, def: &InputValue) {
     src.line(format!("\"{}\": graphql.GraphQLInputField(", def.name));
     src.indent();
 
@@ -228,6 +307,7 @@ fn render_input_field(src: &mut SourceCode, s: &Schema, def: &InputValue) {
     if let Some(description) = &def.description {
         src.line(format!("description={:?},", description));
     }
+    src.line(format!("out_name=\"{}\",", naming::field_name(&def.name)));
 
     src.dedent();
     src.line("),");
