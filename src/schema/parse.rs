@@ -15,25 +15,25 @@ use crate::schema::{
     TypeExpression, UnionDefinition, UnionExtension, Value,
 };
 
-pub fn build_schema(root: &Path) -> Result<Schema, SchemaBuildingError> {
+pub fn parse(root: &Path) -> Result<Schema, SchemaBuildingError> {
     let mut schema = Schema::new();
-    build_directory(&mut schema, &root, &root)?;
+    parse_directory(&mut schema, &root, &root)?;
     Ok(schema)
 }
 
-fn build_directory(s: &mut Schema, root: &Path, dir: &Path) -> Result<(), SchemaBuildingError> {
+fn parse_directory(s: &mut Schema, root: &Path, dir: &Path) -> Result<(), SchemaBuildingError> {
     for item in read_dir(&dir)? {
         let item = item?;
         if item.file_type()?.is_dir() {
-            build_directory(s, root, &item.path())?;
+            parse_directory(s, root, &item.path())?;
         } else {
-            build_file(s, root, &item.path())?;
+            parse_file(s, root, &item.path())?;
         }
     }
     Ok(())
 }
 
-fn build_file(s: &mut Schema, root: &Path, file: &Path) -> Result<(), SchemaBuildingError> {
+fn parse_file(s: &mut Schema, root: &Path, file: &Path) -> Result<(), SchemaBuildingError> {
     let mut buf = String::new();
     File::open(file)?.read_to_string(&mut buf)?;
 
@@ -101,7 +101,6 @@ fn build_type_definition(
             Definition::InputDefinition(build_input_type_definition(module, &def)?)
         }
     })
-    // Ok(())
 }
 
 fn build_type_extension(
@@ -682,34 +681,6 @@ fn handle_source(
     return Ok(def);
 }
 
-fn handle_source_type(
-    directive: &schema::Directive<String>,
-) -> Result<HashMap<String, String>, GraphQLSchemaValidationError> {
-    let mut map = HashMap::new();
-    let mut violations = vec![];
-
-    for (key, value) in directive.arguments.iter() {
-        match value {
-            schema::Value::String(value) => {
-                map.insert(key.clone(), value.clone());
-            }
-            _ => {
-                // build_positioh
-                violations.push(GraphQLValidationViolation::ValuesOfCorrectType {
-                    pos: build_position(&directive.position),
-                    name: key.clone(),
-                    value: value.to_string(),
-                });
-            }
-        }
-    }
-    if !violations.is_empty() {
-        return Err(GraphQLSchemaValidationError { violations });
-    }
-
-    return Ok(map);
-}
-
 fn handle_type_alias(
     directive: &schema::Directive<String>,
 ) -> Result<HashMap<String, String>, GraphQLSchemaValidationError> {
@@ -759,6 +730,15 @@ fn build_type_expression(def: &schema::Type<String>) -> TypeExpression {
     }
 }
 
+fn format_module(root: &Path, file: &Path) -> Vec<String> {
+    file.strip_prefix(root)
+        .unwrap()
+        .with_extension("")
+        .components()
+        .map(|p| p.as_os_str().to_str().unwrap().to_owned())
+        .collect()
+}
+
 #[derive(Debug)]
 pub enum SchemaBuildingError {
     GraphQLParserError(graphql_parser::schema::ParseError),
@@ -797,7 +777,7 @@ impl From<graphql_parser::schema::ParseError> for SchemaBuildingError {
 }
 
 #[derive(Debug)]
-struct GraphQLSchemaValidationError {
+pub struct GraphQLSchemaValidationError {
     violations: Vec<GraphQLValidationViolation>,
 }
 

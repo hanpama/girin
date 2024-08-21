@@ -1,7 +1,9 @@
 [package]
-name = "grava"
+name = "girin"
 version = "0.1.0"
 edition = "2021"
 
 [dependencies]
 graphql-parser = "0.4.0"
+clap = "4.4.0"
+colored = "2.0.4"

@@ -1,7 +1,7 @@
 import unittest
 import graphql
 
-from grava import builder, builder_config
+from myproject import builder, builder_config
 
 
 class TestGenerated(unittest.IsolatedAsyncioTestCase):
