@@ -21,7 +21,7 @@ fn render_directory(path: PathBuf, d: Traversal) -> Result<()> {
         }
         render_config_index(&path, d.clone())?;
     }
-    if d.has_types() {
+    if d.has_definition() {
         render_module_config(&path.with_extension("py"), d.clone())?;
     }
 
@@ -63,7 +63,7 @@ fn render_module_config(filepath: &PathBuf, d: Traversal) -> Result<()> {
         ".".repeat(d.module.len())
     ));
 
-    for def in d.iter_types() {
+    for def in d.iter_definitions() {
         match def {
             Type::Definition(inner) => match inner {
                 Definition::ObjectDefinition(inner) => {

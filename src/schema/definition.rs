@@ -1,97 +1,67 @@
 use std::iter::empty;
 
 use super::{
-    EnumDefinition, EnumExtension, Field, InputDefinition, InputExtension, InterfaceDefinition,
-    InterfaceExtension, Module, ObjectDefinition, ObjectExtension, ScalarDefinition,
-    UnionDefinition, UnionExtension,
+    DirectiveDefinition, EnumDefinition, EnumExtension, Field, InputDefinition, InputExtension,
+    InterfaceDefinition, InterfaceExtension, ObjectDefinition, ObjectExtension, ScalarDefinition,
+    SchemaDefinition, UnionDefinition, UnionExtension,
 };
 
 #[derive(Debug)]
-pub enum Type {
-    Definition(Definition),
-    Extension(Extension),
-}
-
-impl Type {
-    pub fn get_name(&self) -> &str {
-        match self {
-            Type::Definition(def) => def.get_name(),
-            Type::Extension(ext) => ext.get_name(),
-        }
-    }
-
-    pub fn get_module(&self) -> &Module {
-        match self {
-            Type::Definition(def) => def.get_module(),
-            Type::Extension(ext) => ext.get_module(),
-        }
-    }
-
-    pub fn as_definition(&self) -> &Definition {
-        match self {
-            Type::Definition(def) => def,
-            _ => unreachable!(),
-        }
-    }
-
-    pub fn as_extension(&self) -> &Extension {
-        match self {
-            Type::Extension(ext) => ext,
-            _ => unreachable!(),
-        }
-    }
-
-    pub fn get_field(&self, name: &str) -> Option<&Field> {
-        match self {
-            Type::Definition(def) => def.get_field(name),
-            Type::Extension(ext) => ext.get_field(name),
-        }
-    }
-
-    pub fn iter_fields(&self) -> impl Iterator<Item = &Field> {
-        match self {
-            Type::Definition(def) => def.iter_fields(),
-            Type::Extension(ext) => ext.iter_fields(),
-        }
-    }
-
-    pub fn iter_interfaces(&self) -> impl Iterator<Item = &str> {
-        match self {
-            Type::Definition(def) => def.iter_interfaces(),
-            Type::Extension(ext) => ext.iter_interfaces(),
-        }
-    }
-}
-
-#[derive(Debug)]
 pub enum Definition {
+    SchemaDefinition(SchemaDefinition),
+    DirectiveDefinition(DirectiveDefinition),
     ScalarDefinition(ScalarDefinition),
     ObjectDefinition(ObjectDefinition),
     InterfaceDefinition(InterfaceDefinition),
     UnionDefinition(UnionDefinition),
     EnumDefinition(EnumDefinition),
     InputDefinition(InputDefinition),
+    ObjectExtension(ObjectExtension),
+    InterfaceExtension(InterfaceExtension),
+    UnionExtension(UnionExtension),
+    EnumExtension(EnumExtension),
+    InputExtension(InputExtension),
 }
 
 impl Definition {
-    pub fn get_name(&self) -> &str {
+    pub fn get_definition_name(&self) -> Option<&str> {
         match self {
-            Definition::ScalarDefinition(scalar) => &scalar.name,
-            Definition::ObjectDefinition(object) => &object.name,
-            Definition::InterfaceDefinition(interface) => &interface.name,
-            Definition::UnionDefinition(union) => &union.name,
-            Definition::EnumDefinition(enm) => &enm.name,
-            Definition::InputDefinition(input) => &input.name,
+            Definition::SchemaDefinition(_) => None,
+            Definition::DirectiveDefinition(_) => None,
+            Definition::ScalarDefinition(scalar) => Some(&scalar.name),
+            Definition::ObjectDefinition(object) => Some(&object.name),
+            Definition::InterfaceDefinition(interface) => Some(&interface.name),
+            Definition::UnionDefinition(union) => Some(&union.name),
+            Definition::EnumDefinition(enm) => Some(&enm.name),
+            Definition::InputDefinition(input) => Some(&input.name),
+            Definition::ObjectExtension(object) => Some(&object.name),
+            Definition::InterfaceExtension(interface) => Some(&interface.name),
+            Definition::UnionExtension(union) => Some(&union.name),
+            Definition::EnumExtension(enm) => Some(&enm.name),
+            Definition::InputExtension(input) => Some(&input.name),
         }
     }
-    pub fn get_module(&self) -> &Module {
+
+    pub fn is_type_definition(&self) -> bool {
         match self {
-            Definition::ScalarDefinition(scalar) => &scalar.module,
-            Definition::ObjectDefinition(object) => &object.module,
-            Definition::InterfaceDefinition(interface) => &interface.module,
-            Definition::UnionDefinition(union) => &union.module,
-            Definition::EnumDefinition(enm) => &enm.module,
-            Definition::InputDefinition(input) => &input.module,
+            Definition::ScalarDefinition(_) => true,
+            Definition::ObjectDefinition(_) => true,
+            Definition::InterfaceDefinition(_) => true,
+            Definition::UnionDefinition(_) => true,
+            Definition::EnumDefinition(_) => true,
+            Definition::InputDefinition(_) => true,
+            _ => false,
+        }
+    }
+
+    pub fn is_type_extension(&self) -> bool {
+        match self {
+            Definition::ObjectExtension(_) => true,
+            Definition::InterfaceExtension(_) => true,
+            Definition::UnionExtension(_) => true,
+            Definition::EnumExtension(_) => true,
+            Definition::InputExtension(_) => true,
+            _ => false,
         }
     }
 
@@ -137,10 +107,47 @@ impl Definition {
         }
     }
 
+    pub fn as_object_ext(&self) -> &ObjectExtension {
+        match self {
+            Definition::ObjectExtension(object) => object,
+            _ => unreachable!(),
+        }
+    }
+
+    pub fn as_interface_ext(&self) -> &InterfaceExtension {
+        match self {
+            Definition::InterfaceExtension(interface) => interface,
+            _ => unreachable!(),
+        }
+    }
+
+    pub fn as_union_ext(&self) -> &UnionExtension {
+        match self {
+            Definition::UnionExtension(union) => union,
+            _ => unreachable!(),
+        }
+    }
+
+    pub fn as_enum_ext(&self) -> &EnumExtension {
+        match self {
+            Definition::EnumExtension(enm) => enm,
+            _ => unreachable!(),
+        }
+    }
+
+    pub fn as_input_ext(&self) -> &InputExtension {
+        match self {
+            Definition::InputExtension(input) => input,
+            _ => unreachable!(),
+        }
+    }
+
     pub fn get_field(&self, name: &str) -> Option<&Field> {
         match self {
             Definition::ObjectDefinition(object) => object.get_field(name),
             Definition::InterfaceDefinition(interface) => interface.get_field(name),
+            Definition::ObjectExtension(object) => object.get_field(name),
+            Definition::InterfaceExtension(interface) => interface.get_field(name),
             _ => None,
         }
     }
@@ -149,6 +156,8 @@ impl Definition {
         match self {
             Definition::ObjectDefinition(object) => Box::new(object.iter_fields()),
             Definition::InterfaceDefinition(interface) => Box::new(interface.iter_fields()),
+            Definition::ObjectExtension(object) => Box::new(object.iter_fields()),
+            Definition::InterfaceExtension(interface) => Box::new(interface.iter_fields()),
             _ => Box::new(empty()),
         }
     }
@@ -157,97 +166,27 @@ impl Definition {
         match self {
             Definition::ObjectDefinition(object) => Box::new(object.iter_interfaces()),
             Definition::InterfaceDefinition(interface) => Box::new(interface.iter_interfaces()),
-            _ => Box::new(empty()),
-        }
-    }
-}
-
-#[derive(Debug)]
-pub enum Extension {
-    ObjectExtension(ObjectExtension),
-    InterfaceExtension(InterfaceExtension),
-    UnionExtension(UnionExtension),
-    EnumExtension(EnumExtension),
-    InputExtension(InputExtension),
-}
-
-impl Extension {
-    pub fn get_name(&self) -> &str {
-        match self {
-            Extension::ObjectExtension(object) => &object.name,
-            Extension::InterfaceExtension(interface) => &interface.name,
-            Extension::UnionExtension(union) => &union.name,
-            Extension::EnumExtension(enm) => &enm.name,
-            Extension::InputExtension(input) => &input.name,
-        }
-    }
-
-    pub fn get_module(&self) -> &Module {
-        match self {
-            Extension::ObjectExtension(object) => &object.module,
-            Extension::InterfaceExtension(interface) => &interface.module,
-            Extension::UnionExtension(union) => &union.module,
-            Extension::EnumExtension(enm) => &enm.module,
-            Extension::InputExtension(input) => &input.module,
-        }
-    }
-
-    pub fn as_object_ext(&self) -> &ObjectExtension {
-        match self {
-            Extension::ObjectExtension(object) => object,
-            _ => unreachable!(),
-        }
-    }
-
-    pub fn as_interface_ext(&self) -> &InterfaceExtension {
-        match self {
-            Extension::InterfaceExtension(interface) => interface,
-            _ => unreachable!(),
-        }
-    }
-
-    pub fn as_union_ext(&self) -> &UnionExtension {
-        match self {
-            Extension::UnionExtension(union) => union,
-            _ => unreachable!(),
-        }
-    }
-
-    pub fn as_enum_ext(&self) -> &EnumExtension {
-        match self {
-            Extension::EnumExtension(enm) => enm,
-            _ => unreachable!(),
-        }
-    }
-
-    pub fn as_input_ext(&self) -> &InputExtension {
-        match self {
-            Extension::InputExtension(input) => input,
-            _ => unreachable!(),
-        }
-    }
-
-    pub fn get_field(&self, name: &str) -> Option<&Field> {
-        match self {
-            Extension::ObjectExtension(object) => object.get_field(name),
-            Extension::InterfaceExtension(interface) => interface.get_field(name),
-            _ => None,
-        }
-    }
-
-    pub fn iter_fields<'a>(&'a self) -> Box<dyn Iterator<Item = &Field> + 'a> {
-        match self {
-            Extension::ObjectExtension(object) => Box::new(object.iter_fields()),
-            Extension::InterfaceExtension(interface) => Box::new(interface.iter_fields()),
+            Definition::ObjectExtension(object) => Box::new(object.iter_interfaces()),
+            Definition::InterfaceExtension(interface) => Box::new(interface.iter_interfaces()),
             _ => Box::new(empty()),
         }
     }
 
-    pub fn iter_interfaces<'a>(&'a self) -> Box<dyn Iterator<Item = &str> + 'a> {
+    pub fn get_position(&self) -> &super::Position {
         match self {
-            Extension::ObjectExtension(object) => Box::new(object.iter_interfaces()),
-            Extension::InterfaceExtension(interface) => Box::new(interface.iter_interfaces()),
-            _ => Box::new(empty()),
+            Definition::SchemaDefinition(schema) => &schema.position,
+            Definition::DirectiveDefinition(directive) => &directive.position,
+            Definition::ScalarDefinition(scalar) => &scalar.position,
+            Definition::ObjectDefinition(object) => &object.position,
+            Definition::InterfaceDefinition(interface) => &interface.position,
+            Definition::UnionDefinition(union) => &union.position,
+            Definition::EnumDefinition(enm) => &enm.position,
+            Definition::InputDefinition(input) => &input.position,
+            Definition::ObjectExtension(object) => &object.position,
+            Definition::InterfaceExtension(interface) => &interface.position,
+            Definition::UnionExtension(union) => &union.position,
+            Definition::EnumExtension(enm) => &enm.position,
+            Definition::InputExtension(input) => &input.position,
         }
     }
 }

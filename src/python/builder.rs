@@ -17,7 +17,7 @@ pub fn render(outdir: &PathBuf, s: &Schema) -> Result<(), Error> {
     src.line("def build_schema(config: BuilderConfig) -> graphql.GraphQLSchema:");
     src.indent();
 
-    for def in s.iter_definitions() {
+    for def in s.iter_type_definitions() {
         match def {
             Definition::ObjectDefinition(inner) => render_object_type(&mut src, s, inner),
             Definition::InterfaceDefinition(inner) => render_interface_type(&mut src, s, inner),
@@ -45,8 +45,8 @@ pub fn render(outdir: &PathBuf, s: &Schema) -> Result<(), Error> {
     }
     src.line("types=[");
     src.indent();
-    for def in s.iter_definitions() {
-        src.line(format!("{},", naming::type_instance(def.get_name())));
+    for def in s.iter_type_definitions() {
+        src.line(format!("{},", naming::type_instance(def.get_definition_name())));
     }
     src.dedent();
     src.line("],");

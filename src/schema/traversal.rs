@@ -1,28 +1,23 @@
-use super::{Module, Schema, Type};
+use std::path::PathBuf;
+
+use super::{Definition, Schema};
 
 #[derive(Clone)]
 pub struct Traversal<'a> {
     pub schema: &'a Schema,
-    pub module: Module,
+    pub module: &'a PathBuf,
 }
 
 impl Traversal<'_> {
     pub fn new(schema: &Schema) -> Traversal {
-        let module = vec![];
-        Traversal { schema, module }
-    }
-
-    fn new_child(&self, name: &str) -> Traversal {
-        let mut module = self.module.clone();
-        module.push(name.to_owned());
         Traversal {
-            schema: self.schema,
-            module,
+            schema,
+            module: &schema.root_dir,
         }
     }
 
     pub fn get_module_name(&self) -> &str {
-        self.module.last().unwrap()
+        self.module.file_name().unwrap().to_str().unwrap()
     }
 
     pub fn has_children(&self) -> bool {
@@ -31,16 +26,22 @@ impl Traversal<'_> {
 
     pub fn iter_children(&self) -> impl Iterator<Item = Traversal> {
         self.schema
-            .get_module_children(&self.module)
+            .get_module_children(self.module)
             .unwrap()
-            .map(|name| self.new_child(name))
+            .map(|child| Traversal {
+                schema: self.schema,
+                module: child,
+            })
     }
 
-    pub fn has_types(&self) -> bool {
-        self.schema.get_module_types(&self.module).is_some()
+    pub fn has_definition(&self) -> bool {
+        self.schema.get_module_definitions(&self.module).is_some()
     }
 
-    pub fn iter_types(&self) -> impl Iterator<Item = &Type> {
-        self.schema.get_module_types(&self.module).unwrap().iter()
+    pub fn iter_definitions(&self) -> impl Iterator<Item = &Definition> {
+        self.schema
+            .get_module_definitions(&self.module)
+            .unwrap()
+            .iter()
     }
 }

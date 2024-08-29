@@ -25,7 +25,7 @@ fn build_schema_ast<'a>(s: &'a Schema) -> schema::Document<'a, &'a str> {
 fn build_schema_ast_from_schema<'a>(s: &'a Schema) -> Vec<schema::Definition<'a, &'a str>> {
     let mut schema_definitions = Vec::new();
 
-    for def in s.iter_definitions() {
+    for def in s.iter_type_definitions() {
         match def {
             Definition::ScalarDefinition(def) => {
                 schema_definitions.push(schema::Definition::TypeDefinition(

@@ -1,16 +1,21 @@
-use std::collections::HashMap;
+use std::fmt;
+use std::{collections::HashMap, path::PathBuf};
 
-pub type Module = Vec<String>;
+pub type Module = PathBuf;
 
 #[derive(Debug)]
 pub struct Position {
-    // pub directory: Vec<String>,
-    // pub module: String,
+    pub file: PathBuf,
     /// One-based line number
     pub line: usize,
-
     /// One-based column number
     pub column: usize,
+}
+
+impl fmt::Display for Position {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}:{}:{}", self.file.display(), self.line, self.column)
+    }
 }
 
 #[derive(Debug, Clone)]

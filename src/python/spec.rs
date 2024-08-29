@@ -33,8 +33,8 @@ fn render_directory(src: &mut SourceCode, d: Traversal) -> Result<()> {
             src.dedent();
         }
     }
-    if d.has_types() {
-        for type_ in d.iter_types() {
+    if d.has_definition() {
+        for type_ in d.iter_definitions() {
             match type_ {
                 Type::Definition(inner) => match inner {
                     Definition::ObjectDefinition(inner) => {

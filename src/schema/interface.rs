@@ -6,7 +6,6 @@ pub struct InterfaceDefinition {
     pub description: Option<String>,
     pub fields: Vec<Field>,
     pub interfaces: Vec<String>,
-    pub module: Module,
     pub position: Position,
 }
 
@@ -36,7 +35,6 @@ pub struct InterfaceExtension {
     pub name: String,
     pub fields: Vec<Field>,
     pub interfaces: Vec<String>,
-    pub module: Module,
     pub position: Position,
 }
 

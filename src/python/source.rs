@@ -11,7 +11,7 @@ pub fn render(outdir: &PathBuf, s: &Schema) -> Result<(), Error> {
     let mut file = File::create(outfile)?;
     let mut src = SourceCode::new_generated();
 
-    for def in s.iter_definitions() {
+    for def in s.iter_type_definitions() {
         match def {
             Definition::ObjectDefinition(inner) => {
                 render_object_source(&mut src, s, inner);

@@ -5,7 +5,6 @@ pub struct EnumDefinition {
     pub name: String,
     pub description: Option<String>,
     pub values: Vec<EnumValue>,
-    pub module: Module,
     pub position: Position,
 }
 
@@ -27,7 +26,6 @@ impl EnumDefinition {
 pub struct EnumExtension {
     pub name: String,
     pub values: Vec<EnumValue>,
-    pub module: Module,
     pub position: Position,
 }
 

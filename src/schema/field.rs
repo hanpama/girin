@@ -9,7 +9,6 @@ pub struct Field {
     pub field_type: TypeExpression,
     pub resolve: Option<ResolveConfig>,
     pub source_configs: Vec<SourceConfig>,
-    pub module: Module,
     pub type_name: String,
     pub position: Position,
 }
