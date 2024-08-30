@@ -1,6 +1,5 @@
 use crate::schema::{
-    EnumDefinition, InputDefinition, InterfaceDefinition, InterfaceExtension, ObjectDefinition,
-    ObjectExtension, ScalarDefinition,
+    EnumDefinition, InputDefinition, InterfaceDefinition, ObjectDefinition, ScalarDefinition,
 };
 
 pub fn spec_type(def_name: &str) -> String {

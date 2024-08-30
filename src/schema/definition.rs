@@ -42,6 +42,20 @@ impl Definition {
         }
     }
 
+    pub fn is_schema_definition(&self) -> bool {
+        match self {
+            Definition::SchemaDefinition(_) => true,
+            _ => false,
+        }
+    }
+
+    pub fn is_directive_definition(&self) -> bool {
+        match self {
+            Definition::DirectiveDefinition(_) => true,
+            _ => false,
+        }
+    }
+
     pub fn is_type_definition(&self) -> bool {
         match self {
             Definition::ScalarDefinition(_) => true,
@@ -62,6 +76,13 @@ impl Definition {
             Definition::EnumExtension(_) => true,
             Definition::InputExtension(_) => true,
             _ => false,
+        }
+    }
+
+    pub fn as_schema(&self) -> &SchemaDefinition {
+        match self {
+            Definition::SchemaDefinition(schema) => schema,
+            _ => unreachable!(),
         }
     }
 

@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use super::{Module, Position};
+use super::Position;
 
 #[derive(Debug)]
 pub struct ScalarDefinition {

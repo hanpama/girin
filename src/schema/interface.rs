@@ -1,4 +1,4 @@
-use super::{Field, Module, Position, SourceConfig};
+use super::{Field, Position, SourceConfig};
 
 #[derive(Debug)]
 pub struct InterfaceDefinition {

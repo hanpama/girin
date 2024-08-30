@@ -1,4 +1,4 @@
-use super::{InputValue, Module, Position};
+use super::{InputValue, Position};
 
 #[derive(Debug)]
 pub struct InputDefinition {

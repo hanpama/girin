@@ -1,8 +1,6 @@
 use std::fmt;
 use std::{collections::HashMap, path::PathBuf};
 
-pub type Module = PathBuf;
-
 #[derive(Debug)]
 pub struct Position {
     pub file: PathBuf,

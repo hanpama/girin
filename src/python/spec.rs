@@ -2,8 +2,8 @@ use super::{
     error::Result, format_named_source, format_type_expression, naming, sourcecode::SourceCode,
 };
 use crate::schema::{
-    Definition, Extension, InterfaceDefinition, InterfaceExtension, ObjectDefinition,
-    ObjectExtension, Resolve, ScalarDefinition, Schema, Traversal, Type,
+    Definition, InterfaceDefinition, InterfaceExtension, ObjectDefinition, ObjectExtension,
+    Resolve, ScalarDefinition, Schema, ModuleRef,
 };
 use std::{fs::File, path::PathBuf};
 
@@ -17,17 +17,17 @@ pub fn render(outdir: &PathBuf, s: &Schema) -> Result<()> {
 
     src.line("class Spec:");
     src.indent();
-    render_directory(&mut src, Traversal::new(s))?;
+    render_directory(&mut src, ModuleRef::new(s))?;
     src.dedent();
 
     src.write_to(&mut file)?;
     Ok(())
 }
 
-fn render_directory(src: &mut SourceCode, d: Traversal) -> Result<()> {
+fn render_directory(src: &mut SourceCode, d: ModuleRef) -> Result<()> {
     if d.has_children() {
         for child in d.iter_children() {
-            src.line(format!("class {}:", child.get_module_name()));
+            src.line(format!("class {}:", child.get_name()));
             src.indent();
             render_directory(src, child)?;
             src.dedent();
@@ -36,36 +36,27 @@ fn render_directory(src: &mut SourceCode, d: Traversal) -> Result<()> {
     if d.has_definition() {
         for type_ in d.iter_definitions() {
             match type_ {
-                Type::Definition(inner) => match inner {
-                    Definition::ObjectDefinition(inner) => {
-                        render_object_spec(src, d.schema, inner);
-                        src.line("");
-                    }
-                    Definition::InterfaceDefinition(inner) => {
-                        render_interface_spec(src, d.schema, inner);
-                        src.line("");
-                    }
-                    Definition::ScalarDefinition(inner) => {
-                        render_scalar_spec(src, d.schema, inner);
-                        src.line("");
-                    }
-                    Definition::InputDefinition(_inner) => { /* noop */ }
-                    Definition::EnumDefinition(_inner) => { /* noop */ }
-                    Definition::UnionDefinition(_inner) => { /* noop */ }
-                },
-                Type::Extension(inner) => match inner {
-                    Extension::ObjectExtension(inner) => {
-                        render_object_ext_spec(src, d.schema, inner);
-                        src.line("");
-                    }
-                    Extension::InterfaceExtension(inner) => {
-                        render_interface_ext_spec(src, d.schema, inner);
-                        src.line("");
-                    }
-                    Extension::InputExtension(_inner) => { /* noop */ }
-                    Extension::EnumExtension(_inner) => { /* noop */ }
-                    Extension::UnionExtension(_inner) => { /* noop */ }
-                },
+                Definition::ObjectDefinition(inner) => {
+                    render_object_spec(src, d.schema, inner);
+                    src.line("");
+                }
+                Definition::InterfaceDefinition(inner) => {
+                    render_interface_spec(src, d.schema, inner);
+                    src.line("");
+                }
+                Definition::ScalarDefinition(inner) => {
+                    render_scalar_spec(src, d.schema, inner);
+                    src.line("");
+                }
+                Definition::ObjectExtension(inner) => {
+                    render_object_ext_spec(src, d.schema, inner);
+                    src.line("");
+                }
+                Definition::InterfaceExtension(inner) => {
+                    render_interface_ext_spec(src, d.schema, inner);
+                    src.line("");
+                }
+                _ => { /* noop */ }
             }
         }
     }

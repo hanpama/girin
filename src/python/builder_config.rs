@@ -1,6 +1,6 @@
 use std::{fs::File, path::PathBuf};
 
-use crate::schema::{Definition, Extension, Schema, Traversal, Type};
+use crate::schema::{Definition, Schema, ModuleRef};
 
 use super::{error::Result, sourcecode::SourceCode};
 
@@ -9,7 +9,7 @@ pub fn render(outdir: &PathBuf, s: &Schema) -> Result<()> {
 
     let mut file = File::create(outfile)?;
     let mut src = SourceCode::new_generated();
-    let t = Traversal::new(s);
+    let t = ModuleRef::new(s);
 
     src.import("from . import impl");
     src.import("from .spec import Spec");
@@ -25,13 +25,13 @@ pub fn render(outdir: &PathBuf, s: &Schema) -> Result<()> {
     Ok(())
 }
 
-fn render_directory(src: &mut SourceCode, d: Traversal) -> Result<()> {
+fn render_directory(src: &mut SourceCode, d: ModuleRef) -> Result<()> {
     let mut pass = true;
     if d.has_children() {
         for child in d.iter_children() {
             pass = false;
 
-            src.line(format!("class {}:", child.get_module_name()));
+            src.line(format!("class {}:", child.get_name()));
             src.indent();
             render_directory(src, child)?;
             src.dedent();
@@ -40,52 +40,48 @@ fn render_directory(src: &mut SourceCode, d: Traversal) -> Result<()> {
     if d.has_definition() {
         for type_ in d.iter_definitions() {
             match type_ {
-                Type::Definition(def) => match def {
-                    Definition::ObjectDefinition(inner) => {
-                        pass = false;
-                        src.line(format!(
-                            "{name}: Spec.{module}.{name}Spec = impl.{module}.{name}Impl()",
-                            name = &inner.name,
-                            module = inner.module.join(".")
-                        ));
-                    }
-                    Definition::InterfaceDefinition(inner) => {
-                        pass = false;
-                        src.line(format!(
-                            "{name}: Spec.{module}.{name}Spec = impl.{module}.{name}Impl()",
-                            name = &inner.name,
-                            module = inner.module.join(".")
-                        ));
-                    }
-                    Definition::ScalarDefinition(inner) => {
-                        pass = false;
-                        src.line(format!(
-                            "{name}: Spec.{module}.{name}Spec = impl.{module}.{name}Impl()",
-                            name = &inner.name,
-                            module = inner.module.join(".")
-                        ));
-                    }
-                    _ => {}
-                },
-                Type::Extension(ext) => match ext {
-                    Extension::ObjectExtension(inner) => {
-                        pass = false;
-                        src.line(format!(
-                            "{name}: Spec.{module}.{name}Spec = impl.{module}.{name}Impl()",
-                            name = &inner.name,
-                            module = inner.module.join(".")
-                        ));
-                    }
-                    Extension::InterfaceExtension(inner) => {
-                        pass = false;
-                        src.line(format!(
-                            "{name}: Spec.{module}.{name}Spec = impl.{module}.{name}Impl()",
-                            name = &inner.name,
-                            module = inner.module.join(".")
-                        ));
-                    }
-                    _ => {}
-                },
+                Definition::ObjectDefinition(inner) => {
+                    pass = false;
+                    src.line(format!(
+                        "{name}: Spec.{module}.{name}Spec = impl.{module}.{name}Impl()",
+                        name = &inner.name,
+                        module = d.get_breadcrumbs().join(".")
+                    ));
+                }
+                Definition::InterfaceDefinition(inner) => {
+                    pass = false;
+                    src.line(format!(
+                        "{name}: Spec.{module}.{name}Spec = impl.{module}.{name}Impl()",
+                        name = &inner.name,
+                        module = d.get_breadcrumbs().join(".")
+                    ));
+                }
+                Definition::ScalarDefinition(inner) => {
+                    pass = false;
+                    src.line(format!(
+                        "{name}: Spec.{module}.{name}Spec = impl.{module}.{name}Impl()",
+                        name = &inner.name,
+                        module = d.get_breadcrumbs().join(".")
+                    ));
+                }
+
+                Definition::ObjectExtension(inner) => {
+                    pass = false;
+                    src.line(format!(
+                        "{name}: Spec.{module}.{name}Spec = impl.{module}.{name}Impl()",
+                        name = &inner.name,
+                        module = d.get_breadcrumbs().join(".")
+                    ));
+                }
+                Definition::InterfaceExtension(inner) => {
+                    pass = false;
+                    src.line(format!(
+                        "{name}: Spec.{module}.{name}Spec = impl.{module}.{name}Impl()",
+                        name = &inner.name,
+                        module = d.get_breadcrumbs().join(".")
+                    ));
+                }
+                _ => {}
             }
             //
         }

@@ -3,7 +3,7 @@ use std::{
     path::PathBuf,
 };
 
-use super::{Definition, EnumValue, Field, InputValue, Position, Resolve};
+use super::{Definition, EnumValue, Field, InputValue, ModuleRef, Position, Resolve};
 
 #[derive(Debug)]
 pub struct SchemaDefinition {
@@ -15,11 +15,9 @@ pub struct SchemaDefinition {
 
 #[derive(Debug)]
 pub struct Schema {
-    // query: Option<String>,
-    // mutation: Option<String>,
-    // subscription: Option<String>,
-    pub root_dir: PathBuf,
+    root_dir: PathBuf,
     definitions: BTreeMap<PathBuf, Vec<Definition>>,
+    schema_loc: Option<Loc>,
     def_locs: HashMap<String, Loc>,
     ext_locs: HashMap<String, Vec<Loc>>,
     module_children: HashMap<PathBuf, BTreeSet<PathBuf>>,
@@ -34,32 +32,38 @@ impl Schema {
             // subscription: None,
             root_dir,
             definitions: BTreeMap::new(),
+            schema_loc: None,
             def_locs: HashMap::new(),
             ext_locs: HashMap::new(),
             module_children: HashMap::new(),
             type_field_locs: HashMap::new(),
         }
     }
-    // pub fn get_query(&self) -> Option<&str> {
-    //     self.query.as_deref()
-    // }
-    // pub fn set_query(&mut self, query: Option<String>) {
-    //     self.query = query;
-    // }
-    // pub fn get_mutation(&self) -> Option<&str> {
-    //     self.mutation.as_deref()
-    // }
-    // pub fn set_mutation(&mut self, mutation: Option<String>) {
-    //     self.mutation = mutation;
-    // }
-    // pub fn get_subscription(&self) -> Option<&str> {
-    //     self.subscription.as_deref()
-    // }
-    // pub fn set_subscription(&mut self, subscription: Option<String>) {
-    //     self.subscription = subscription;
-    // }
-    pub fn add_definition(&mut self, definition: Definition) {
-        self.add_type(definition);
+    pub fn get_query(&self) -> Option<&str> {
+        if let Some(loc) = &self.schema_loc {
+            return self.get_type(loc).as_schema().query.as_deref();
+        }
+        self.def_locs.contains_key("Query").then(|| "Query")
+    }
+
+    pub fn get_mutation(&self) -> Option<&str> {
+        if let Some(loc) = &self.schema_loc {
+            return self.get_type(loc).as_schema().mutation.as_deref();
+        }
+        self.def_locs.contains_key("Mutation").then(|| "Mutation")
+    }
+
+    pub fn get_subscription(&self) -> Option<&str> {
+        if let Some(loc) = &self.schema_loc {
+            return self.get_type(loc).as_schema().subscription.as_deref();
+        }
+        self.def_locs
+            .contains_key("Subscription")
+            .then(|| "Subscription")
+    }
+
+    pub fn get_root_dir(&self) -> &PathBuf {
+        &self.root_dir
     }
 
     pub fn iter_type_definitions(&self) -> impl Iterator<Item = &Definition> {
@@ -147,14 +151,14 @@ impl Schema {
         definition_fields.chain(extension_fields)
     }
 
-    pub fn get_module_children(&self, module: &PathBuf) -> Option<impl Iterator<Item = &PathBuf>> {
+    pub fn get_module_children(&self, file: &PathBuf) -> Option<impl Iterator<Item = &PathBuf>> {
         self.module_children
-            .get(module)
+            .get(file)
             .map(|children| children.iter())
     }
 
-    pub fn get_module_definitions(&self, module: &PathBuf) -> Option<&Vec<Definition>> {
-        self.definitions.get(module)
+    pub fn get_module_definitions(&self, file: &PathBuf) -> Option<&Vec<Definition>> {
+        self.definitions.get(file)
     }
 
     pub fn resolve_field_resolve<'a>(&'a self, field: &'a Field) -> Option<Resolve<'a>> {
@@ -187,40 +191,47 @@ impl Schema {
         None
     }
 
-    fn add_type(&mut self, type_: Definition) {
-        let module = type_.get_position().file.clone();
+    pub fn add_definition(&mut self, type_: Definition) {
+        let file = type_.get_position().file.clone();
 
         let module_types = self
             .definitions
-            .entry(module.clone())
+            .entry(file.clone())
             .or_insert_with(Vec::new);
 
         for field in type_.iter_fields() {
             let name = type_.get_definition_name().unwrap().to_owned();
 
             let type_field = (name, field.name.clone());
-            let loc = Loc(module.clone(), module_types.len());
+            let loc = Loc(file.clone(), module_types.len());
             self.type_field_locs.insert(type_field, loc);
+        }
+        if type_.is_schema_definition() {
+            self.schema_loc = Some(Loc(file.clone(), module_types.len()));
         }
         if type_.is_type_definition() {
             let name = type_.get_definition_name().unwrap().to_owned();
             self.def_locs
-                .insert(name, Loc(module.clone(), module_types.len()));
+                .insert(name, Loc(file.clone(), module_types.len()));
         }
         if type_.is_type_extension() {
             let name = type_.get_definition_name().unwrap().to_owned();
             self.ext_locs
                 .entry(name)
                 .or_insert_with(Vec::new)
-                .push(Loc(module.clone(), module_types.len()));
+                .push(Loc(file.clone(), module_types.len()));
         }
 
         module_types.push(type_);
-        self.index_module(&module);
+        self.index_module(&file);
     }
 
-    fn index_module(&mut self, module: &PathBuf) {
-        let is_under_root = module
+    pub fn get_module_ref<'a>(&'a self, path: &'a PathBuf) -> ModuleRef<'a> {
+        ModuleRef { schema: self, path }
+    }
+
+    fn index_module(&mut self, file: &PathBuf) {
+        let is_under_root = file
             .strip_prefix(&self.root_dir)
             .and_then(|stripped| Ok(!stripped.as_os_str().is_empty()))
             .unwrap_or(false);
@@ -229,13 +240,13 @@ impl Schema {
             return;
         }
 
-        let parent = module.parent().unwrap().to_path_buf();
+        let parent = file.parent().unwrap().to_path_buf();
         self.module_children
             .entry(parent)
             .or_insert_with(BTreeSet::new)
-            .insert(module.to_path_buf());
+            .insert(file.to_path_buf());
 
-        self.index_module(&module);
+        self.index_module(&file);
     }
 
     fn get_type_definition(&self, name: &str) -> &Definition {

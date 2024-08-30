@@ -1,4 +1,4 @@
-use super::{Module, Position};
+use super::Position;
 
 #[derive(Debug)]
 pub struct EnumDefinition {

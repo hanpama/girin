@@ -1,7 +1,7 @@
 use super::{error::Error, naming, sourcecode::SourceCode};
 use crate::schema::{
     Definition, EnumDefinition, EnumValue, Field, InputDefinition, InputValue, InterfaceDefinition,
-    Module, ObjectDefinition, ScalarDefinition, Schema, TypeExpression, UnionDefinition, Value,
+    ModuleRef, ObjectDefinition, ScalarDefinition, Schema, TypeExpression, UnionDefinition, Value,
 };
 use std::{fs::File, path::PathBuf};
 
@@ -25,6 +25,7 @@ pub fn render(outdir: &PathBuf, s: &Schema) -> Result<(), Error> {
             Definition::ScalarDefinition(inner) => render_scalar_type(&mut src, s, inner),
             Definition::EnumDefinition(inner) => render_enum_type(&mut src, s, inner),
             Definition::UnionDefinition(inner) => render_union_type(&mut src, s, inner),
+            _ => {}
         }
     }
 
@@ -46,7 +47,10 @@ pub fn render(outdir: &PathBuf, s: &Schema) -> Result<(), Error> {
     src.line("types=[");
     src.indent();
     for def in s.iter_type_definitions() {
-        src.line(format!("{},", naming::type_instance(def.get_definition_name())));
+        src.line(format!(
+            "{},",
+            naming::type_instance(def.get_definition_name().unwrap())
+        ));
     }
     src.dedent();
     src.line("],");
@@ -96,7 +100,7 @@ fn render_object_type(src: &mut SourceCode, s: &Schema, def: &ObjectDefinition) 
 }
 
 fn render_interface_type(src: &mut SourceCode, s: &Schema, def: &InterfaceDefinition) {
-    let name = naming::interface_type_instance(def);
+    let name = naming::type_instance(&def.name);
     src.line(format!("{} = graphql.GraphQLInterfaceType(", name));
     src.indent();
     src.line(format!("name=\"{}\",", def.name));
@@ -159,7 +163,8 @@ fn render_scalar_type(src: &mut SourceCode, s: &Schema, def: &ScalarDefinition) 
         src.line(format!("description={:?},", description));
     }
 
-    let config_path = format_definition_config_path(&def.module, &def.name);
+    let config_path =
+        format_definition_config_path(s.get_module_ref(&def.position.file), &def.name);
     src.line(format!("serialize={config_path}.serialize,"));
     src.line(format!("parse_value={config_path}.parse_value,"));
     src.line(format!("parse_literal={config_path}.parse_literal,"));
@@ -251,8 +256,8 @@ fn render_field(src: &mut SourceCode, s: &Schema, def: &Field) {
         src.line("},");
     }
     if let Some(opt) = s.resolve_field_resolve(def) {
-        let def_config_path =
-            format_definition_config_path(&opt.field.module, &opt.field.type_name);
+        let module_ref = s.get_module_ref(&opt.field.position.file);
+        let def_config_path = format_definition_config_path(module_ref, &opt.field.type_name);
 
         src.line(format!(
             "resolve={}.{},",
@@ -369,6 +374,6 @@ fn format_value(t: &Value) -> String {
     }
 }
 
-fn format_definition_config_path(module: &Module, name: &str) -> String {
-    format!("config.{}.{}", module.join("."), name)
+fn format_definition_config_path(module: ModuleRef, name: &str) -> String {
+    format!("config.{}.{}", module.get_breadcrumbs().join("."), name)
 }
