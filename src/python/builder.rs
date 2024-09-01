@@ -1,11 +1,11 @@
 use super::{error::Error, naming, sourcecode::SourceCode};
 use crate::schema::{
     Definition, EnumDefinition, EnumValue, Field, InputDefinition, InputValue, InterfaceDefinition,
-    ModuleRef, ObjectDefinition, ScalarDefinition, Schema, TypeExpression, UnionDefinition, Value,
+    ModuleRef, ObjectDefinition, Project, ScalarDefinition, TypeExpression, UnionDefinition, Value,
 };
 use std::{fs::File, path::PathBuf};
 
-pub fn render(outdir: &PathBuf, s: &Schema) -> Result<(), Error> {
+pub fn render(outdir: &PathBuf, s: &Project) -> Result<(), Error> {
     let outfile = outdir.join("builder.py");
 
     let mut file = File::create(outfile)?;
@@ -65,8 +65,8 @@ pub fn render(outdir: &PathBuf, s: &Schema) -> Result<(), Error> {
     Ok(())
 }
 
-fn render_object_type(src: &mut SourceCode, s: &Schema, def: &ObjectDefinition) {
-    let name = naming::object_type_instance(def);
+fn render_object_type(src: &mut SourceCode, s: &Project, def: &ObjectDefinition) {
+    let name = naming::type_instance(&def.name);
     src.line(format!("{} = graphql.GraphQLObjectType(", name));
     src.indent();
     src.line(format!("name=\"{}\",", def.name));
@@ -99,7 +99,7 @@ fn render_object_type(src: &mut SourceCode, s: &Schema, def: &ObjectDefinition) 
     src.line(")");
 }
 
-fn render_interface_type(src: &mut SourceCode, s: &Schema, def: &InterfaceDefinition) {
+fn render_interface_type(src: &mut SourceCode, s: &Project, def: &InterfaceDefinition) {
     let name = naming::type_instance(&def.name);
     src.line(format!("{} = graphql.GraphQLInterfaceType(", name));
     src.indent();
@@ -131,8 +131,8 @@ fn render_interface_type(src: &mut SourceCode, s: &Schema, def: &InterfaceDefini
     src.line(")");
 }
 
-fn render_input_type(src: &mut SourceCode, s: &Schema, def: &InputDefinition) {
-    let name = naming::input_type_instance(def);
+fn render_input_type(src: &mut SourceCode, s: &Project, def: &InputDefinition) {
+    let name = naming::type_instance(&def.name);
     src.line(format!("{} = graphql.GraphQLInputObjectType(", name));
     src.indent();
     src.line(format!("name=\"{}\",", def.name));
@@ -153,7 +153,7 @@ fn render_input_type(src: &mut SourceCode, s: &Schema, def: &InputDefinition) {
     src.line(")");
 }
 
-fn render_scalar_type(src: &mut SourceCode, s: &Schema, def: &ScalarDefinition) {
+fn render_scalar_type(src: &mut SourceCode, s: &Project, def: &ScalarDefinition) {
     let name = naming::type_instance(&def.name);
     src.line(format!("{} = graphql.GraphQLScalarType(", name));
     src.indent();
@@ -173,7 +173,7 @@ fn render_scalar_type(src: &mut SourceCode, s: &Schema, def: &ScalarDefinition) 
     src.line(")");
 }
 
-fn render_enum_type(src: &mut SourceCode, s: &Schema, def: &EnumDefinition) {
+fn render_enum_type(src: &mut SourceCode, s: &Project, def: &EnumDefinition) {
     let name = naming::type_instance(&def.name);
     src.line(format!("{} = graphql.GraphQLEnumType(", name));
     src.indent();
@@ -195,7 +195,7 @@ fn render_enum_type(src: &mut SourceCode, s: &Schema, def: &EnumDefinition) {
     src.line(")");
 }
 
-fn render_enum_value(src: &mut SourceCode, s: &Schema, def: &EnumValue) {
+fn render_enum_value(src: &mut SourceCode, s: &Project, def: &EnumValue) {
     src.line(format!("{:?}: graphql.GraphQLEnumValue(", def.name));
     src.indent();
     src.line(format!("value={:?},", &def.name));
@@ -209,7 +209,7 @@ fn render_enum_value(src: &mut SourceCode, s: &Schema, def: &EnumValue) {
     src.line("),");
 }
 
-fn render_union_type(src: &mut SourceCode, s: &Schema, def: &UnionDefinition) {
+fn render_union_type(src: &mut SourceCode, s: &Project, def: &UnionDefinition) {
     let name = naming::type_instance(&def.name);
     src.line(format!("{} = graphql.GraphQLUnionType(", name));
     src.indent();
@@ -231,7 +231,7 @@ fn render_union_type(src: &mut SourceCode, s: &Schema, def: &UnionDefinition) {
     src.line(")");
 }
 
-fn render_field(src: &mut SourceCode, s: &Schema, def: &Field) {
+fn render_field(src: &mut SourceCode, s: &Project, def: &Field) {
     src.line(format!("\"{}\": graphql.GraphQLField(", def.name));
     src.indent();
 
@@ -265,10 +265,7 @@ fn render_field(src: &mut SourceCode, s: &Schema, def: &Field) {
             naming::field_name(&def.name)
         ));
     } else {
-        src.line(format!(
-            "resolve=lambda src, _: getattr(src, \"{}\"),",
-            naming::field_name(&def.name)
-        ));
+        src.line("resolve=graphql.default_field_resolver,");
     }
 
     src.dedent();
@@ -375,5 +372,6 @@ fn format_value(t: &Value) -> String {
 }
 
 fn format_definition_config_path(module: ModuleRef, name: &str) -> String {
-    format!("config.{}.{}", module.get_breadcrumbs().join("."), name)
+    let breadcrumbs = module.get_breadcrumbs();
+    format!("config.{}.{}", breadcrumbs.join("."), name)
 }

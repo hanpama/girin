@@ -1,49 +1,17 @@
-use crate::schema::{
-    EnumDefinition, InputDefinition, InterfaceDefinition, ObjectDefinition, ScalarDefinition,
-};
-
 pub fn spec_type(def_name: &str) -> String {
     format!("{}Spec", def_name)
 }
+
 pub fn impl_type(def_name: &str) -> String {
     format!("{}Impl", def_name)
-}
-
-pub fn object_source(def: &ObjectDefinition) -> String {
-    format!("{}Source", def.name)
-}
-
-pub fn interface_source(def: &InterfaceDefinition) -> String {
-    format!("{}Source", def.name)
-}
-
-pub fn input_source(def: &InputDefinition) -> String {
-    format!("{}Source", def.name)
-}
-
-pub fn scalar_source(def: &ScalarDefinition) -> String {
-    format!("{}Source", def.name)
-}
-
-pub fn enum_source(def: &EnumDefinition) -> String {
-    format!("{}Source", def.name)
 }
 
 pub fn source<S: Into<String>>(def_name: S) -> String {
     format!("{}Source", def_name.into())
 }
 
-pub fn object_type_instance(def: &ObjectDefinition) -> String {
-    format!("{}", def.name)
-}
-pub fn input_type_instance(def: &InputDefinition) -> String {
-    format!("{}", def.name)
-}
 pub fn type_instance(def_name: &str) -> String {
-    format!("{}", def_name)
-}
-pub fn interface_type_instance(def: &InterfaceDefinition) -> String {
-    format!("{}", def.name)
+    format!("{}_type", def_name)
 }
 
 pub fn field_name(in_schema_name: &str) -> String {

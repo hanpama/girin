@@ -1,15 +1,15 @@
 use std::path::PathBuf;
 
-use super::{Definition, Schema};
+use super::{Definition, Project};
 
 #[derive(Clone)]
 pub struct ModuleRef<'a> {
-    pub schema: &'a Schema,
+    pub schema: &'a Project,
     pub path: &'a PathBuf,
 }
 
 impl ModuleRef<'_> {
-    pub fn new(schema: &Schema) -> ModuleRef {
+    pub fn new(schema: &Project) -> ModuleRef {
         ModuleRef {
             schema,
             path: &schema.get_root_dir(),
@@ -17,14 +17,20 @@ impl ModuleRef<'_> {
     }
 
     pub fn get_name(&self) -> &str {
-        self.path.file_name().unwrap().to_str().unwrap()
+        self.path
+            .file_name()
+            .unwrap()
+            .to_str()
+            .unwrap()
+            .trim_end_matches(".graphql")
     }
 
     pub fn get_breadcrumbs(&self) -> Vec<&str> {
         self.path
             .strip_prefix(&self.schema.get_root_dir())
-            .iter()
-            .map(|s| s.to_str().unwrap())
+            .unwrap()
+            .components()
+            .map(|s| s.as_os_str().to_str().unwrap().trim_end_matches(".graphql"))
             .collect()
     }
 

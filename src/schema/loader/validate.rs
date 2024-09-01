@@ -1,8 +1,8 @@
-use crate::schema::Schema;
+use crate::schema::Project;
 
 use super::violation::GraphQLValidationViolation;
 
-pub fn validate_schema(s: &Schema) -> Result<(), Error> {
+pub fn validate_schema(s: &Project) -> Result<(), Error> {
     // validate_lone_or_zero_schema_root(s)?;
     // validate_builtin_directives_not_overridden(s)?;
     // validate_builtin_scalars_not_overridden(s)?;

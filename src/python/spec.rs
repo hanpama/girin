@@ -3,11 +3,11 @@ use super::{
 };
 use crate::schema::{
     Definition, InterfaceDefinition, InterfaceExtension, ObjectDefinition, ObjectExtension,
-    Resolve, ScalarDefinition, Schema, ModuleRef,
+    Resolve, ScalarDefinition, Project, ModuleRef,
 };
 use std::{fs::File, path::PathBuf};
 
-pub fn render(outdir: &PathBuf, s: &Schema) -> Result<()> {
+pub fn render(outdir: &PathBuf, s: &Project) -> Result<()> {
     let filepath = outdir.join("spec.py");
     let mut file = File::create(filepath)?;
 
@@ -64,7 +64,7 @@ fn render_directory(src: &mut SourceCode, d: ModuleRef) -> Result<()> {
     Ok(())
 }
 
-fn render_object_spec(src: &mut SourceCode, s: &Schema, def: &ObjectDefinition) {
+fn render_object_spec(src: &mut SourceCode, s: &Project, def: &ObjectDefinition) {
     src.line(&format!(
         "class {name}(typing.Protocol):",
         name = naming::spec_type(&def.name)
@@ -86,7 +86,7 @@ fn render_object_spec(src: &mut SourceCode, s: &Schema, def: &ObjectDefinition) 
     src.dedent();
 }
 
-fn render_interface_spec(src: &mut SourceCode, s: &Schema, def: &InterfaceDefinition) {
+fn render_interface_spec(src: &mut SourceCode, s: &Project, def: &InterfaceDefinition) {
     src.line(&format!(
         "class {name}(typing.Protocol):",
         name = naming::spec_type(&def.name)
@@ -108,7 +108,7 @@ fn render_interface_spec(src: &mut SourceCode, s: &Schema, def: &InterfaceDefini
     src.dedent();
 }
 
-fn render_scalar_spec(src: &mut SourceCode, s: &Schema, def: &ScalarDefinition) {
+fn render_scalar_spec(src: &mut SourceCode, s: &Project, def: &ScalarDefinition) {
     src.import("import typing");
     src.import("import graphql");
     src.line(&format!(
@@ -119,12 +119,12 @@ fn render_scalar_spec(src: &mut SourceCode, s: &Schema, def: &ScalarDefinition) 
 
     src.line("def serialize(self, value: typing.Any) -> typing.Any: ...");
     src.line("def parse_value(self, value: typing.Any) -> typing.Any: ...");
-    src.line("def parse_literal(self, node: graphql.ValueNode, variables) -> typing.Any: ...");
+    src.line("def parse_literal(self, node: graphql.ValueNode, variables: typing.Any) -> typing.Any: ...");
 
     src.dedent();
 }
 
-fn render_object_ext_spec(src: &mut SourceCode, s: &Schema, def: &ObjectExtension) {
+fn render_object_ext_spec(src: &mut SourceCode, s: &Project, def: &ObjectExtension) {
     src.line(&format!(
         "class {name}(typing.Protocol):",
         name = naming::spec_type(&def.name)
@@ -146,7 +146,7 @@ fn render_object_ext_spec(src: &mut SourceCode, s: &Schema, def: &ObjectExtensio
     src.dedent();
 }
 
-fn render_interface_ext_spec(src: &mut SourceCode, s: &Schema, def: &InterfaceExtension) {
+fn render_interface_ext_spec(src: &mut SourceCode, s: &Project, def: &InterfaceExtension) {
     src.line(&format!(
         "class {name}(typing.Protocol):",
         name = naming::spec_type(&def.name)
@@ -174,6 +174,6 @@ fn render_field_resolver(src: &mut SourceCode, resolve: &Resolve) {
     let sig = if resolve.sync { "def" } else { "async def" };
 
     src.line(&format!(
-        "{sig} {name}(self, obj: {source_type}, info, **args) -> {return_type}: ...",
+        "{sig} {name}(self, obj: {source_type}, info: graphql.GraphQLResolveInfo, **args: typing.Any) -> {return_type}: ...",
     ));
 }

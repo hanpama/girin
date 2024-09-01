@@ -39,6 +39,10 @@ class BuilderConfig:
             GrandParent: Spec.Resolve.Schema.GrandParentSpec = impl.Resolve.Schema.GrandParentImpl()
             Parent: Spec.Resolve.Schema.ParentSpec = impl.Resolve.Schema.ParentImpl()
             Child: Spec.Resolve.Schema.ChildSpec = impl.Resolve.Schema.ChildImpl()
+    class graphql:
+        GraphQLObject: Spec.graphql.GraphQLObjectSpec = impl.graphql.GraphQLObjectImpl()
+        graphql: Spec.graphql.graphqlSpec = impl.graphql.graphqlImpl()
+        typing: Spec.graphql.typingSpec = impl.graphql.typingImpl()
     class root:
         Query: Spec.root.QuerySpec = impl.root.QueryImpl()
         Mutation: Spec.root.MutationSpec = impl.root.MutationImpl()

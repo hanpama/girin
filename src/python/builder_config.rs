@@ -1,10 +1,10 @@
 use std::{fs::File, path::PathBuf};
 
-use crate::schema::{Definition, Schema, ModuleRef};
+use crate::schema::{Definition, Project, ModuleRef};
 
 use super::{error::Result, sourcecode::SourceCode};
 
-pub fn render(outdir: &PathBuf, s: &Schema) -> Result<()> {
+pub fn render(outdir: &PathBuf, s: &Project) -> Result<()> {
     let outfile = outdir.join("builder_config.py");
 
     let mut file = File::create(outfile)?;

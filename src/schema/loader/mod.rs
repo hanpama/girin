@@ -1,7 +1,6 @@
 use super::ScalarDefinition;
-use crate::schema::Schema;
-use graphql_parser::parse_schema;
-use std::fs::{read_dir, DirEntry};
+use crate::schema::Project;
+use std::fs::read_dir;
 use std::path::Path;
 use std::{fs::File, io::Read};
 use validate::validate_schema;
@@ -10,11 +9,11 @@ mod construct;
 mod validate;
 mod violation;
 
-pub fn load(root: &Path) -> Result<Schema, Error> {
+pub fn load(root: &Path) -> Result<Project, Error> {
     let mut violations = vec![];
 
-    let mut schema = Schema::new(root.to_path_buf());
-    if let Err(error) = load_directory(&mut schema, &root, &root) {
+    let mut prj = Project::new(root.to_path_buf());
+    if let Err(error) = load_directory(&mut prj, &root, &root) {
         match error {
             Error::Rule(vs) => {
                 violations.extend(vs);
@@ -24,7 +23,7 @@ pub fn load(root: &Path) -> Result<Schema, Error> {
             }
         }
     }
-    if let Err(error) = validate_schema(&schema) {
+    if let Err(error) = validate_schema(&prj) {
         violations.extend(error.violations);
     }
 
@@ -32,15 +31,21 @@ pub fn load(root: &Path) -> Result<Schema, Error> {
         return Err(Error::Rule(violations));
     }
 
-    Ok(schema)
+    Ok(prj)
 }
 
-fn load_directory(s: &mut Schema, root: &Path, dir: &Path) -> Result<(), Error> {
+fn load_directory(prj: &mut Project, root: &Path, dir: &Path) -> Result<(), Error> {
     let mut parse_errors = vec![];
     let mut violations = vec![];
 
-    for item in read_dir(&dir)? {
-        if let Err(error) = load_dir_entry(s, root, item?) {
+    for entry in read_dir(&dir)? {
+        let entry = entry?;
+        let dir_entry_result = if entry.file_type()?.is_dir() {
+            load_directory(prj, root, &entry.path())
+        } else {
+            load_file(prj, &entry.path())
+        };
+        if let Err(error) = dir_entry_result {
             match error {
                 Error::Io(err) => return Err(Error::Io(err)),
                 Error::Parser(errors) => {
@@ -62,33 +67,14 @@ fn load_directory(s: &mut Schema, root: &Path, dir: &Path) -> Result<(), Error> 
     Ok(())
 }
 
-fn load_dir_entry(s: &mut Schema, root: &Path, entry: DirEntry) -> Result<(), Error> {
-    if entry.file_type()?.is_dir() {
-        load_directory(s, root, &entry.path())
-    } else {
-        load_file(s, &entry.path())
-    }
-}
-
-fn load_file(s: &mut Schema, file: &Path) -> Result<(), Error> {
+fn load_file(prj: &mut Project, file: &Path) -> Result<(), Error> {
     let mut buf = String::new();
     File::open(file)?.read_to_string(&mut buf)?;
 
-    let document_result = parse_schema::<String>(&buf);
-    if let Err(error) = document_result {
-        return Err(Error::Parser(vec![error]));
-    }
-
-    let document = document_result.unwrap();
-    let definitions_result = construct::construct_definitions(file, document);
-
-    if let Err(error) = definitions_result {
-        return Err(Error::Rule(error.violations));
-    }
-
-    let definitions = definitions_result.unwrap();
+    let document = graphql_parser::parse_schema::<String>(&buf)?;
+    let definitions = construct::construct_definitions(file, document)?;
     for def in definitions {
-        s.add_definition(def);
+        prj.add_definition(def);
     }
 
     Ok(())
@@ -104,5 +90,17 @@ pub enum Error {
 impl From<std::io::Error> for Error {
     fn from(err: std::io::Error) -> Self {
         Error::Io(err)
+    }
+}
+
+impl From<graphql_parser::schema::ParseError> for Error {
+    fn from(err: graphql_parser::schema::ParseError) -> Self {
+        Error::Parser(vec![err])
+    }
+}
+
+impl From<construct::Error> for Error {
+    fn from(err: construct::Error) -> Self {
+        Error::Rule(err.violations)
     }
 }

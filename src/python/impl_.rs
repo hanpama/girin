@@ -3,11 +3,11 @@ use super::{
 };
 use crate::schema::{
     Definition, InterfaceDefinition, InterfaceExtension, ObjectDefinition, ObjectExtension,
-    Resolve, ScalarDefinition, Schema, ModuleRef,
+    Resolve, ScalarDefinition, Project, ModuleRef,
 };
 use std::{fs::File, path::PathBuf};
 
-pub fn render(outdir: &PathBuf, s: &Schema) -> Result<()> {
+pub fn render(outdir: &PathBuf, s: &Project) -> Result<()> {
     render_directory(outdir.join("impl"), ModuleRef::new(s))?;
     Ok(())
 }
@@ -100,7 +100,7 @@ fn render_module_config(filepath: &PathBuf, d: &ModuleRef) -> Result<()> {
     Ok(())
 }
 
-fn render_object_config(d: &ModuleRef, src: &mut SourceCode, s: &Schema, def: &ObjectDefinition) {
+fn render_object_config(d: &ModuleRef, src: &mut SourceCode, s: &Project, def: &ObjectDefinition) {
     let module_accessor = d.get_breadcrumbs().join(".");
     let impl_name = naming::impl_type(&def.name);
     let spec_name = naming::spec_type(&def.name);
@@ -129,7 +129,7 @@ fn render_object_config(d: &ModuleRef, src: &mut SourceCode, s: &Schema, def: &O
 fn render_interface_config(
     d: &ModuleRef,
     src: &mut SourceCode,
-    s: &Schema,
+    s: &Project,
     def: &InterfaceDefinition,
 ) {
     // def.module
@@ -158,7 +158,7 @@ fn render_interface_config(
     src.dedent();
 }
 
-fn render_scalar_config(d: &ModuleRef, src: &mut SourceCode, s: &Schema, def: &ScalarDefinition) {
+fn render_scalar_config(d: &ModuleRef, src: &mut SourceCode, s: &Project, def: &ScalarDefinition) {
     let module_accessor = d.get_breadcrumbs().join(".");
     let impl_name = naming::impl_type(&def.name);
     let spec_name = naming::spec_type(&def.name);
@@ -180,7 +180,7 @@ fn render_scalar_config(d: &ModuleRef, src: &mut SourceCode, s: &Schema, def: &S
     src.line("raise NotImplementedError()");
     src.dedent();
     src.line("");
-    src.line("def parse_literal(self, node: graphql.ValueNode, variables) -> typing.Any:");
+    src.line("def parse_literal(self, node: graphql.ValueNode, variables: typing.Any) -> typing.Any:");
     src.indent();
     src.line("raise NotImplementedError()");
     src.dedent();
@@ -191,7 +191,7 @@ fn render_scalar_config(d: &ModuleRef, src: &mut SourceCode, s: &Schema, def: &S
 fn render_object_ext_config(
     d: &ModuleRef,
     src: &mut SourceCode,
-    s: &Schema,
+    s: &Project,
     def: &ObjectExtension,
 ) {
     let module_accessor = d.get_breadcrumbs().join(".");
@@ -222,7 +222,7 @@ fn render_object_ext_config(
 fn render_interface_ext_config(
     d: &ModuleRef,
     src: &mut SourceCode,
-    s: &Schema,
+    s: &Project,
     def: &InterfaceExtension,
 ) {
     let module_accessor = d.get_breadcrumbs().join(".");
@@ -250,6 +250,8 @@ fn render_interface_ext_config(
 }
 
 fn render_field_resolver(d: &ModuleRef, src: &mut SourceCode, resolve: &Resolve) {
+    src.import("import graphql");
+    src.import("import typing");
     src.import(&format!(
         "from {} import source",
         ".".repeat(d.get_depth() + 1)
@@ -261,7 +263,7 @@ fn render_field_resolver(d: &ModuleRef, src: &mut SourceCode, resolve: &Resolve)
     let sig = if resolve.sync { "def" } else { "async def" };
 
     src.line(&format!(
-        "{sig} {name}(self, obj: {source_type}, info, **args) -> {return_type}:",
+        "{sig} {name}(self, obj: {source_type}, info: graphql.GraphQLResolveInfo, **args: typing.Any) -> {return_type}:",
     ));
 
     src.indent();

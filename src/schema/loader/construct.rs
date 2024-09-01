@@ -1,16 +1,13 @@
-use std::collections::HashMap;
-use std::path::Path;
-
-use graphql_parser::schema::{self, TypeDefinition, TypeExtension};
-
+use super::{violation::GraphQLValidationViolation, ScalarDefinition};
 use crate::schema::{
     Definition, DirectiveDefinition, EnumDefinition, EnumExtension, EnumValue, Field,
     InputDefinition, InputExtension, InputValue, InterfaceDefinition, InterfaceExtension,
     ObjectDefinition, ObjectExtension, Position, ResolveConfig, SchemaDefinition, SourceConfig,
     TypeExpression, UnionDefinition, UnionExtension, Value,
 };
-
-use super::{violation::GraphQLValidationViolation, ScalarDefinition};
+use graphql_parser::schema::{self, TypeDefinition, TypeExtension};
+use std::collections::{BTreeMap, HashMap};
+use std::path::Path;
 
 pub fn construct_definitions(
     file: &Path,
@@ -586,7 +583,7 @@ fn build_value(def: schema::Value<String>) -> Value {
         schema::Value::Object(v) => Value::Object(
             v.into_iter()
                 .map(|(k, v)| (k, build_value(v)))
-                .collect::<HashMap<String, Value>>(),
+                .collect::<BTreeMap<String, Value>>(),
         ),
     }
 }

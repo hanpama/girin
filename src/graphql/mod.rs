@@ -1,13 +1,13 @@
 use crate::schema::{
     Definition, EnumDefinition, EnumValue, Field, InputDefinition, InputValue, InterfaceDefinition,
-    ObjectDefinition, ScalarDefinition, Schema, TypeExpression, UnionDefinition, Value,
+    ObjectDefinition, ScalarDefinition, Project, TypeExpression, UnionDefinition, Value,
 };
 use graphql_parser::query::Number;
 use graphql_parser::schema;
 use std::error::Error;
 use std::{fs::File, io::Write, path::PathBuf};
 
-pub fn render(s: &Schema, outfile: PathBuf) -> Result<(), GraphQLRenderingError> {
+pub fn render(s: &Project, outfile: PathBuf) -> Result<(), GraphQLRenderingError> {
     let schema_ast = build_schema_ast(s);
 
     let mut file = File::create(outfile)?;
@@ -16,13 +16,13 @@ pub fn render(s: &Schema, outfile: PathBuf) -> Result<(), GraphQLRenderingError>
     return Ok(());
 }
 
-fn build_schema_ast<'a>(s: &'a Schema) -> schema::Document<'a, &'a str> {
+fn build_schema_ast<'a>(s: &'a Project) -> schema::Document<'a, &'a str> {
     return schema::Document {
         definitions: build_schema_ast_from_schema(s),
     };
 }
 
-fn build_schema_ast_from_schema<'a>(s: &'a Schema) -> Vec<schema::Definition<'a, &'a str>> {
+fn build_schema_ast_from_schema<'a>(s: &'a Project) -> Vec<schema::Definition<'a, &'a str>> {
     let mut schema_definitions = Vec::new();
 
     for def in s.iter_type_definitions() {
@@ -65,7 +65,7 @@ fn build_schema_ast_from_schema<'a>(s: &'a Schema) -> Vec<schema::Definition<'a,
 }
 
 fn format_scalar_definition<'a>(
-    s: &'a Schema,
+    s: &'a Project,
     def: &'a ScalarDefinition,
 ) -> schema::ScalarType<'a, &'a str> {
     schema::ScalarType {
@@ -77,7 +77,7 @@ fn format_scalar_definition<'a>(
 }
 
 fn format_object_definition<'a>(
-    s: &'a Schema,
+    s: &'a Project,
     def: &'a ObjectDefinition,
 ) -> schema::ObjectType<'a, &'a str> {
     schema::ObjectType {
@@ -95,7 +95,7 @@ fn format_object_definition<'a>(
 }
 
 fn format_interface_definition<'a>(
-    s: &'a Schema,
+    s: &'a Project,
     def: &'a InterfaceDefinition,
 ) -> schema::InterfaceType<'a, &'a str> {
     schema::InterfaceType {
@@ -113,7 +113,7 @@ fn format_interface_definition<'a>(
 }
 
 fn format_union_definition<'a>(
-    s: &'a Schema,
+    s: &'a Project,
     def: &'a UnionDefinition,
 ) -> schema::UnionType<'a, &'a str> {
     schema::UnionType {
@@ -126,7 +126,7 @@ fn format_union_definition<'a>(
 }
 
 fn format_enum_definition<'a>(
-    s: &'a Schema,
+    s: &'a Project,
     def: &'a EnumDefinition,
 ) -> schema::EnumType<'a, &'a str> {
     schema::EnumType {
@@ -142,7 +142,7 @@ fn format_enum_definition<'a>(
 }
 
 fn format_input_definition<'a>(
-    s: &'a Schema,
+    s: &'a Project,
     def: &'a InputDefinition,
 ) -> schema::InputObjectType<'a, &'a str> {
     schema::InputObjectType {

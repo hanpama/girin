@@ -1,10 +1,12 @@
 from ... import source
 from ...spec import Spec
+import graphql
+import typing
 
 
 
 class BasicObjectImpl(Spec.Basic.Extension.BasicObjectSpec):
-    async def extended_field_with_arg(self, obj: source.BasicObjectSource, info, **args) -> object:
+    async def extended_field_with_arg(self, obj: source.BasicObjectSource, info: graphql.GraphQLResolveInfo, **args: typing.Any) -> object:
         raise NotImplementedError()
     
 
@@ -14,11 +16,13 @@ class AnotherInterfaceImpl(Spec.Basic.Extension.AnotherInterfaceSpec):
 
 
 class BasicInterfaceImpl(Spec.Basic.Extension.BasicInterfaceSpec):
-    pass
+    async def extended_field_with_arg(self, obj: source.BasicInterfaceSource, info: graphql.GraphQLResolveInfo, **args: typing.Any) -> object:
+        raise NotImplementedError()
+    
 
 
 class BasicInterfaceImplImpl(Spec.Basic.Extension.BasicInterfaceImplSpec):
-    async def extended_field_with_arg(self, obj: source.BasicInterfaceImplSource, info, **args) -> object:
+    async def extended_field_with_arg(self, obj: source.BasicInterfaceImplSource, info: graphql.GraphQLResolveInfo, **args: typing.Any) -> object:
         raise NotImplementedError()
     
 
@@ -28,7 +32,7 @@ class AnotherTypeImpl(Spec.Basic.Extension.AnotherTypeSpec):
 
 
 class QueryImpl(Spec.Basic.Extension.QuerySpec):
-    async def extended_hello(self, obj: source.QuerySource, info, **args) -> str:
+    async def extended_hello(self, obj: source.QuerySource, info: graphql.GraphQLResolveInfo, **args: typing.Any) -> str:
         raise NotImplementedError()
     
 

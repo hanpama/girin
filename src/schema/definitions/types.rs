@@ -1,5 +1,6 @@
+use std::collections::BTreeMap;
 use std::fmt;
-use std::{collections::HashMap, path::PathBuf};
+use std::path::PathBuf;
 
 #[derive(Debug)]
 pub struct Position {
@@ -32,5 +33,5 @@ pub enum Value {
     Enum(String),
     Null,
     List(Vec<Value>),
-    Object(HashMap<String, Value>),
+    Object(BTreeMap<String, Value>),
 }

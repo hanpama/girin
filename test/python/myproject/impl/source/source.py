@@ -1,8 +1,13 @@
+from ... import source
 from ...spec import Spec
+import graphql
+import typing
 
 
 
 class SourceImpl(Spec.source.source.SourceSpec):
-    pass
+    async def a(self, obj: source.SourceSource, info: graphql.GraphQLResolveInfo, **args: typing.Any) -> int | None:
+        raise NotImplementedError()
+    
 
 

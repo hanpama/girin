@@ -3,18 +3,10 @@ use std::{
     path::PathBuf,
 };
 
-use super::{Definition, EnumValue, Field, InputValue, ModuleRef, Position, Resolve};
+use super::{Definition, EnumValue, Field, InputValue, ModuleRef, Resolve};
 
 #[derive(Debug)]
-pub struct SchemaDefinition {
-    pub query: Option<String>,
-    pub mutation: Option<String>,
-    pub subscription: Option<String>,
-    pub position: Position,
-}
-
-#[derive(Debug)]
-pub struct Schema {
+pub struct Project {
     root_dir: PathBuf,
     definitions: BTreeMap<PathBuf, Vec<Definition>>,
     schema_loc: Option<Loc>,
@@ -24,7 +16,7 @@ pub struct Schema {
     type_field_locs: HashMap<(String, String), Loc>,
 }
 
-impl Schema {
+impl Project {
     pub fn new(root_dir: PathBuf) -> Self {
         Self {
             // query: None,
@@ -162,30 +154,11 @@ impl Schema {
     }
 
     pub fn resolve_field_resolve<'a>(&'a self, field: &'a Field) -> Option<Resolve<'a>> {
-        // println!("resolve_field_resolve: {:?}", field);
-        // If the field has a resolve config, return it
         if let Some(conf) = &field.resolve {
             return Some(Resolve::new(conf.sync, field));
         }
-
-        // // Iterate over the interfaces that the field's type implements and
-        // // return the first one that has a resolve config for the field
-        // for interface in self.collect_interfaces(&field.type_name) {
-        //     let key = (interface.to_owned(), field.name.to_owned());
-        //     if let Some(loc) = self.type_field_locs.get(&key) {
-        //         if let Some(field) = self.get_type(loc).get_field(&field.name) {
-        //             println!("found field: {:?}", field);
-        //             self.resolve_field_resolve(field);
-        //         };
-        //     }
-        // }
-
-        // If the field's owner is an object type and the field has arguments,
-        // create an implicit resolver config and return it
-        if let Definition::ObjectDefinition(_) = self.get_type_definition(&field.type_name) {
-            if field.args.len() > 0 {
-                return Some(Resolve::new(false, field));
-            }
+        if field.args.len() > 0 {
+            return Some(Resolve::new(false, field));
         }
 
         None
@@ -242,11 +215,11 @@ impl Schema {
 
         let parent = file.parent().unwrap().to_path_buf();
         self.module_children
-            .entry(parent)
+            .entry(parent.clone())
             .or_insert_with(BTreeSet::new)
             .insert(file.to_path_buf());
 
-        self.index_module(&file);
+        self.index_module(&parent);
     }
 
     fn get_type_definition(&self, name: &str) -> &Definition {

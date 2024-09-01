@@ -59,7 +59,7 @@ class BasicInputSource:
     extended_field: "typing.Any"
 
 
-BasicScalarSource = str
+BasicScalarSource = typing.Any
 
 
 class AnotherInterfaceSource(typing.Protocol):
@@ -102,6 +102,18 @@ class ParentSource(GrandParentSource, typing.Protocol):
 
 class ChildSource(ParentSource, GrandParentSource, typing.Protocol):
     pass
+
+
+class GraphQLObjectSource(typing.Protocol):
+    foo: "str"
+
+
+class graphqlSource(typing.Protocol):
+    bar: "str"
+
+
+class typingSource(typing.Protocol):
+    baz: "str"
 
 
 class QuerySource(typing.Protocol):
