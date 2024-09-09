@@ -160,7 +160,6 @@ impl Project {
         if field.args.len() > 0 {
             return Some(Resolve::new(false, field));
         }
-
         None
     }
 

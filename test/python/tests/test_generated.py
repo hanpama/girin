@@ -1,5 +1,6 @@
 import unittest
 import graphql
+import typing
 
 from myproject import builder, builder_config
 
@@ -7,6 +8,13 @@ from myproject import builder, builder_config
 class TestGenerated(unittest.IsolatedAsyncioTestCase):
     async def test_foo(self):
         schema = builder.build_schema(builder_config.BuilderConfig())
-        introspection_query = graphql.get_introspection_query()
-        result = graphql.execute_sync(schema, graphql.parse(introspection_query))
-        print(result)
+        res = graphql.graphql(
+            schema=schema,
+            source="""{ extendedHello(name: "World") }""",
+        )
+        if isinstance(res, typing.Awaitable):
+            res = await res
+
+        assert res.errors is None
+        assert res.data
+        assert res.data["extendedHello"] == "Hello, World!"

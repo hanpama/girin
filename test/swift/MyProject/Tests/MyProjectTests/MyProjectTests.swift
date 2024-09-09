@@ -1,7 +1,7 @@
 import XCTest
-@testable import SchemaGeneration
+@testable import MyProject
 
-final class SchemaGenerationTests: XCTestCase {
+final class MyProjectTests: XCTestCase {
     func testExample() throws {
         // XCTest Documentation
         // https://developer.apple.com/documentation/xctest

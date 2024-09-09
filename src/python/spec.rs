@@ -2,8 +2,8 @@ use super::{
     error::Result, format_named_source, format_type_expression, naming, sourcecode::SourceCode,
 };
 use crate::schema::{
-    Definition, InterfaceDefinition, InterfaceExtension, ObjectDefinition, ObjectExtension,
-    Resolve, ScalarDefinition, Project, ModuleRef,
+    Definition, InputValue, InterfaceDefinition, InterfaceExtension, ModuleRef, ObjectDefinition,
+    ObjectExtension, Project, Resolve, ScalarDefinition,
 };
 use std::{fs::File, path::PathBuf};
 
@@ -168,12 +168,24 @@ fn render_interface_ext_spec(src: &mut SourceCode, s: &Project, def: &InterfaceE
 }
 
 fn render_field_resolver(src: &mut SourceCode, resolve: &Resolve) {
+    let sig = if resolve.sync { "def" } else { "async def" };
     let name = naming::field_name(&resolve.field.name);
     let source_type = format_named_source(&resolve.field.type_name);
     let return_type = format_type_expression(&resolve.field.field_type);
-    let sig = if resolve.sync { "def" } else { "async def" };
+    let arguments = format_argument_list(&resolve.field.args);
 
     src.line(&format!(
-        "{sig} {name}(self, obj: {source_type}, info: graphql.GraphQLResolveInfo, **args: typing.Any) -> {return_type}: ...",
+        "{sig} {name}(self, obj: {source_type}, info: graphql.GraphQLResolveInfo, {arguments}) -> {return_type}: ...",
     ));
+}
+
+fn format_argument_list(args: &Vec<InputValue>) -> String {
+    args.iter()
+        .map(|input| {
+            let name = naming::field_name(&input.name);
+            let expr = format_type_expression(&input.field_type);
+            format!("{name}: {expr}")
+        })
+        .collect::<Vec<_>>()
+        .join(", ")
 }

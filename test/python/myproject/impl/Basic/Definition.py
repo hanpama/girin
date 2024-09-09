@@ -6,40 +6,40 @@ import typing
 
 
 class BasicObjectImpl(Spec.Basic.Definition.BasicObjectSpec):
-    async def id_non_null_arg(self, obj: source.BasicObjectSource, info: graphql.GraphQLResolveInfo, **args: typing.Any) -> object:
+    async def id_non_null_arg(self, obj: source.BasicObjectSource, info: graphql.GraphQLResolveInfo, id_non_null: object) -> object:
         raise NotImplementedError()
     
-    async def string_non_null_arg(self, obj: source.BasicObjectSource, info: graphql.GraphQLResolveInfo, **args: typing.Any) -> str:
+    async def string_non_null_arg(self, obj: source.BasicObjectSource, info: graphql.GraphQLResolveInfo, string_non_null: str) -> str:
         raise NotImplementedError()
     
-    async def int_non_null_arg(self, obj: source.BasicObjectSource, info: graphql.GraphQLResolveInfo, **args: typing.Any) -> int:
+    async def int_non_null_arg(self, obj: source.BasicObjectSource, info: graphql.GraphQLResolveInfo, int_non_null: int) -> int:
         raise NotImplementedError()
     
-    async def float_non_null_arg(self, obj: source.BasicObjectSource, info: graphql.GraphQLResolveInfo, **args: typing.Any) -> float:
+    async def float_non_null_arg(self, obj: source.BasicObjectSource, info: graphql.GraphQLResolveInfo, float_non_null: float) -> float:
         raise NotImplementedError()
     
-    async def boolean_non_null_arg(self, obj: source.BasicObjectSource, info: graphql.GraphQLResolveInfo, **args: typing.Any) -> bool:
+    async def boolean_non_null_arg(self, obj: source.BasicObjectSource, info: graphql.GraphQLResolveInfo, boolean_non_null: bool) -> bool:
         raise NotImplementedError()
     
-    async def id_arg(self, obj: source.BasicObjectSource, info: graphql.GraphQLResolveInfo, **args: typing.Any) -> object | None:
+    async def id_arg(self, obj: source.BasicObjectSource, info: graphql.GraphQLResolveInfo, id: object | None = None) -> object | None:
         raise NotImplementedError()
     
-    async def string_arg(self, obj: source.BasicObjectSource, info: graphql.GraphQLResolveInfo, **args: typing.Any) -> str | None:
+    async def string_arg(self, obj: source.BasicObjectSource, info: graphql.GraphQLResolveInfo, string: str | None = None) -> str | None:
         raise NotImplementedError()
     
-    async def int_arg(self, obj: source.BasicObjectSource, info: graphql.GraphQLResolveInfo, **args: typing.Any) -> int | None:
+    async def int_arg(self, obj: source.BasicObjectSource, info: graphql.GraphQLResolveInfo, int: int | None = None) -> int | None:
         raise NotImplementedError()
     
-    async def float_arg(self, obj: source.BasicObjectSource, info: graphql.GraphQLResolveInfo, **args: typing.Any) -> float | None:
+    async def float_arg(self, obj: source.BasicObjectSource, info: graphql.GraphQLResolveInfo, float: float | None = None) -> float | None:
         raise NotImplementedError()
     
-    async def boolean_arg(self, obj: source.BasicObjectSource, info: graphql.GraphQLResolveInfo, **args: typing.Any) -> bool | None:
+    async def boolean_arg(self, obj: source.BasicObjectSource, info: graphql.GraphQLResolveInfo, boolean: bool | None = None) -> bool | None:
         raise NotImplementedError()
     
-    async def basic_input_arg(self, obj: source.BasicObjectSource, info: graphql.GraphQLResolveInfo, **args: typing.Any) -> str | None:
+    async def basic_input_arg(self, obj: source.BasicObjectSource, info: graphql.GraphQLResolveInfo, basic_input: source.BasicInputSource | None = None) -> str | None:
         raise NotImplementedError()
     
-    async def basic_input_arg_with_default(self, obj: source.BasicObjectSource, info: graphql.GraphQLResolveInfo, **args: typing.Any) -> str | None:
+    async def basic_input_arg_with_default(self, obj: source.BasicObjectSource, info: graphql.GraphQLResolveInfo, basic_input: source.BasicInputSource | None = None) -> str | None:
         raise NotImplementedError()
     
 
@@ -54,7 +54,7 @@ class BasicInterfaceImplImpl(Spec.Basic.Definition.BasicInterfaceImplSpec):
 
 class BasicScalarImpl(Spec.Basic.Definition.BasicScalarSpec):
     def serialize(self, value: typing.Any) -> typing.Any:
-        raise NotImplementedError()
+        return value
     
     def parse_value(self, value: typing.Any) -> typing.Any:
         raise NotImplementedError()
