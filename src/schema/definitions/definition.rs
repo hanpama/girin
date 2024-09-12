@@ -79,6 +79,20 @@ impl Definition {
         }
     }
 
+    pub fn is_union(&self) -> bool {
+        match self {
+            Definition::UnionDefinition(_) => true,
+            _ => false,
+        }
+    }
+
+    pub fn is_union_ext(&self) -> bool {
+        match self {
+            Definition::UnionExtension(_) => true,
+            _ => false,
+        }
+    }
+
     pub fn as_schema(&self) -> &SchemaDefinition {
         match self {
             Definition::SchemaDefinition(schema) => schema,

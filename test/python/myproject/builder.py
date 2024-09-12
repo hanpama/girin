@@ -4,9 +4,8 @@ from .builder_config import BuilderConfig
 import graphql
 
 
-
-def build_schema(config: BuilderConfig) -> graphql.GraphQLSchema:
-    BasicObject_type = graphql.GraphQLObjectType(
+def build_schema() -> graphql.GraphQLSchema:
+    BasicObjectType = graphql.GraphQLObjectType(
         name="BasicObject",
         description="BasicObject description\n",
         fields=lambda: {
@@ -65,7 +64,7 @@ def build_schema(config: BuilderConfig) -> graphql.GraphQLSchema:
                         out_name="id_non_null",
                     ),
                 },
-                resolve=config.Basic.Definition.BasicObject.id_non_null_arg,
+                resolve=BuilderConfig.Basic.Definition.BasicObject.id_non_null_arg,
             ),
             "stringNonNullArg": graphql.GraphQLField(
                 type_=graphql.GraphQLNonNull(graphql.GraphQLString),
@@ -76,7 +75,7 @@ def build_schema(config: BuilderConfig) -> graphql.GraphQLSchema:
                         out_name="string_non_null",
                     ),
                 },
-                resolve=config.Basic.Definition.BasicObject.string_non_null_arg,
+                resolve=BuilderConfig.Basic.Definition.BasicObject.string_non_null_arg,
             ),
             "intNonNullArg": graphql.GraphQLField(
                 type_=graphql.GraphQLNonNull(graphql.GraphQLInt),
@@ -87,7 +86,7 @@ def build_schema(config: BuilderConfig) -> graphql.GraphQLSchema:
                         out_name="int_non_null",
                     ),
                 },
-                resolve=config.Basic.Definition.BasicObject.int_non_null_arg,
+                resolve=BuilderConfig.Basic.Definition.BasicObject.int_non_null_arg,
             ),
             "floatNonNullArg": graphql.GraphQLField(
                 type_=graphql.GraphQLNonNull(graphql.GraphQLFloat),
@@ -98,7 +97,7 @@ def build_schema(config: BuilderConfig) -> graphql.GraphQLSchema:
                         out_name="float_non_null",
                     ),
                 },
-                resolve=config.Basic.Definition.BasicObject.float_non_null_arg,
+                resolve=BuilderConfig.Basic.Definition.BasicObject.float_non_null_arg,
             ),
             "booleanNonNullArg": graphql.GraphQLField(
                 type_=graphql.GraphQLNonNull(graphql.GraphQLBoolean),
@@ -109,7 +108,7 @@ def build_schema(config: BuilderConfig) -> graphql.GraphQLSchema:
                         out_name="boolean_non_null",
                     ),
                 },
-                resolve=config.Basic.Definition.BasicObject.boolean_non_null_arg,
+                resolve=BuilderConfig.Basic.Definition.BasicObject.boolean_non_null_arg,
             ),
             "idArg": graphql.GraphQLField(
                 type_=graphql.GraphQLID,
@@ -119,7 +118,7 @@ def build_schema(config: BuilderConfig) -> graphql.GraphQLSchema:
                         out_name="id",
                     ),
                 },
-                resolve=config.Basic.Definition.BasicObject.id_arg,
+                resolve=BuilderConfig.Basic.Definition.BasicObject.id_arg,
             ),
             "stringArg": graphql.GraphQLField(
                 type_=graphql.GraphQLString,
@@ -129,27 +128,27 @@ def build_schema(config: BuilderConfig) -> graphql.GraphQLSchema:
                         out_name="string",
                     ),
                 },
-                resolve=config.Basic.Definition.BasicObject.string_arg,
+                resolve=BuilderConfig.Basic.Definition.BasicObject.string_arg,
             ),
             "intArg": graphql.GraphQLField(
                 type_=graphql.GraphQLInt,
                 args={
                     "int": graphql.GraphQLArgument(
                         type_=graphql.GraphQLInt,
-                        out_name="int",
+                        out_name="int_",
                     ),
                 },
-                resolve=config.Basic.Definition.BasicObject.int_arg,
+                resolve=BuilderConfig.Basic.Definition.BasicObject.int_arg,
             ),
             "floatArg": graphql.GraphQLField(
                 type_=graphql.GraphQLFloat,
                 args={
                     "float": graphql.GraphQLArgument(
                         type_=graphql.GraphQLFloat,
-                        out_name="float",
+                        out_name="float_",
                     ),
                 },
-                resolve=config.Basic.Definition.BasicObject.float_arg,
+                resolve=BuilderConfig.Basic.Definition.BasicObject.float_arg,
             ),
             "booleanArg": graphql.GraphQLField(
                 type_=graphql.GraphQLBoolean,
@@ -159,32 +158,32 @@ def build_schema(config: BuilderConfig) -> graphql.GraphQLSchema:
                         out_name="boolean",
                     ),
                 },
-                resolve=config.Basic.Definition.BasicObject.boolean_arg,
+                resolve=BuilderConfig.Basic.Definition.BasicObject.boolean_arg,
             ),
             "basicScalar": graphql.GraphQLField(
-                type_=BasicScalar_type,
+                type_=BasicScalarType,
                 resolve=graphql.default_field_resolver,
             ),
             "basicInputArg": graphql.GraphQLField(
                 type_=graphql.GraphQLString,
                 args={
                     "basicInput": graphql.GraphQLArgument(
-                        type_=BasicInput_type,
+                        type_=BasicInputType,
                         out_name="basic_input",
                     ),
                 },
-                resolve=config.Basic.Definition.BasicObject.basic_input_arg,
+                resolve=BuilderConfig.Basic.Definition.BasicObject.basic_input_arg,
             ),
             "basicInputArgWithDefault": graphql.GraphQLField(
                 type_=graphql.GraphQLString,
                 args={
                     "basicInput": graphql.GraphQLArgument(
-                        type_=BasicInput_type,
+                        type_=BasicInputType,
                         default_value={"basicScalar": "123", "boolean": True, "float": 1, "id": "default", "int": 1, "string": "default"},
                         out_name="basic_input",
                     ),
                 },
-                resolve=config.Basic.Definition.BasicObject.basic_input_arg_with_default,
+                resolve=BuilderConfig.Basic.Definition.BasicObject.basic_input_arg_with_default,
             ),
             "extendedField": graphql.GraphQLField(
                 type_=graphql.GraphQLNonNull(graphql.GraphQLID),
@@ -199,11 +198,11 @@ def build_schema(config: BuilderConfig) -> graphql.GraphQLSchema:
                         out_name="id_non_null",
                     ),
                 },
-                resolve=config.Basic.Extension.BasicObject.extended_field_with_arg,
+                resolve=BuilderConfig.Basic.Extension.BasicObject.extended_field_with_arg,
             ),
         },
     )
-    BasicInterface_type = graphql.GraphQLInterfaceType(
+    BasicInterfaceType = graphql.GraphQLInterfaceType(
         name="BasicInterface",
         fields=lambda: {
             "interfaceField": graphql.GraphQLField(
@@ -211,7 +210,7 @@ def build_schema(config: BuilderConfig) -> graphql.GraphQLSchema:
                 resolve=graphql.default_field_resolver,
             ),
             "basicScalar": graphql.GraphQLField(
-                type_=BasicScalar_type,
+                type_=BasicScalarType,
                 resolve=graphql.default_field_resolver,
             ),
             "extendedField": graphql.GraphQLField(
@@ -226,7 +225,7 @@ def build_schema(config: BuilderConfig) -> graphql.GraphQLSchema:
                         out_name="id_non_null",
                     ),
                 },
-                resolve=config.Basic.Extension.BasicInterface.extended_field_with_arg,
+                resolve=BuilderConfig.Basic.Extension.BasicInterface.extended_field_with_arg,
             ),
             "anotherField": graphql.GraphQLField(
                 type_=graphql.GraphQLNonNull(graphql.GraphQLID),
@@ -234,7 +233,7 @@ def build_schema(config: BuilderConfig) -> graphql.GraphQLSchema:
             ),
         },
     )
-    BasicInterfaceImpl_type = graphql.GraphQLObjectType(
+    BasicInterfaceImplType = graphql.GraphQLObjectType(
         name="BasicInterfaceImpl",
         fields=lambda: {
             "interfaceField": graphql.GraphQLField(
@@ -242,7 +241,7 @@ def build_schema(config: BuilderConfig) -> graphql.GraphQLSchema:
                 resolve=graphql.default_field_resolver,
             ),
             "basicScalar": graphql.GraphQLField(
-                type_=BasicScalar_type,
+                type_=BasicScalarType,
                 resolve=graphql.default_field_resolver,
             ),
             "extendedField": graphql.GraphQLField(
@@ -258,7 +257,7 @@ def build_schema(config: BuilderConfig) -> graphql.GraphQLSchema:
                         out_name="id_non_null",
                     ),
                 },
-                resolve=config.Basic.Extension.BasicInterfaceImpl.extended_field_with_arg,
+                resolve=BuilderConfig.Basic.Extension.BasicInterfaceImpl.extended_field_with_arg,
             ),
             "anotherField": graphql.GraphQLField(
                 type_=graphql.GraphQLNonNull(graphql.GraphQLID),
@@ -266,19 +265,19 @@ def build_schema(config: BuilderConfig) -> graphql.GraphQLSchema:
             ),
         },
         interfaces=lambda: [
-            BasicInterface_type,
-            AnotherInterface_type,
+            BasicInterfaceType,
+            AnotherInterfaceType,
         ],
     )
-    BasicUnion_type = graphql.GraphQLUnionType(
+    BasicUnionType = graphql.GraphQLUnionType(
         name="BasicUnion",
         types=lambda: [
-            BasicObject_type,
-            BasicInterfaceImpl_type,
-            AnotherType_type,
+            BasicObjectType,
+            BasicInterfaceImplType,
+            AnotherTypeType,
         ]
     )
-    BasicEnum_type = graphql.GraphQLEnumType(
+    BasicEnumType = graphql.GraphQLEnumType(
         name="BasicEnum",
         values={
             "ENUM_VALUE_1": graphql.GraphQLEnumValue(
@@ -294,7 +293,7 @@ def build_schema(config: BuilderConfig) -> graphql.GraphQLSchema:
             ),
         }
     )
-    BasicInput_type = graphql.GraphQLInputObjectType(
+    BasicInputType = graphql.GraphQLInputObjectType(
         name="BasicInput",
         fields=lambda: {
             "idNonNull": graphql.GraphQLInputField(
@@ -319,7 +318,7 @@ def build_schema(config: BuilderConfig) -> graphql.GraphQLSchema:
                 out_name="boolean_non_null",
             ),
             "basicScalarNotNull": graphql.GraphQLInputField(
-                type_=graphql.GraphQLNonNull(BasicScalar_type),
+                type_=graphql.GraphQLNonNull(BasicScalarType),
                 out_name="basic_scalar_not_null",
             ),
             "id": graphql.GraphQLInputField(
@@ -332,18 +331,18 @@ def build_schema(config: BuilderConfig) -> graphql.GraphQLSchema:
             ),
             "int": graphql.GraphQLInputField(
                 type_=graphql.GraphQLInt,
-                out_name="int",
+                out_name="int_",
             ),
             "float": graphql.GraphQLInputField(
                 type_=graphql.GraphQLFloat,
-                out_name="float",
+                out_name="float_",
             ),
             "boolean": graphql.GraphQLInputField(
                 type_=graphql.GraphQLBoolean,
                 out_name="boolean",
             ),
             "basicScalar": graphql.GraphQLInputField(
-                type_=BasicScalar_type,
+                type_=BasicScalarType,
                 out_name="basic_scalar",
             ),
             "extendedField": graphql.GraphQLInputField(
@@ -353,14 +352,14 @@ def build_schema(config: BuilderConfig) -> graphql.GraphQLSchema:
             ),
         },
     )
-    BasicScalar_type = graphql.GraphQLScalarType(
+    BasicScalarType = graphql.GraphQLScalarType(
         name="BasicScalar",
         description="BasicScalar description\n",
-        serialize=config.Basic.Definition.BasicScalar.serialize,
-        parse_value=config.Basic.Definition.BasicScalar.parse_value,
-        parse_literal=config.Basic.Definition.BasicScalar.parse_literal,
+        serialize=BuilderConfig.Basic.Definition.BasicScalar.serialize,
+        parse_value=BuilderConfig.Basic.Definition.BasicScalar.parse_value,
+        parse_literal=BuilderConfig.Basic.Definition.BasicScalar.parse_literal,
     )
-    AnotherInterface_type = graphql.GraphQLInterfaceType(
+    AnotherInterfaceType = graphql.GraphQLInterfaceType(
         name="AnotherInterface",
         fields=lambda: {
             "anotherField": graphql.GraphQLField(
@@ -369,7 +368,7 @@ def build_schema(config: BuilderConfig) -> graphql.GraphQLSchema:
             ),
         },
     )
-    AnotherType_type = graphql.GraphQLObjectType(
+    AnotherTypeType = graphql.GraphQLObjectType(
         name="AnotherType",
         fields=lambda: {
             "anotherField": graphql.GraphQLField(
@@ -378,7 +377,7 @@ def build_schema(config: BuilderConfig) -> graphql.GraphQLSchema:
             ),
         },
     )
-    DeprecatedFieldObject_type = graphql.GraphQLObjectType(
+    DeprecatedFieldObjectType = graphql.GraphQLObjectType(
         name="DeprecatedFieldObject",
         fields=lambda: {
             "deprecatedField": graphql.GraphQLField(
@@ -388,7 +387,7 @@ def build_schema(config: BuilderConfig) -> graphql.GraphQLSchema:
             ),
         },
     )
-    ModuleB_type = graphql.GraphQLObjectType(
+    ModuleBType = graphql.GraphQLObjectType(
         name="ModuleB",
         fields=lambda: {
             "id": graphql.GraphQLField(
@@ -401,7 +400,7 @@ def build_schema(config: BuilderConfig) -> graphql.GraphQLSchema:
             ),
         },
     )
-    ModuleA_type = graphql.GraphQLObjectType(
+    ModuleAType = graphql.GraphQLObjectType(
         name="ModuleA",
         fields=lambda: {
             "id": graphql.GraphQLField(
@@ -414,7 +413,7 @@ def build_schema(config: BuilderConfig) -> graphql.GraphQLSchema:
             ),
         },
     )
-    Nested2_type = graphql.GraphQLObjectType(
+    Nested2Type = graphql.GraphQLObjectType(
         name="Nested2",
         fields=lambda: {
             "value": graphql.GraphQLField(
@@ -423,16 +422,16 @@ def build_schema(config: BuilderConfig) -> graphql.GraphQLSchema:
             ),
         },
     )
-    Nested1_type = graphql.GraphQLObjectType(
+    Nested1Type = graphql.GraphQLObjectType(
         name="Nested1",
         fields=lambda: {
             "nested2": graphql.GraphQLField(
-                type_=Nested2_type,
+                type_=Nested2Type,
                 resolve=graphql.default_field_resolver,
             ),
         },
     )
-    GrandParent_type = graphql.GraphQLInterfaceType(
+    GrandParentType = graphql.GraphQLInterfaceType(
         name="GrandParent",
         fields=lambda: {
             "echo": graphql.GraphQLField(
@@ -443,7 +442,7 @@ def build_schema(config: BuilderConfig) -> graphql.GraphQLSchema:
                         out_name="message",
                     ),
                 },
-                resolve=config.Resolve.Schema.GrandParent.echo,
+                resolve=BuilderConfig.Resolve.Schema.GrandParent.echo,
             ),
             "echoSync": graphql.GraphQLField(
                 type_=graphql.GraphQLNonNull(graphql.GraphQLString),
@@ -453,11 +452,11 @@ def build_schema(config: BuilderConfig) -> graphql.GraphQLSchema:
                         out_name="message",
                     ),
                 },
-                resolve=config.Resolve.Schema.GrandParent.echo_sync,
+                resolve=BuilderConfig.Resolve.Schema.GrandParent.echo_sync,
             ),
         },
     )
-    Parent_type = graphql.GraphQLInterfaceType(
+    ParentType = graphql.GraphQLInterfaceType(
         name="Parent",
         fields=lambda: {
             "echo": graphql.GraphQLField(
@@ -468,7 +467,7 @@ def build_schema(config: BuilderConfig) -> graphql.GraphQLSchema:
                         out_name="message",
                     ),
                 },
-                resolve=config.Resolve.Schema.Parent.echo,
+                resolve=BuilderConfig.Resolve.Schema.Parent.echo,
             ),
             "echoSync": graphql.GraphQLField(
                 type_=graphql.GraphQLNonNull(graphql.GraphQLString),
@@ -478,14 +477,14 @@ def build_schema(config: BuilderConfig) -> graphql.GraphQLSchema:
                         out_name="message",
                     ),
                 },
-                resolve=config.Resolve.Schema.Parent.echo_sync,
+                resolve=BuilderConfig.Resolve.Schema.Parent.echo_sync,
             ),
         },
         interfaces=lambda: [
-            GrandParent_type,
+            GrandParentType,
         ],
     )
-    Child_type = graphql.GraphQLObjectType(
+    ChildType = graphql.GraphQLObjectType(
         name="Child",
         fields=lambda: {
             "echo": graphql.GraphQLField(
@@ -496,7 +495,7 @@ def build_schema(config: BuilderConfig) -> graphql.GraphQLSchema:
                         out_name="message",
                     ),
                 },
-                resolve=config.Resolve.Schema.Child.echo,
+                resolve=BuilderConfig.Resolve.Schema.Child.echo,
             ),
             "echoSync": graphql.GraphQLField(
                 type_=graphql.GraphQLNonNull(graphql.GraphQLString),
@@ -506,63 +505,63 @@ def build_schema(config: BuilderConfig) -> graphql.GraphQLSchema:
                         out_name="message",
                     ),
                 },
-                resolve=config.Resolve.Schema.Child.echo_sync,
+                resolve=BuilderConfig.Resolve.Schema.Child.echo_sync,
             ),
             "basicInterface": graphql.GraphQLField(
-                type_=BasicInterface_type,
-                resolve=config.Resolve.Schema.Child.basic_interface,
+                type_=BasicInterfaceType,
+                resolve=BuilderConfig.Resolve.Schema.Child.basic_interface,
             ),
             "basicInterfaceList": graphql.GraphQLField(
-                type_=graphql.GraphQLList(BasicInterface_type),
-                resolve=config.Resolve.Schema.Child.basic_interface_list,
+                type_=graphql.GraphQLList(BasicInterfaceType),
+                resolve=BuilderConfig.Resolve.Schema.Child.basic_interface_list,
             ),
             "basicInterfaceNonNullList": graphql.GraphQLField(
-                type_=graphql.GraphQLNonNull(graphql.GraphQLList(BasicInterface_type)),
-                resolve=config.Resolve.Schema.Child.basic_interface_non_null_list,
+                type_=graphql.GraphQLNonNull(graphql.GraphQLList(BasicInterfaceType)),
+                resolve=BuilderConfig.Resolve.Schema.Child.basic_interface_non_null_list,
             ),
             "basicInterfaceNonNullListNonNullElement": graphql.GraphQLField(
-                type_=graphql.GraphQLNonNull(graphql.GraphQLList(graphql.GraphQLNonNull(BasicInterface_type))),
-                resolve=config.Resolve.Schema.Child.basic_interface_non_null_list_non_null_element,
+                type_=graphql.GraphQLNonNull(graphql.GraphQLList(graphql.GraphQLNonNull(BasicInterfaceType))),
+                resolve=BuilderConfig.Resolve.Schema.Child.basic_interface_non_null_list_non_null_element,
             ),
             "basicUnion": graphql.GraphQLField(
-                type_=BasicUnion_type,
-                resolve=config.Resolve.Schema.Child.basic_union,
+                type_=BasicUnionType,
+                resolve=BuilderConfig.Resolve.Schema.Child.basic_union,
             ),
             "basicUnionList": graphql.GraphQLField(
-                type_=graphql.GraphQLList(BasicUnion_type),
-                resolve=config.Resolve.Schema.Child.basic_union_list,
+                type_=graphql.GraphQLList(BasicUnionType),
+                resolve=BuilderConfig.Resolve.Schema.Child.basic_union_list,
             ),
             "basicUnionNonNullList": graphql.GraphQLField(
-                type_=graphql.GraphQLNonNull(graphql.GraphQLList(BasicUnion_type)),
-                resolve=config.Resolve.Schema.Child.basic_union_non_null_list,
+                type_=graphql.GraphQLNonNull(graphql.GraphQLList(BasicUnionType)),
+                resolve=BuilderConfig.Resolve.Schema.Child.basic_union_non_null_list,
             ),
             "basicUnionNonNullListNonNullElement": graphql.GraphQLField(
-                type_=graphql.GraphQLNonNull(graphql.GraphQLList(graphql.GraphQLNonNull(BasicUnion_type))),
-                resolve=config.Resolve.Schema.Child.basic_union_non_null_list_non_null_element,
+                type_=graphql.GraphQLNonNull(graphql.GraphQLList(graphql.GraphQLNonNull(BasicUnionType))),
+                resolve=BuilderConfig.Resolve.Schema.Child.basic_union_non_null_list_non_null_element,
             ),
             "basicEnum": graphql.GraphQLField(
-                type_=BasicEnum_type,
-                resolve=config.Resolve.Schema.Child.basic_enum,
+                type_=BasicEnumType,
+                resolve=BuilderConfig.Resolve.Schema.Child.basic_enum,
             ),
             "basicEnumList": graphql.GraphQLField(
-                type_=graphql.GraphQLList(BasicEnum_type),
-                resolve=config.Resolve.Schema.Child.basic_enum_list,
+                type_=graphql.GraphQLList(BasicEnumType),
+                resolve=BuilderConfig.Resolve.Schema.Child.basic_enum_list,
             ),
             "basicEnumNonNullList": graphql.GraphQLField(
-                type_=graphql.GraphQLNonNull(graphql.GraphQLList(BasicEnum_type)),
-                resolve=config.Resolve.Schema.Child.basic_enum_non_null_list,
+                type_=graphql.GraphQLNonNull(graphql.GraphQLList(BasicEnumType)),
+                resolve=BuilderConfig.Resolve.Schema.Child.basic_enum_non_null_list,
             ),
             "basicEnumNonNullListNonNullElement": graphql.GraphQLField(
-                type_=graphql.GraphQLNonNull(graphql.GraphQLList(graphql.GraphQLNonNull(BasicEnum_type))),
-                resolve=config.Resolve.Schema.Child.basic_enum_non_null_list_non_null_element,
+                type_=graphql.GraphQLNonNull(graphql.GraphQLList(graphql.GraphQLNonNull(BasicEnumType))),
+                resolve=BuilderConfig.Resolve.Schema.Child.basic_enum_non_null_list_non_null_element,
             ),
         },
         interfaces=lambda: [
-            GrandParent_type,
-            Parent_type,
+            GrandParentType,
+            ParentType,
         ],
     )
-    GraphQLObject_type = graphql.GraphQLObjectType(
+    GraphQLObjectType = graphql.GraphQLObjectType(
         name="GraphQLObject",
         fields=lambda: {
             "foo": graphql.GraphQLField(
@@ -571,7 +570,7 @@ def build_schema(config: BuilderConfig) -> graphql.GraphQLSchema:
             ),
         },
     )
-    graphql_type = graphql.GraphQLObjectType(
+    graphql_Type = graphql.GraphQLObjectType(
         name="graphql",
         fields=lambda: {
             "bar": graphql.GraphQLField(
@@ -580,7 +579,7 @@ def build_schema(config: BuilderConfig) -> graphql.GraphQLSchema:
             ),
         },
     )
-    typing_type = graphql.GraphQLObjectType(
+    typing_Type = graphql.GraphQLObjectType(
         name="typing",
         fields=lambda: {
             "baz": graphql.GraphQLField(
@@ -589,7 +588,7 @@ def build_schema(config: BuilderConfig) -> graphql.GraphQLSchema:
             ),
         },
     )
-    Query_type = graphql.GraphQLObjectType(
+    QueryType = graphql.GraphQLObjectType(
         name="Query",
         fields=lambda: {
             "version": graphql.GraphQLField(
@@ -604,11 +603,11 @@ def build_schema(config: BuilderConfig) -> graphql.GraphQLSchema:
                         out_name="name",
                     ),
                 },
-                resolve=config.Basic.Extension.Query.extended_hello,
+                resolve=BuilderConfig.Basic.Extension.Query.extended_hello,
             ),
         },
     )
-    Mutation_type = graphql.GraphQLObjectType(
+    MutationType = graphql.GraphQLObjectType(
         name="Mutation",
         fields=lambda: {
             "version": graphql.GraphQLField(
@@ -617,41 +616,41 @@ def build_schema(config: BuilderConfig) -> graphql.GraphQLSchema:
             ),
         },
     )
-    Source_type = graphql.GraphQLObjectType(
+    SourceType = graphql.GraphQLObjectType(
         name="Source",
         fields=lambda: {
             "a": graphql.GraphQLField(
                 type_=graphql.GraphQLInt,
-                resolve=config.source.source.Source.a,
+                resolve=BuilderConfig.source.source.Source.a,
             ),
         },
     )
     return graphql.GraphQLSchema(
-        query=Query_type,
-        mutation=Mutation_type,
+        query=QueryType,
+        mutation=MutationType,
         types=[
-            BasicObject_type,
-            BasicInterface_type,
-            BasicInterfaceImpl_type,
-            BasicUnion_type,
-            BasicEnum_type,
-            BasicInput_type,
-            BasicScalar_type,
-            AnotherInterface_type,
-            AnotherType_type,
-            DeprecatedFieldObject_type,
-            ModuleB_type,
-            ModuleA_type,
-            Nested2_type,
-            Nested1_type,
-            GrandParent_type,
-            Parent_type,
-            Child_type,
-            GraphQLObject_type,
-            graphql_type,
-            typing_type,
-            Query_type,
-            Mutation_type,
-            Source_type,
+            BasicObjectType,
+            BasicInterfaceType,
+            BasicInterfaceImplType,
+            BasicUnionType,
+            BasicEnumType,
+            BasicInputType,
+            BasicScalarType,
+            AnotherInterfaceType,
+            AnotherTypeType,
+            DeprecatedFieldObjectType,
+            ModuleBType,
+            ModuleAType,
+            Nested2Type,
+            Nested1Type,
+            GrandParentType,
+            ParentType,
+            ChildType,
+            GraphQLObjectType,
+            graphql_Type,
+            typing_Type,
+            QueryType,
+            MutationType,
+            SourceType,
         ],
     )

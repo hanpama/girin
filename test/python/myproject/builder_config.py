@@ -1,51 +1,49 @@
 # GENERATED. DO NOT EDIT.
 # fmt: off
 from . import impl
-from .spec import Spec
-
 
 
 class BuilderConfig:
     class Basic:
         class Definition:
-            BasicObject: Spec.Basic.Definition.BasicObjectSpec = impl.Basic.Definition.BasicObjectImpl()
-            BasicInterface: Spec.Basic.Definition.BasicInterfaceSpec = impl.Basic.Definition.BasicInterfaceImpl()
-            BasicInterfaceImpl: Spec.Basic.Definition.BasicInterfaceImplSpec = impl.Basic.Definition.BasicInterfaceImplImpl()
-            BasicScalar: Spec.Basic.Definition.BasicScalarSpec = impl.Basic.Definition.BasicScalarImpl()
+            BasicObject = impl.Basic.Definition.BasicObject()
+            BasicInterface = impl.Basic.Definition.BasicInterface()
+            BasicInterfaceImpl = impl.Basic.Definition.BasicInterfaceImpl()
+            BasicScalar = impl.Basic.Definition.BasicScalar()
         class Extension:
-            BasicObject: Spec.Basic.Extension.BasicObjectSpec = impl.Basic.Extension.BasicObjectImpl()
-            AnotherInterface: Spec.Basic.Extension.AnotherInterfaceSpec = impl.Basic.Extension.AnotherInterfaceImpl()
-            BasicInterface: Spec.Basic.Extension.BasicInterfaceSpec = impl.Basic.Extension.BasicInterfaceImpl()
-            BasicInterfaceImpl: Spec.Basic.Extension.BasicInterfaceImplSpec = impl.Basic.Extension.BasicInterfaceImplImpl()
-            AnotherType: Spec.Basic.Extension.AnotherTypeSpec = impl.Basic.Extension.AnotherTypeImpl()
-            Query: Spec.Basic.Extension.QuerySpec = impl.Basic.Extension.QueryImpl()
+            BasicObject = impl.Basic.Extension.BasicObject()
+            AnotherInterface = impl.Basic.Extension.AnotherInterface()
+            BasicInterface = impl.Basic.Extension.BasicInterface()
+            BasicInterfaceImpl = impl.Basic.Extension.BasicInterfaceImpl()
+            AnotherType = impl.Basic.Extension.AnotherType()
+            Query = impl.Basic.Extension.Query()
     class Deprecation:
         class Definition:
-            DeprecatedFieldObject: Spec.Deprecation.Definition.DeprecatedFieldObjectSpec = impl.Deprecation.Definition.DeprecatedFieldObjectImpl()
+            DeprecatedFieldObject = impl.Deprecation.Definition.DeprecatedFieldObject()
     class Module:
         class Module:
             class module:
-                ModuleB: Spec.Module.Module.module.ModuleBSpec = impl.Module.Module.module.ModuleBImpl()
+                ModuleB = impl.Module.Module.module.ModuleB()
         class module:
-            ModuleA: Spec.Module.module.ModuleASpec = impl.Module.module.ModuleAImpl()
+            ModuleA = impl.Module.module.ModuleA()
     class Nested1:
         class Nested2:
             class nested2:
-                Nested2: Spec.Nested1.Nested2.nested2.Nested2Spec = impl.Nested1.Nested2.nested2.Nested2Impl()
+                Nested2 = impl.Nested1.Nested2.nested2.Nested2()
         class nested1:
-            Nested1: Spec.Nested1.nested1.Nested1Spec = impl.Nested1.nested1.Nested1Impl()
+            Nested1 = impl.Nested1.nested1.Nested1()
     class Resolve:
         class Schema:
-            GrandParent: Spec.Resolve.Schema.GrandParentSpec = impl.Resolve.Schema.GrandParentImpl()
-            Parent: Spec.Resolve.Schema.ParentSpec = impl.Resolve.Schema.ParentImpl()
-            Child: Spec.Resolve.Schema.ChildSpec = impl.Resolve.Schema.ChildImpl()
-    class graphql:
-        GraphQLObject: Spec.graphql.GraphQLObjectSpec = impl.graphql.GraphQLObjectImpl()
-        graphql: Spec.graphql.graphqlSpec = impl.graphql.graphqlImpl()
-        typing: Spec.graphql.typingSpec = impl.graphql.typingImpl()
+            GrandParent = impl.Resolve.Schema.GrandParent()
+            Parent = impl.Resolve.Schema.Parent()
+            Child = impl.Resolve.Schema.Child()
+    class graphql_:
+        GraphQLObject = impl.graphql_.GraphQLObject()
+        graphql_ = impl.graphql_.graphql_()
+        typing_ = impl.graphql_.typing_()
     class root:
-        Query: Spec.root.QuerySpec = impl.root.QueryImpl()
-        Mutation: Spec.root.MutationSpec = impl.root.MutationImpl()
+        Query = impl.root.Query()
+        Mutation = impl.root.Mutation()
     class source:
         class source:
-            Source: Spec.source.source.SourceSpec = impl.source.source.SourceImpl()
+            Source = impl.source.source.Source()

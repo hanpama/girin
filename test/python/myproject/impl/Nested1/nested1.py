@@ -1,8 +1,7 @@
-from ...spec import Spec
+from ... import runtime_spec
+import typing
 
 
-
-class Nested1Impl(Spec.Nested1.nested1.Nested1Spec):
+@typing.final
+class Nested1(runtime_spec.Nested1.nested1.Nested1):
     pass
-
-

@@ -4,7 +4,6 @@ from . import Definition
 from . import Extension
 
 
-
 __all__ = [
     "Definition",
     "Extension",

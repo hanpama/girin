@@ -1,39 +1,41 @@
-from ... import source
-from ...spec import Spec
+from ... import runtime_spec
+from ... import source_spec
 import graphql
 import typing
 
 
-
-class BasicObjectImpl(Spec.Basic.Extension.BasicObjectSpec):
-    async def extended_field_with_arg(self, obj: source.BasicObjectSource, info: graphql.GraphQLResolveInfo, id_non_null: object) -> object:
+@typing.final
+class BasicObject(runtime_spec.Basic.Extension.BasicObject):
+    async def extended_field_with_arg(self, obj: source_spec.BasicObject, info: graphql.GraphQLResolveInfo, id_non_null: object) -> object:
         raise NotImplementedError()
-    
 
 
-class AnotherInterfaceImpl(Spec.Basic.Extension.AnotherInterfaceSpec):
+
+@typing.final
+class AnotherInterface(runtime_spec.Basic.Extension.AnotherInterface):
     pass
 
 
-class BasicInterfaceImpl(Spec.Basic.Extension.BasicInterfaceSpec):
-    async def extended_field_with_arg(self, obj: source.BasicInterfaceSource, info: graphql.GraphQLResolveInfo, id_non_null: object) -> object:
+@typing.final
+class BasicInterface(runtime_spec.Basic.Extension.BasicInterface):
+    async def extended_field_with_arg(self, obj: source_spec.BasicInterface, info: graphql.GraphQLResolveInfo, id_non_null: object) -> object:
         raise NotImplementedError()
-    
 
 
-class BasicInterfaceImplImpl(Spec.Basic.Extension.BasicInterfaceImplSpec):
-    async def extended_field_with_arg(self, obj: source.BasicInterfaceImplSource, info: graphql.GraphQLResolveInfo, id_non_null: object) -> object:
+
+@typing.final
+class BasicInterfaceImpl(runtime_spec.Basic.Extension.BasicInterfaceImpl):
+    async def extended_field_with_arg(self, obj: source_spec.BasicInterfaceImpl, info: graphql.GraphQLResolveInfo, id_non_null: object) -> object:
         raise NotImplementedError()
-    
 
 
-class AnotherTypeImpl(Spec.Basic.Extension.AnotherTypeSpec):
+
+@typing.final
+class AnotherType(runtime_spec.Basic.Extension.AnotherType):
     pass
 
 
-class QueryImpl(Spec.Basic.Extension.QuerySpec):
-    async def extended_hello(self, obj: source.QuerySource, info: graphql.GraphQLResolveInfo, name: str) -> str:
-        return f"Hello, {name}!"
-    
-
-
+@typing.final
+class Query(runtime_spec.Basic.Extension.Query):
+    async def extended_hello(self, obj: source_spec.Query, info: graphql.GraphQLResolveInfo, name: str) -> str:
+        raise NotImplementedError()

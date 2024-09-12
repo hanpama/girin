@@ -1,8 +1,7 @@
-from ....spec import Spec
+from .... import runtime_spec
+import typing
 
 
-
-class ModuleBImpl(Spec.Module.Module.module.ModuleBSpec):
+@typing.final
+class ModuleB(runtime_spec.Module.Module.module.ModuleB):
     pass
-
-

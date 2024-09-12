@@ -24,6 +24,15 @@ pub enum TypeExpression {
     NonNullType(Box<TypeExpression>),
 }
 
+impl TypeExpression {
+    pub fn is_nullable(&self) -> bool {
+        match self {
+            TypeExpression::NonNullType(_) => false,
+            _ => true,
+        }
+    }
+}
+
 #[derive(Debug)]
 pub enum Value {
     Int(i32),

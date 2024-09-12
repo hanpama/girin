@@ -12,6 +12,7 @@ pub struct Project {
     schema_loc: Option<Loc>,
     def_locs: HashMap<String, Loc>,
     ext_locs: HashMap<String, Vec<Loc>>,
+    obj_unions: HashMap<String, Vec<String>>,
     module_children: HashMap<PathBuf, BTreeSet<PathBuf>>,
     type_field_locs: HashMap<(String, String), Loc>,
 }
@@ -27,6 +28,7 @@ impl Project {
             schema_loc: None,
             def_locs: HashMap::new(),
             ext_locs: HashMap::new(),
+            obj_unions: HashMap::new(),
             module_children: HashMap::new(),
             type_field_locs: HashMap::new(),
         }
@@ -130,6 +132,15 @@ impl Project {
         definition_values.chain(extension_values)
     }
 
+    pub fn collect_object_unions<'a>(&'a self, name: &'a str) -> Vec<&'a str> {
+        self.obj_unions
+            .get(name)
+            .into_iter()
+            .flat_map(|unions| unions.iter())
+            .map(|union| union.as_str())
+            .collect()
+    }
+
     pub fn collect_input_fields<'a>(
         &'a self,
         name: &'a str,
@@ -192,6 +203,26 @@ impl Project {
                 .entry(name)
                 .or_insert_with(Vec::new)
                 .push(Loc(file.clone(), module_types.len()));
+        }
+        if type_.is_union() {
+            let name = type_.get_definition_name().unwrap().to_owned();
+            let objs = type_.as_union().iter_types().map(|t| t.to_owned());
+            for obj in objs {
+                self.obj_unions
+                    .entry(obj)
+                    .or_insert_with(Vec::new)
+                    .push(name.clone());
+            }
+        }
+        if type_.is_union_ext() {
+            let name = type_.get_definition_name().unwrap().to_owned();
+            let objs = type_.as_union_ext().iter_types().map(|t| t.to_owned());
+            for obj in objs {
+                self.obj_unions
+                    .entry(obj)
+                    .or_insert_with(Vec::new)
+                    .push(name.clone());
+            }
         }
 
         module_types.push(type_);

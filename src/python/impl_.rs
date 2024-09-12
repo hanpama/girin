@@ -1,27 +1,39 @@
-use super::{
-    error::Result, format_named_source, format_type_expression, naming, sourcecode::SourceCode,
-};
+use super::{error::Result, format_type_expression, naming, source_code::SourceCode};
 use crate::schema::{
     Definition, InputValue, InterfaceDefinition, InterfaceExtension, ModuleRef, ObjectDefinition,
-    ObjectExtension, Project, Resolve, ScalarDefinition, TypeExpression,
+    ObjectExtension, Project, Resolve, ScalarDefinition,
 };
 use std::{fs::File, path::PathBuf};
 
 pub fn render(outdir: &PathBuf, s: &Project) -> Result<()> {
-    render_directory(outdir.join("impl"), ModuleRef::new(s))?;
+    let root = outdir.join("impl");
+    std::fs::create_dir_all(&root)?;
+
+    let d = ModuleRef::new(s);
+
+    std::fs::create_dir_all(&root)?;
+    for child in d.iter_children() {
+        render_directory(&root, child)?;
+    }
+    render_config_index(&root, &d)?;
+
     Ok(())
 }
 
-fn render_directory(path: PathBuf, d: ModuleRef) -> Result<()> {
+fn render_directory(parent_path: &PathBuf, d: ModuleRef) -> Result<()> {
+    let module_name = naming::module_name(&d.get_name());
+    let path = parent_path.join(&module_name);
+
     if d.has_children() {
+        println!("Creating directory: {:?}", &path);
         std::fs::create_dir_all(&path)?;
+
         for child in d.iter_children() {
-            let child_path = path.join(child.get_name());
-            render_directory(child_path, child)?;
+            render_directory(&path, child)?;
         }
         render_config_index(&path, &d)?;
-    }
-    if d.has_definition() {
+    } else {
+        // has_definition
         render_module_config(&path.with_extension("py"), &d)?;
     }
 
@@ -37,7 +49,7 @@ fn render_config_index<'a>(parent_path: &PathBuf, d: &ModuleRef) -> Result<()> {
     src.line("__all__ = [");
     src.indent();
     for dir in d.iter_children() {
-        let name = dir.get_name();
+        let name = naming::module_name(dir.get_name());
         src.import(&format!("from . import {name}"));
         src.line(&format!("\"{name}\",",));
     }
@@ -59,7 +71,7 @@ fn render_module_config(filepath: &PathBuf, d: &ModuleRef) -> Result<()> {
     let mut src = SourceCode::new();
 
     src.import(&format!(
-        "from {}.spec import Spec",
+        "from {}. import runtime_spec",
         ".".repeat(d.get_depth())
     ));
 
@@ -67,29 +79,29 @@ fn render_module_config(filepath: &PathBuf, d: &ModuleRef) -> Result<()> {
         match def {
             Definition::ObjectDefinition(inner) => {
                 render_object_config(&d, &mut src, d.schema, inner);
-                src.line("");
-                src.line("");
+                src.newline();
+                src.newline();
             }
             Definition::InterfaceDefinition(inner) => {
                 render_interface_config(&d, &mut src, d.schema, inner);
-                src.line("");
-                src.line("");
+                src.newline();
+                src.newline();
             }
             Definition::ScalarDefinition(inner) => {
                 render_scalar_config(&d, &mut src, d.schema, inner);
-                src.line("");
-                src.line("");
+                src.newline();
+                src.newline();
             }
 
             Definition::ObjectExtension(inner) => {
                 render_object_ext_config(&d, &mut src, d.schema, inner);
-                src.line("");
-                src.line("");
+                src.newline();
+                src.newline();
             }
             Definition::InterfaceExtension(inner) => {
                 render_interface_ext_config(&d, &mut src, d.schema, inner);
-                src.line("");
-                src.line("");
+                src.newline();
+                src.newline();
             }
             _ => { /* noop */ }
         }
@@ -101,12 +113,14 @@ fn render_module_config(filepath: &PathBuf, d: &ModuleRef) -> Result<()> {
 }
 
 fn render_object_config(d: &ModuleRef, src: &mut SourceCode, s: &Project, def: &ObjectDefinition) {
-    let module_accessor = d.get_breadcrumbs().join(".");
+    let module_accessor = naming::module_path(&d.get_breadcrumbs());
     let impl_name = naming::impl_type(&def.name);
-    let spec_name = naming::spec_type(&def.name);
+    let spec_name = naming::runtime_spec_type(&def.name);
 
+    src.import("import typing");
+    src.line("@typing.final");
     src.line(&format!(
-        "class {impl_name}(Spec.{module_accessor}.{spec_name}):",
+        "class {impl_name}(runtime_spec.{module_accessor}.{spec_name}):",
     ));
     src.indent();
 
@@ -116,7 +130,7 @@ fn render_object_config(d: &ModuleRef, src: &mut SourceCode, s: &Project, def: &
         if let Some(resolve) = s.resolve_field_resolve(field) {
             pass = false;
             render_field_resolver(d, src, &resolve);
-            src.line("");
+            src.newline();
         }
     }
 
@@ -132,13 +146,14 @@ fn render_interface_config(
     s: &Project,
     def: &InterfaceDefinition,
 ) {
-    // def.module
-    let module_accessor = d.get_breadcrumbs().join(".");
+    let module_accessor = naming::module_path(&d.get_breadcrumbs());
     let impl_name = naming::impl_type(&def.name);
-    let spec_name = naming::spec_type(&def.name);
+    let spec_name = naming::runtime_spec_type(&def.name);
 
+    src.import("import typing");
+    src.line("@typing.final");
     src.line(&format!(
-        "class {impl_name}(Spec.{module_accessor}.{spec_name}):",
+        "class {impl_name}(runtime_spec.{module_accessor}.{spec_name}):",
     ));
     src.indent();
 
@@ -148,7 +163,7 @@ fn render_interface_config(
         if let Some(resolve) = s.resolve_field_resolve(field) {
             pass = false;
             render_field_resolver(d, src, &resolve);
-            src.line("");
+            src.newline();
         }
     }
 
@@ -159,14 +174,16 @@ fn render_interface_config(
 }
 
 fn render_scalar_config(d: &ModuleRef, src: &mut SourceCode, s: &Project, def: &ScalarDefinition) {
-    let module_accessor = d.get_breadcrumbs().join(".");
+    let module_accessor = naming::module_path(&d.get_breadcrumbs());
     let impl_name = naming::impl_type(&def.name);
-    let spec_name = naming::spec_type(&def.name);
+    let spec_name = naming::runtime_spec_type(&def.name);
 
     src.import("import typing");
     src.import("import graphql");
+
+    src.line("@typing.final");
     src.line(&format!(
-        "class {impl_name}(Spec.{module_accessor}.{spec_name}):"
+        "class {impl_name}(runtime_spec.{module_accessor}.{spec_name}):"
     ));
     src.indent();
 
@@ -174,12 +191,12 @@ fn render_scalar_config(d: &ModuleRef, src: &mut SourceCode, s: &Project, def: &
     src.indent();
     src.line("raise NotImplementedError()");
     src.dedent();
-    src.line("");
+    src.newline();
     src.line("def parse_value(self, value: typing.Any) -> typing.Any:");
     src.indent();
     src.line("raise NotImplementedError()");
     src.dedent();
-    src.line("");
+    src.newline();
     src.line(
         "def parse_literal(self, node: graphql.ValueNode, variables: typing.Any) -> typing.Any:",
     );
@@ -196,12 +213,14 @@ fn render_object_ext_config(
     s: &Project,
     def: &ObjectExtension,
 ) {
-    let module_accessor = d.get_breadcrumbs().join(".");
+    let module_accessor = naming::module_path(&d.get_breadcrumbs());
     let impl_name = naming::impl_type(&def.name);
-    let spec_name = naming::spec_type(&def.name);
+    let spec_name = naming::runtime_spec_type(&def.name);
 
+    src.import("import typing");
+    src.line("@typing.final");
     src.line(&format!(
-        "class {impl_name}(Spec.{module_accessor}.{spec_name}):",
+        "class {impl_name}(runtime_spec.{module_accessor}.{spec_name}):",
     ));
     src.indent();
 
@@ -211,7 +230,7 @@ fn render_object_ext_config(
         if let Some(resolve) = s.resolve_field_resolve(field) {
             pass = false;
             render_field_resolver(d, src, &resolve);
-            src.line("");
+            src.newline();
         }
     }
 
@@ -227,12 +246,14 @@ fn render_interface_ext_config(
     s: &Project,
     def: &InterfaceExtension,
 ) {
-    let module_accessor = d.get_breadcrumbs().join(".");
+    let module_accessor = naming::module_path(&d.get_breadcrumbs());
     let impl_name = naming::impl_type(&def.name);
-    let spec_name = naming::spec_type(&def.name);
+    let spec_name = naming::runtime_spec_type(&def.name);
 
+    src.import("import typing");
+    src.line("@typing.final");
     src.line(&format!(
-        "class {impl_name}(Spec.{module_accessor}.{spec_name}):",
+        "class {impl_name}(runtime_spec.{module_accessor}.{spec_name}):",
     ));
     src.indent();
     let mut pass = true;
@@ -241,7 +262,7 @@ fn render_interface_ext_config(
         if let Some(resolve) = s.resolve_field_resolve(field) {
             pass = false;
             render_field_resolver(d, src, &resolve);
-            src.line("");
+            src.newline();
         }
     }
 
@@ -255,14 +276,14 @@ fn render_field_resolver(d: &ModuleRef, src: &mut SourceCode, resolve: &Resolve)
     src.import("import graphql");
     src.import("import typing");
     src.import(&format!(
-        "from {} import source",
-        ".".repeat(d.get_depth() + 1)
+        "from {}. import source_spec",
+        ".".repeat(d.get_depth())
     ));
 
     let sig = if resolve.sync { "def" } else { "async def" };
     let name = naming::field_name(&resolve.field.name);
-    let source_type = format_named_source(&resolve.field.type_name);
-    let return_type = format_type_expression(&resolve.field.field_type);
+    let source_type = naming::source_reference(&resolve.field.type_name);
+    let return_type = format_type_expression(Some("source_spec"), &resolve.field.field_type);
     let arguments = format_argument_list(&resolve.field.args);
 
     src.line(&format!(
@@ -278,11 +299,11 @@ fn format_argument_list(args: &Vec<InputValue>) -> String {
     args.iter()
         .map(|input| {
             let name = naming::field_name(&input.name);
-            let expr = format_type_expression(&input.field_type);
-            if let TypeExpression::NonNullType(_) = input.field_type {
-                format!("{name}: {expr}")
-            } else {
+            let expr = format_type_expression(Some("source_spec"), &input.field_type);
+            if input.field_type.is_nullable() {
                 format!("{name}: {expr} = None")
+            } else {
+                format!("{name}: {expr}")
             }
         })
         .collect::<Vec<_>>()

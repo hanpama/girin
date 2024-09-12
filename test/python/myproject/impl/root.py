@@ -1,12 +1,12 @@
-from ..spec import Spec
+from .. import runtime_spec
+import typing
 
 
-
-class QueryImpl(Spec.root.QuerySpec):
+@typing.final
+class Query(runtime_spec.root.Query):
     pass
 
 
-class MutationImpl(Spec.root.MutationSpec):
+@typing.final
+class Mutation(runtime_spec.root.Mutation):
     pass
-
-

@@ -1,63 +1,88 @@
-pub fn spec_type(def_name: &str) -> String {
-    format!("{}Spec", def_name)
+use crate::utils::text;
+
+pub fn runtime_spec_type(def_name: &str) -> String {
+    format!("{}", escape(def_name))
+}
+
+pub fn module_name(module_name: &str) -> String {
+    format!("{}", escape(module_name))
+}
+
+pub fn module_path(breadcrumbs: &[&str]) -> String {
+    breadcrumbs
+        .iter()
+        .map(|name| module_name(name))
+        .collect::<Vec<String>>()
+        .join(".")
 }
 
 pub fn impl_type(def_name: &str) -> String {
-    format!("{}Impl", def_name)
+    format!("{}", escape(def_name))
+}
+pub fn build_config_field(def_name: &str) -> String {
+    format!("{}", escape(def_name))
 }
 
-pub fn source<S: Into<String>>(def_name: S) -> String {
-    format!("{}Source", def_name.into())
+pub fn source(def_name: &str) -> String {
+    format!("{}", escape(def_name))
+}
+
+pub fn source_reference(def_name: &str) -> String {
+    // 이거 각 장소로
+    format!("source_spec.{}", source(def_name))
 }
 
 pub fn type_instance(def_name: &str) -> String {
-    format!("{}_type", def_name)
+    format!("{}Type", escape(def_name))
 }
 
 pub fn field_name(in_schema_name: &str) -> String {
-    to_snake_case(in_schema_name)
+    escape(&text::to_snake_case(in_schema_name))
 }
 
-fn to_snake_case(s: &str) -> String {
-    let mut snake_case = String::new();
-    let mut i = 0;
-
-    while i < s.len() {
-        let mut matched_acronym = false;
-
-        // Check for known acronyms
-        for &acronym in &ACRONYMS {
-            if s[i..].starts_with(acronym) {
-                if !snake_case.is_empty() {
-                    snake_case.push('_');
-                }
-                snake_case.push_str(&acronym.to_ascii_lowercase());
-                i += acronym.len();
-                matched_acronym = true;
-                break;
-            }
-        }
-
-        if !matched_acronym {
-            let c = s.chars().nth(i).unwrap();
-            if c.is_uppercase() {
-                if i != 0 {
-                    snake_case.push('_');
-                }
-                snake_case.push(c.to_ascii_lowercase());
-            } else {
-                snake_case.push(c);
-            }
-            i += 1;
-        }
-    }
-
-    snake_case
+fn escape(name: &str) -> String {
+    text::escape(name, &KEYWORDS)
 }
 
-const ACRONYMS: [&str; 42] = [
-    "ACL", "API", "ASCII", "CPU", "CSS", "DNS", "EOF", "ETA", "GPU", "GUID", "HTML", "HTTP",
-    "HTTPS", "ID", "IP", "JSON", "LHS", "OS", "QPS", "RAM", "RHS", "RPC", "SLA", "SMTP", "SQL",
-    "SSH", "TCP", "TLS", "TTL", "UDP", "UI", "UID", "UUID", "URI", "URL", "UTF8", "VM", "XML",
-    "XMPP", "XSRF", "XSS", "OAuth",
+const KEYWORDS: [&str; 40] = [
+    "False",
+    "def",
+    "if",
+    "raise",
+    "None",
+    "del",
+    "import",
+    "return",
+    "True",
+    "elif",
+    "in",
+    "try",
+    "and",
+    "else",
+    "is",
+    "while",
+    "as",
+    "except",
+    "lambda",
+    "with",
+    "assert",
+    "finally",
+    "nonlocal",
+    "yield",
+    "break",
+    "for",
+    "not",
+    "class",
+    "from",
+    "or",
+    "continue",
+    "global",
+    "pass", // reserved
+    "str",
+    "int",
+    "float",
+    "bool",
+    "graphql",
+    "typing",     // import in scope
+    "is_type_of", // type resolver
 ];

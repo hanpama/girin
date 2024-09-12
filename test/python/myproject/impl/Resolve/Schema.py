@@ -1,70 +1,69 @@
-from ... import source
-from ...spec import Spec
+from ... import runtime_spec
+from ... import source_spec
 import graphql
 import typing
 
 
+@typing.final
+class GrandParent(runtime_spec.Resolve.Schema.GrandParent):
+    async def echo(self, obj: source_spec.GrandParent, info: graphql.GraphQLResolveInfo, message: str) -> str:
+        raise NotImplementedError()
 
-class GrandParentImpl(Spec.Resolve.Schema.GrandParentSpec):
-    async def echo(self, obj: source.GrandParentSource, info: graphql.GraphQLResolveInfo, message: str) -> str:
+    def echo_sync(self, obj: source_spec.GrandParent, info: graphql.GraphQLResolveInfo, message: str) -> str:
         raise NotImplementedError()
-    
-    def echo_sync(self, obj: source.GrandParentSource, info: graphql.GraphQLResolveInfo, message: str) -> str:
-        raise NotImplementedError()
-    
-
-
-class ParentImpl(Spec.Resolve.Schema.ParentSpec):
-    async def echo(self, obj: source.ParentSource, info: graphql.GraphQLResolveInfo, message: str) -> str:
-        raise NotImplementedError()
-    
-    async def echo_sync(self, obj: source.ParentSource, info: graphql.GraphQLResolveInfo, message: str) -> str:
-        raise NotImplementedError()
-    
 
 
-class ChildImpl(Spec.Resolve.Schema.ChildSpec):
-    async def echo(self, obj: source.ChildSource, info: graphql.GraphQLResolveInfo, message: str) -> str:
+
+@typing.final
+class Parent(runtime_spec.Resolve.Schema.Parent):
+    async def echo(self, obj: source_spec.Parent, info: graphql.GraphQLResolveInfo, message: str) -> str:
         raise NotImplementedError()
-    
-    async def echo_sync(self, obj: source.ChildSource, info: graphql.GraphQLResolveInfo, message: str) -> str:
+
+    async def echo_sync(self, obj: source_spec.Parent, info: graphql.GraphQLResolveInfo, message: str) -> str:
         raise NotImplementedError()
-    
-    async def basic_interface(self, obj: source.ChildSource, info: graphql.GraphQLResolveInfo, ) -> source.BasicInterfaceSource | None:
-        raise NotImplementedError()
-    
-    async def basic_interface_list(self, obj: source.ChildSource, info: graphql.GraphQLResolveInfo, ) -> list[source.BasicInterfaceSource | None] | None:
-        raise NotImplementedError()
-    
-    async def basic_interface_non_null_list(self, obj: source.ChildSource, info: graphql.GraphQLResolveInfo, ) -> list[source.BasicInterfaceSource | None]:
-        raise NotImplementedError()
-    
-    async def basic_interface_non_null_list_non_null_element(self, obj: source.ChildSource, info: graphql.GraphQLResolveInfo, ) -> list[source.BasicInterfaceSource]:
-        raise NotImplementedError()
-    
-    async def basic_union(self, obj: source.ChildSource, info: graphql.GraphQLResolveInfo, ) -> source.BasicUnionSource | None:
-        raise NotImplementedError()
-    
-    async def basic_union_list(self, obj: source.ChildSource, info: graphql.GraphQLResolveInfo, ) -> list[source.BasicUnionSource | None] | None:
-        raise NotImplementedError()
-    
-    async def basic_union_non_null_list(self, obj: source.ChildSource, info: graphql.GraphQLResolveInfo, ) -> list[source.BasicUnionSource | None]:
-        raise NotImplementedError()
-    
-    async def basic_union_non_null_list_non_null_element(self, obj: source.ChildSource, info: graphql.GraphQLResolveInfo, ) -> list[source.BasicUnionSource]:
-        raise NotImplementedError()
-    
-    async def basic_enum(self, obj: source.ChildSource, info: graphql.GraphQLResolveInfo, ) -> source.BasicEnumSource | None:
-        raise NotImplementedError()
-    
-    async def basic_enum_list(self, obj: source.ChildSource, info: graphql.GraphQLResolveInfo, ) -> list[source.BasicEnumSource | None] | None:
-        raise NotImplementedError()
-    
-    async def basic_enum_non_null_list(self, obj: source.ChildSource, info: graphql.GraphQLResolveInfo, ) -> list[source.BasicEnumSource | None]:
-        raise NotImplementedError()
-    
-    async def basic_enum_non_null_list_non_null_element(self, obj: source.ChildSource, info: graphql.GraphQLResolveInfo, ) -> list[source.BasicEnumSource]:
-        raise NotImplementedError()
-    
 
 
+
+@typing.final
+class Child(runtime_spec.Resolve.Schema.Child):
+    async def echo(self, obj: source_spec.Child, info: graphql.GraphQLResolveInfo, message: str) -> str:
+        raise NotImplementedError()
+
+    async def echo_sync(self, obj: source_spec.Child, info: graphql.GraphQLResolveInfo, message: str) -> str:
+        raise NotImplementedError()
+
+    async def basic_interface(self, obj: source_spec.Child, info: graphql.GraphQLResolveInfo, ) -> source_spec.BasicInterface | None:
+        raise NotImplementedError()
+
+    async def basic_interface_list(self, obj: source_spec.Child, info: graphql.GraphQLResolveInfo, ) -> list[source_spec.BasicInterface | None] | None:
+        raise NotImplementedError()
+
+    async def basic_interface_non_null_list(self, obj: source_spec.Child, info: graphql.GraphQLResolveInfo, ) -> list[source_spec.BasicInterface | None]:
+        raise NotImplementedError()
+
+    async def basic_interface_non_null_list_non_null_element(self, obj: source_spec.Child, info: graphql.GraphQLResolveInfo, ) -> list[source_spec.BasicInterface]:
+        raise NotImplementedError()
+
+    async def basic_union(self, obj: source_spec.Child, info: graphql.GraphQLResolveInfo, ) -> source_spec.BasicUnion | None:
+        raise NotImplementedError()
+
+    async def basic_union_list(self, obj: source_spec.Child, info: graphql.GraphQLResolveInfo, ) -> list[source_spec.BasicUnion | None] | None:
+        raise NotImplementedError()
+
+    async def basic_union_non_null_list(self, obj: source_spec.Child, info: graphql.GraphQLResolveInfo, ) -> list[source_spec.BasicUnion | None]:
+        raise NotImplementedError()
+
+    async def basic_union_non_null_list_non_null_element(self, obj: source_spec.Child, info: graphql.GraphQLResolveInfo, ) -> list[source_spec.BasicUnion]:
+        raise NotImplementedError()
+
+    async def basic_enum(self, obj: source_spec.Child, info: graphql.GraphQLResolveInfo, ) -> source_spec.BasicEnum | None:
+        raise NotImplementedError()
+
+    async def basic_enum_list(self, obj: source_spec.Child, info: graphql.GraphQLResolveInfo, ) -> list[source_spec.BasicEnum | None] | None:
+        raise NotImplementedError()
+
+    async def basic_enum_non_null_list(self, obj: source_spec.Child, info: graphql.GraphQLResolveInfo, ) -> list[source_spec.BasicEnum | None]:
+        raise NotImplementedError()
+
+    async def basic_enum_non_null_list_non_null_element(self, obj: source_spec.Child, info: graphql.GraphQLResolveInfo, ) -> list[source_spec.BasicEnum]:
+        raise NotImplementedError()

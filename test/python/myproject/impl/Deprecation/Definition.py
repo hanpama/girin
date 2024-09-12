@@ -1,8 +1,7 @@
-from ...spec import Spec
+from ... import runtime_spec
+import typing
 
 
-
-class DeprecatedFieldObjectImpl(Spec.Deprecation.Definition.DeprecatedFieldObjectSpec):
+@typing.final
+class DeprecatedFieldObject(runtime_spec.Deprecation.Definition.DeprecatedFieldObject):
     pass
-
-
