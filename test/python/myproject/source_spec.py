@@ -1,5 +1,6 @@
 # GENERATED. DO NOT EDIT.
 # fmt: off
+from datetime import datetime as DateTime
 import typing
 
 
@@ -100,6 +101,8 @@ class Query(typing.Protocol):
 
 class Mutation(typing.Protocol):
     version: "str | None"
+
+DateTime = DateTime
 
 class Source(typing.Protocol):
     pass

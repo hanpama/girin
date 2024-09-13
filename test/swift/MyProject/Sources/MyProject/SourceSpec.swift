@@ -1,4 +1,3 @@
-
 struct SourceSpec {
   protocol BasicObject: BasicUnion {
     var idNonNull: Any { get }
@@ -114,6 +113,8 @@ struct SourceSpec {
   protocol Mutation {
     var version: String? { get }
   }
+
+  typealias DateTime = Any
 
   protocol Source {
   }

@@ -164,7 +164,7 @@ impl Project {
         self.definitions.get(file)
     }
 
-    pub fn resolve_field_resolve<'a>(&'a self, field: &'a Field) -> Option<Resolve<'a>> {
+    pub fn resolve_field_resolve<'a>(&'a self, field: &'a Field) -> Option<Resolve<'a>> { // TODO: 필드수준으로 옮길 것
         if let Some(conf) = &field.resolve {
             return Some(Resolve::new(conf.sync, field));
         }

@@ -1,7 +1,5 @@
 import GraphQL
 
-
-
 func buildSchema(config: BuilderConfig) throws -> GraphQLSchema {
 }
 fileprivate struct TypeRegistry {

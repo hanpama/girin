@@ -6,7 +6,7 @@ use crate::schema::{
 use std::{fs::File, path::PathBuf};
 
 pub fn render(outdir: &PathBuf, s: &Project) -> Result<()> {
-    let root = outdir.join("impl");
+    let root = outdir.join("runtime");
     std::fs::create_dir_all(&root)?;
 
     let d = ModuleRef::new(s);

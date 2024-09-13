@@ -46,9 +46,8 @@ impl SourceCode {
             writeln!(w, "import {}", import)?;
         }
         if self.imports.len() > 0 {
-            writeln!(w, "")?;
-            writeln!(w, "")?;
+            writeln!(w)?;
         }
-        write!(w, "{}", self.body)
+        write!(w, "{}", self.body.trim())
     }
 }

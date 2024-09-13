@@ -183,6 +183,8 @@ type Mutation {
   version: String
 }
 
+scalar DateTime
+
 type Source {
   a: Int
 }

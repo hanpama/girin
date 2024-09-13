@@ -44,7 +44,7 @@ fn escape(name: &str) -> String {
     text::escape(name, &KEYWORDS)
 }
 
-const KEYWORDS: [&str; 40] = [
+const KEYWORDS: [&str; 43] = [
     "False",
     "def",
     "if",
@@ -83,6 +83,9 @@ const KEYWORDS: [&str; 40] = [
     "float",
     "bool",
     "graphql",
+    "__init__",
     "typing",     // import in scope
     "is_type_of", // type resolver
+    "runtime",
+    "source_spec",
 ];

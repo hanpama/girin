@@ -1,4 +1,4 @@
-use super::{error::Error, naming, sourcecode::SourceCode};
+use super::{error::Error, naming, source_code::SourceCode};
 use crate::schema::{
     Definition, EnumDefinition, EnumValue, Field, InputDefinition, InputValue, InterfaceDefinition,
     ModuleRef, ObjectDefinition, Project, ScalarDefinition, TypeExpression, UnionDefinition, Value,

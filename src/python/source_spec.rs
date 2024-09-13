@@ -1,9 +1,9 @@
 use super::{error::Error, naming, source_code::SourceCode, type_expr};
 use crate::schema::{
     Definition, EnumDefinition, InputDefinition, InterfaceDefinition, ObjectDefinition, Project,
-    ScalarDefinition, TypeExpression, UnionDefinition,
+    ScalarDefinition, UnionDefinition,
 };
-use std::{borrow::Borrow, fs::File, path::PathBuf};
+use std::{fs::File, path::PathBuf};
 
 pub fn render(outdir: &PathBuf, s: &Project) -> Result<(), Error> {
     let outfile = outdir.join("source_spec.py");
@@ -170,21 +170,20 @@ fn render_enum_source(src: &mut SourceCode, s: &Project, def: &EnumDefinition) {
 
 fn render_scalar_source(src: &mut SourceCode, s: &Project, def: &ScalarDefinition) {
     src.import("import typing");
-
+    let name = naming::source(&def.name);
     let alias = def.type_aliases.get("python");
     if let Some(alias) = alias {
-        // Import
-        let alias = format_type_alias(src, alias.clone());
-        src.line(&format!(
-            "{name} = {alias}",
-            name = naming::source(&def.name),
-            alias = alias,
-        ));
+        if alias.contains(".") {
+            let tokens: Vec<&str> = alias.split(".").collect();
+            let from = tokens[0..tokens.len() - 1].join(".");
+            let import = tokens[tokens.len() - 1];
+            src.import(&format!("from {from} import {import} as {name}"));
+            src.line(&format!("{name} = {name}"));
+        } else {
+            src.line(&format!("{name} = {alias}"));
+        }
     } else {
-        src.line(&format!(
-            "{name} = typing.Any",
-            name = naming::source(&def.name)
-        ));
+        src.line(&format!("{name} = typing.Any"));
     }
 }
 
@@ -202,44 +201,3 @@ fn render_union_source(src: &mut SourceCode, s: &Project, def: &UnionDefinition)
         types = types.join(", ")
     ));
 }
-
-fn format_type_alias(src: &mut SourceCode, expr: String) -> String {
-    if expr.contains(".") {
-        todo!();
-        return src.import(&expr);
-    }
-    return expr;
-}
-
-// fn format_type_expression(s: &Project, expr: &TypeExpression) -> String {
-//     match expr {
-//         TypeExpression::NonNullType(inner) => match inner.borrow() {
-//             TypeExpression::NamedType(ref name) => format_named_type(name),
-//             TypeExpression::ListType(inner) => {
-//                 format!("typing.List[{}]", format_type_expression(s, inner.borrow()))
-//             }
-//             _ => unreachable!(),
-//         },
-//         TypeExpression::NamedType(name) => {
-//             format!("typing.Optional[{}]", format_named_type(name))
-//         }
-//         TypeExpression::ListType(inner) => {
-//             format!(
-//                 "typing.Optional[typing.List[{}]]",
-//                 format_type_expression(s, inner.borrow())
-//             )
-//         }
-//     }
-// }
-
-// fn format_named_type(name: &str) -> String {
-//     match name {
-//         "String" => return "str".to_owned(),
-//         "Int" => return "int".to_owned(),
-//         "Float" => return "float".to_owned(),
-//         "Boolean" => return "bool".to_owned(),
-//         "ID" => return "typing.Any".to_owned(),
-//         _ => {}
-//     }
-//     naming::source(name)
-// }

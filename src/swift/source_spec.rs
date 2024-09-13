@@ -1,9 +1,9 @@
-use super::{error::Error, naming, sourcecode::SourceCode};
+use super::{error::Error, naming, source_code::SourceCode};
 use crate::schema::{
     Definition, EnumDefinition, InputDefinition, InterfaceDefinition, ObjectDefinition, Project,
     ScalarDefinition, TypeExpression, UnionDefinition,
 };
-use std::{borrow::Borrow, fs::File, io, path::PathBuf};
+use std::{borrow::Borrow, fs::File, path::PathBuf};
 
 pub fn render(outdir: &PathBuf, s: &Project) -> Result<(), Error> {
     let outfile = outdir.join("SourceSpec.swift");
@@ -158,10 +158,6 @@ fn render_scalar_source(src: &mut SourceCode, s: &Project, def: &ScalarDefinitio
 fn render_union_source(src: &mut SourceCode, s: &Project, def: &UnionDefinition) {
     let name = naming::source_spec(&def.name);
     src.line(&format!("protocol {name} {{}}",));
-    // for type_name in s.collect_union_types(&def.name) {
-    //     let possible_source_name = naming::source(type_name);
-    //     src.line(format!("extension {possible_source_name}: {name} {{}}"));
-    // }
 }
 
 fn format_type_alias(src: &mut SourceCode, expr: String) -> String {

@@ -10,3 +10,5 @@ type Query {
 type Mutation {
     version: String
 }
+
+scalar DateTime @type(alias: "python:datetime.datetime")

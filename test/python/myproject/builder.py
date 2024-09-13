@@ -616,6 +616,12 @@ def build_schema() -> graphql.GraphQLSchema:
             ),
         },
     )
+    DateTimeType = graphql.GraphQLScalarType(
+        name="DateTime",
+        serialize=BuilderConfig.root.DateTime.serialize,
+        parse_value=BuilderConfig.root.DateTime.parse_value,
+        parse_literal=BuilderConfig.root.DateTime.parse_literal,
+    )
     SourceType = graphql.GraphQLObjectType(
         name="Source",
         fields=lambda: {
@@ -651,6 +657,7 @@ def build_schema() -> graphql.GraphQLSchema:
             typing_Type,
             QueryType,
             MutationType,
+            DateTimeType,
             SourceType,
         ],
     )

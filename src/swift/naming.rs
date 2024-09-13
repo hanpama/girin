@@ -1,5 +1,7 @@
-pub fn resolver_spec(def_name: &str) -> String {
-    format!("{}", def_name)
+use crate::utils::text;
+
+pub fn runtime_spec(def_name: &str) -> String {
+    format!("{}", escape(def_name))
 }
 
 pub fn source_spec<S: Into<String>>(def_name: S) -> String {
@@ -17,4 +19,23 @@ pub fn type_defining_function(def_name: &str) -> String {
     format!("define{}", def_name)
 }
 
-// TODO: "GraphQL"은 escape해야 함
+pub fn source(def_name: &str) -> String {
+    format!("{}", escape(def_name))
+}
+
+pub fn module_name(module_name: &str) -> String {
+    format!("{}", escape(module_name))
+}
+
+pub fn module_path(breadcrumbs: &[&str]) -> String {
+    breadcrumbs
+        .iter()
+        .map(|name| module_name(name))
+        .collect::<Vec<String>>()
+        .join(".")
+}
+fn escape(name: &str) -> String {
+    text::escape(name, &KEYWORDS)
+}
+
+const KEYWORDS: [&str; 2] = ["Module", "GraphQL"];

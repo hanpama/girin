@@ -23,6 +23,7 @@ fn main() {
 
     let prj = schema::load(&schema_dir).unwrap();
 
+    
     // let mut result_debug_file = File::create(out_dir.join("debug")).unwrap();
     // let result_debug = format!("{:#?}", result);
     // result_debug_file

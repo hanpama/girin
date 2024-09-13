@@ -119,6 +119,11 @@ class root:
     class Mutation(typing.Protocol):
         pass
 
+    class DateTime(typing.Protocol):
+        def serialize(self, value: typing.Any) -> typing.Any: ...
+        def parse_value(self, value: typing.Any) -> typing.Any: ...
+        def parse_literal(self, node: graphql.ValueNode, variables: typing.Any) -> typing.Any: ...
+
 class source:
     class source:
         class Source(typing.Protocol):

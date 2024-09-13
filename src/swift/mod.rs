@@ -4,14 +4,16 @@ mod builder;
 mod error;
 mod naming;
 mod type_expr;
-mod source;
-mod sourcecode;
-mod spec;
+mod source_spec;
+mod source_code;
+mod runtime;
+mod runtime_spec;
 
 pub fn generate_swift_code(outdir: PathBuf, schema: &Project) -> Result<(), SwiftGenerationError> {
-    source::render(&outdir, schema).unwrap();
+    source_spec::render(&outdir, schema).unwrap();
     builder::render(&outdir, schema).unwrap();
-    spec::render(&outdir, schema).unwrap();
+    runtime_spec::render(&outdir, schema).unwrap();
+    runtime::render(&outdir, schema).unwrap();
 
     Ok(())
 }

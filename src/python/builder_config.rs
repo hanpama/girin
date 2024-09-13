@@ -11,7 +11,7 @@ pub fn render(outdir: &PathBuf, s: &Project) -> Result<()> {
     let mut src = SourceCode::new_generated();
     let t = ModuleRef::new(s);
 
-    src.import("from . import impl");
+    src.import("from . import runtime");
 
     src.line("class BuilderConfig:");
     src.indent();
@@ -27,7 +27,10 @@ pub fn render(outdir: &PathBuf, s: &Project) -> Result<()> {
 fn render_directory(src: &mut SourceCode, d: ModuleRef) -> Result<()> {
     let mut pass = true;
     if d.has_children() {
-        for child in d.iter_children() {
+        for (i, child) in d.iter_children().enumerate() {
+            if i > 0 {
+                src.newline();
+            }
             pass = false;
 
             src.line(format!("class {}:", naming::module_name(child.get_name())));
@@ -75,8 +78,8 @@ fn render_config_field(src: &mut SourceCode, d: &ModuleRef, def: &Definition) {
     let definition_name = def.get_definition_name().unwrap();
     let field_name = naming::build_config_field(&definition_name);
     let module_accessor = naming::module_path(&d.get_breadcrumbs());
-    let impl_name = naming::impl_type(&definition_name);
+    let runtime_name = naming::impl_type(&definition_name);
     src.line(format!(
-        "{field_name} = impl.{module_accessor}.{impl_name}()"
+        "{field_name} = runtime.{module_accessor}.{runtime_name}()"
     ));
 }
