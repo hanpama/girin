@@ -7,7 +7,6 @@ use std::{fs::File, path::PathBuf};
 
 pub fn render(outdir: &PathBuf, s: &Project) -> Result<()> {
     let root = outdir.join("Runtime");
-    std::fs::create_dir_all(&root)?;
 
     let d = ModuleRef::new(s);
 
@@ -21,18 +20,20 @@ pub fn render(outdir: &PathBuf, s: &Project) -> Result<()> {
 }
 
 fn render_directory(parent_path: &PathBuf, d: ModuleRef) -> Result<()> {
-    let module_name = naming::module_name(&d.get_name());
-    let path = parent_path.join(&module_name);
-
-    std::fs::create_dir_all(&path)?;
     if d.has_children() {
+        let module_name = naming::module_name(&d.get_name());
+        let path = parent_path.join(&module_name);
+        println!("render_directory: {:?}", path);
+
+        std::fs::create_dir_all(&path)?;
+
         for child in d.iter_children() {
-            render_directory(&path.join(child.get_name()), child)?;
+            render_directory(&path, child)?;
         }
         render_config_index(&path, &d)?;
     } else {
         // has_definition
-        render_module_config(&path, &d)?;
+        render_module_config(&parent_path, &d)?;
     }
 
     Ok(())
@@ -60,7 +61,7 @@ fn render_config_index<'a>(outdir: &PathBuf, d: &ModuleRef) -> Result<()> {
     src.line(format!("extension {name} {{"));
     src.indent();
 
-    src.line(".init() {");
+    src.line("init() {");
     src.indent();
     for dir in d.iter_children() {
         let name = naming::module_name(dir.get_name());
@@ -114,17 +115,12 @@ fn render_module_config(outdir: &PathBuf, d: &ModuleRef) -> Result<()> {
             Definition::ScalarDefinition(inner) => {
                 render_scalar_config(&d, &mut src, d.schema, inner);
             }
-
-            // Definition::ObjectExtension(inner) => {
-            //     render_object_ext_config(&d, &mut src, d.schema, inner);
-            //     src.newline();
-            //     src.newline();
-            // }
-            // Definition::InterfaceExtension(inner) => {
-            //     render_interface_ext_config(&d, &mut src, d.schema, inner);
-            //     src.newline();
-            //     src.newline();
-            // }
+            Definition::ObjectExtension(inner) => {
+                render_object_ext_config(&d, &mut src, d.schema, inner);
+            }
+            Definition::InterfaceExtension(inner) => {
+                render_interface_ext_config(&d, &mut src, d.schema, inner);
+            }
             _ => { /* noop */ }
         }
     }
@@ -208,70 +204,55 @@ fn render_scalar_config(d: &ModuleRef, src: &mut SourceCode, s: &Project, def: &
     src.line(")");
 }
 
-// fn render_object_ext_config(
-//     d: &ModuleRef,
-//     src: &mut SourceCode,
-//     s: &Project,
-//     def: &ObjectExtension,
-// ) {
-//     let module_accessor = naming::module_path(&d.get_breadcrumbs());
-//     let impl_name = naming::impl_type(&def.name);
-//     let spec_name = naming::runtime_spec_type(&def.name);
+fn render_object_ext_config(
+    d: &ModuleRef,
+    src: &mut SourceCode,
+    s: &Project,
+    def: &ObjectExtension,
+) {
+    let impl_name = naming::runtime_spec(&def.name);
+    src.line(format!("self.{impl_name} = .init("));
+    src.indent();
 
-//     src.import("import typing");
-//     src.line("@typing.final");
-//     src.line(&format!(
-//         "class {impl_name}(runtime_spec.{module_accessor}.{spec_name}):",
-//     ));
-//     src.indent();
+    let resolves = def
+        .iter_fields()
+        .filter_map(|field| s.resolve_field_resolve(field));
 
-//     let mut pass = true;
+    for (i, resolve) in resolves.enumerate() {
+        if i > 0 {
+            src.append(",");
+        }
+        render_field_resolver(d, src, &resolve);
+    }
 
-//     for field in def.iter_fields() {
-//         if let Some(resolve) = s.resolve_field_resolve(field) {
-//             pass = false;
-//             render_field_resolver(d, src, &resolve);
-//             src.newline();
-//         }
-//     }
+    src.dedent();
+    src.line(")");
+}
 
-//     if pass {
-//         src.line("pass");
-//     }
-//     src.dedent();
-// }
+fn render_interface_ext_config(
+    d: &ModuleRef,
+    src: &mut SourceCode,
+    s: &Project,
+    def: &InterfaceExtension,
+) {
+    let impl_name = naming::runtime_spec(&def.name);
+    src.line(format!("self.{impl_name} = .init("));
+    src.indent();
 
-// fn render_interface_ext_config(
-//     d: &ModuleRef,
-//     src: &mut SourceCode,
-//     s: &Project,
-//     def: &InterfaceExtension,
-// ) {
-//     let module_accessor = naming::module_path(&d.get_breadcrumbs());
-//     let impl_name = naming::impl_type(&def.name);
-//     let spec_name = naming::runtime_spec_type(&def.name);
+    let resolves = def
+        .iter_fields()
+        .filter_map(|field| s.resolve_field_resolve(field));
 
-//     src.import("import typing");
-//     src.line("@typing.final");
-//     src.line(&format!(
-//         "class {impl_name}(runtime_spec.{module_accessor}.{spec_name}):",
-//     ));
-//     src.indent();
-//     let mut pass = true;
+    for (i, resolve) in resolves.enumerate() {
+        if i > 0 {
+            src.append(",");
+        }
+        render_field_resolver(d, src, &resolve);
+    }
 
-//     for field in def.iter_fields() {
-//         if let Some(resolve) = s.resolve_field_resolve(field) {
-//             pass = false;
-//             render_field_resolver(d, src, &resolve);
-//             src.newline();
-//         }
-//     }
-
-//     if pass {
-//         src.line("pass");
-//     }
-//     src.dedent();
-// }
+    src.dedent();
+    src.line(")");
+}
 
 fn render_field_resolver(d: &ModuleRef, src: &mut SourceCode, resolve: &Resolve) {
     let name = naming::field_name(&resolve.field.name);
@@ -281,7 +262,7 @@ fn render_field_resolver(d: &ModuleRef, src: &mut SourceCode, resolve: &Resolve)
         "async throws"
     };
 
-    src.line(&format!("{name}: {{ src, info, args {sig} in",));
+    src.line(&format!("{name}: {{ source, args, context, info {sig} in",));
 
     src.indent();
     src.line("fatalError(\"Not implemented\")");

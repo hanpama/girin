@@ -1,5 +1,5 @@
 extension RuntimeSpec.Resolve {
-  .init() {
+  init() {
     self.Schema = .init()
   }
 }

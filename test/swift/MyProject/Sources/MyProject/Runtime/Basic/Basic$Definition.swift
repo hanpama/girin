@@ -1,40 +1,40 @@
 extension RuntimeSpec.Basic.Definition {
   init() {
     self.BasicObject = .init(
-      idNonNullArg: { src, info, args async throws in
+      idNonNullArg: { source, args, context, info async throws in
         fatalError("Not implemented")
       },
-      stringNonNullArg: { src, info, args async throws in
+      stringNonNullArg: { source, args, context, info async throws in
         fatalError("Not implemented")
       },
-      intNonNullArg: { src, info, args async throws in
+      intNonNullArg: { source, args, context, info async throws in
         fatalError("Not implemented")
       },
-      floatNonNullArg: { src, info, args async throws in
+      floatNonNullArg: { source, args, context, info async throws in
         fatalError("Not implemented")
       },
-      booleanNonNullArg: { src, info, args async throws in
+      booleanNonNullArg: { source, args, context, info async throws in
         fatalError("Not implemented")
       },
-      idArg: { src, info, args async throws in
+      idArg: { source, args, context, info async throws in
         fatalError("Not implemented")
       },
-      stringArg: { src, info, args async throws in
+      stringArg: { source, args, context, info async throws in
         fatalError("Not implemented")
       },
-      intArg: { src, info, args async throws in
+      intArg: { source, args, context, info async throws in
         fatalError("Not implemented")
       },
-      floatArg: { src, info, args async throws in
+      floatArg: { source, args, context, info async throws in
         fatalError("Not implemented")
       },
-      booleanArg: { src, info, args async throws in
+      booleanArg: { source, args, context, info async throws in
         fatalError("Not implemented")
       },
-      basicInputArg: { src, info, args async throws in
+      basicInputArg: { source, args, context, info async throws in
         fatalError("Not implemented")
       },
-      basicInputArgWithDefault: { src, info, args async throws in
+      basicInputArgWithDefault: { source, args, context, info async throws in
         fatalError("Not implemented")
       }
     )

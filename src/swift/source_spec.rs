@@ -168,7 +168,7 @@ fn format_type_alias(src: &mut SourceCode, expr: String) -> String {
     return expr;
 }
 
-fn format_type_expression(s: &Project, expr: &TypeExpression) -> String {
+pub fn format_type_expression(s: &Project, expr: &TypeExpression) -> String {
     match expr {
         TypeExpression::NonNullType(inner) => match inner.borrow() {
             TypeExpression::NamedType(ref name) => format_named_type(name),

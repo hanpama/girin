@@ -1,5 +1,5 @@
 extension RuntimeSpec.Module_ {
-  .init() {
+  init() {
     self.Module_ = .init()
     self.module = .init()
   }

@@ -1,7 +1,8 @@
-use super::{error::Error, naming, source_code::SourceCode};
+use super::{error::Error, naming, source_code::SourceCode, source_spec};
 use crate::schema::{
     Definition, EnumDefinition, EnumValue, Field, InputDefinition, InputValue, InterfaceDefinition,
-    ModuleRef, ObjectDefinition, Project, ScalarDefinition, TypeExpression, UnionDefinition, Value,
+    ModuleRef, ObjectDefinition, Project, Resolve, ScalarDefinition, TypeExpression,
+    UnionDefinition, Value,
 };
 use std::{fs::File, path::PathBuf};
 
@@ -13,45 +14,14 @@ pub fn render(outdir: &PathBuf, s: &Project) -> Result<(), Error> {
 
     src.import("GraphQL");
 
-    src.line("func buildSchema(config: BuilderConfig) throws -> GraphQLSchema {");
+    src.line("func buildSchema(config: RuntimeSpec) throws -> GraphQLSchema {");
+
     src.indent();
 
-    // src.line("return GraphQLSchema(");
-    // src.indent();
-
-    // if let Some(query) = &s.get_query() {
-    //     src.line(format!("query: {},", naming::type_instance(query)));
-    // }
-    // if let Some(mutation) = &s.get_mutation() {
-    //     src.line(format!("mutation: {},", naming::type_instance(mutation)));
-    // }
-    // if let Some(subscription) = &s.get_subscription() {
-    //     src.line(format!(
-    //         "subscription: {},",
-    //         naming::type_instance(subscription)
-    //     ));
-    // }
-    // src.line("types=[");
-    // src.indent();
-    // for def in s.iter_type_definitions() {
-    //     src.line(format!(
-    //         "{},",
-    //         naming::type_instance(def.get_definition_name().unwrap())
-    //     ));
-    // }
-    // src.dedent();
-    // src.line("],");
-
-    // src.dedent();
-    // src.line(")");
-
-    src.dedent();
-    src.line("}");
-
-    src.line("fileprivate struct TypeRegistry {");
+    src.line("struct Types {");
     src.indent();
 
-    src.line("let config: BuilderConfig");
+    src.line("let config: RuntimeSpec");
     for def in s.iter_type_definitions() {
         match def {
             Definition::ObjectDefinition(inner) => render_object_type(&mut src, s, inner),
@@ -67,6 +37,41 @@ pub fn render(outdir: &PathBuf, s: &Project) -> Result<(), Error> {
     src.dedent();
     src.line("}");
 
+    src.line("let types = Types(config: config)");
+
+    src.line("return GraphQL.GraphQLSchema(");
+    src.indent();
+
+    if let Some(query) = &s.get_query() {
+        let name = naming::type_instance(query);
+        src.line(format!("query: types.{name}"));
+    }
+    if let Some(mutation) = &s.get_mutation() {
+        let name = naming::type_instance(mutation);
+        src.append(",");
+        src.line(format!("mutation: types.{name}"));
+    }
+    if let Some(subscription) = &s.get_subscription() {
+        let name = naming::type_instance(subscription);
+        src.append(",");
+        src.line(format!("subscription: types.{name}"));
+    }
+    src.append(",");
+    src.line("types: [");
+    src.indent();
+    for def in s.iter_type_definitions() {
+        let name = naming::type_instance(def.get_definition_name().unwrap());
+        src.line(format!("types.{name},"));
+    }
+    src.dedent();
+    src.line("]");
+
+    src.dedent();
+    src.line(")");
+
+    src.dedent();
+    src.line("}");
+
     src.write_to(&mut file)?;
 
     Ok(())
@@ -74,7 +79,10 @@ pub fn render(outdir: &PathBuf, s: &Project) -> Result<(), Error> {
 
 fn render_object_type(src: &mut SourceCode, s: &Project, def: &ObjectDefinition) {
     let name = naming::type_instance(&def.name);
-    src.line(format!("lazy var {} = try! GraphQLObjectType(", name));
+    src.line(format!(
+        "lazy var {} = try! GraphQL.GraphQLObjectType(",
+        name
+    ));
     src.indent();
     src.line(format!("name: \"{}\"", def.name));
 
@@ -86,7 +94,10 @@ fn render_object_type(src: &mut SourceCode, s: &Project, def: &ObjectDefinition)
     src.append(",");
     src.line("fields: [");
     src.indent();
-    for field in s.collect_fields(&def.name) {
+    for (i, field) in s.collect_fields(&def.name).iter().enumerate() {
+        if i > 0 {
+            src.append(",");
+        }
         render_field(src, s, field)
     }
     src.dedent();
@@ -110,7 +121,10 @@ fn render_object_type(src: &mut SourceCode, s: &Project, def: &ObjectDefinition)
 
 fn render_interface_type(src: &mut SourceCode, s: &Project, def: &InterfaceDefinition) {
     let name = naming::type_instance(&def.name);
-    src.line(format!("lazy var {} = try! GraphQLInterfaceType(", name));
+    src.line(format!(
+        "lazy var {} = try! GraphQL.GraphQLInterfaceType(",
+        name
+    ));
     src.indent();
     src.line(format!("name: \"{}\"", def.name));
 
@@ -131,9 +145,13 @@ fn render_interface_type(src: &mut SourceCode, s: &Project, def: &InterfaceDefin
     }
 
     src.append(",");
+
     src.line("fields: [");
     src.indent();
-    for field in s.collect_fields(&def.name) {
+    for (i, field) in s.collect_fields(&def.name).iter().enumerate() {
+        if i > 0 {
+            src.append(",");
+        }
         render_field(src, s, field)
     }
     src.dedent();
@@ -145,7 +163,10 @@ fn render_interface_type(src: &mut SourceCode, s: &Project, def: &InterfaceDefin
 
 fn render_input_type(src: &mut SourceCode, s: &Project, def: &InputDefinition) {
     let name = naming::type_instance(&def.name);
-    src.line(format!("lazy var {} = try! GraphQLInputObjectType(", name));
+    src.line(format!(
+        "lazy var {} = try! GraphQL.GraphQLInputObjectType(",
+        name
+    ));
     src.indent();
     src.line(format!("name: \"{}\"", def.name));
 
@@ -169,7 +190,7 @@ fn render_input_type(src: &mut SourceCode, s: &Project, def: &InputDefinition) {
 
 fn render_scalar_type(src: &mut SourceCode, s: &Project, def: &ScalarDefinition) {
     let name = naming::type_instance(&def.name);
-    src.line(format!("{} = GraphQLScalarType(", name));
+    src.line(format!("{} = GraphQL.GraphQLScalarType(", name));
     src.indent();
     src.line(format!("name=\"{}\",", def.name));
 
@@ -189,7 +210,7 @@ fn render_scalar_type(src: &mut SourceCode, s: &Project, def: &ScalarDefinition)
 
 fn render_enum_type(src: &mut SourceCode, s: &Project, def: &EnumDefinition) {
     let name = naming::type_instance(&def.name);
-    src.line(format!("{} = GraphQLEnumType(", name));
+    src.line(format!("{} = GraphQL.GraphQLEnumType(", name));
     src.indent();
     src.line(format!("name=\"{}\",", def.name));
 
@@ -210,7 +231,7 @@ fn render_enum_type(src: &mut SourceCode, s: &Project, def: &EnumDefinition) {
 }
 
 fn render_enum_value(src: &mut SourceCode, s: &Project, def: &EnumValue) {
-    src.line(format!("{:?}: GraphQLEnumValue(", def.name));
+    src.line(format!("{:?}: GraphQL.GraphQLEnumValue(", def.name));
     src.indent();
     src.line(format!("value: {:?},", &def.name));
     if let Some(description) = &def.description {
@@ -225,7 +246,7 @@ fn render_enum_value(src: &mut SourceCode, s: &Project, def: &EnumValue) {
 
 fn render_union_type(src: &mut SourceCode, s: &Project, def: &UnionDefinition) {
     let name = naming::type_instance(&def.name);
-    src.line(format!("{} = GraphQLUnionType(", name));
+    src.line(format!("{} = GraphQL.GraphQLUnionType(", name));
     src.indent();
     src.line(format!("name=\"{}\",", def.name));
 
@@ -246,7 +267,7 @@ fn render_union_type(src: &mut SourceCode, s: &Project, def: &UnionDefinition) {
 }
 
 fn render_field(src: &mut SourceCode, s: &Project, def: &Field) {
-    src.line(format!("{:?}: .init(", def.name));
+    src.line(format!("{:?}: GraphQL.GraphQLField(", def.name));
     src.indent();
 
     src.line(format!(
@@ -270,24 +291,72 @@ fn render_field(src: &mut SourceCode, s: &Project, def: &Field) {
         src.line("],");
     }
     if let Some(opt) = s.resolve_field_resolve(def) {
-        let module_ref = s.get_module_ref(&opt.field.position.file);
-        let def_config_path = format_definition_config_path(module_ref, &opt.field.type_name);
-
-        src.line(format!(
-            "resolve: {}.{}",
-            def_config_path,
-            naming::field_name(&def.name)
-        ));
+        render_field_resolver(src, s, def, &opt);
     } else {
         src.line("resolve: nil");
     }
 
     src.dedent();
-    src.line("),");
+    src.line(")");
+}
+
+fn render_field_resolver(src: &mut SourceCode, s: &Project, def: &Field, opt: &Resolve) {
+    let module_ref = s.get_module_ref(&opt.field.position.file);
+    let def_config_path = format_definition_config_path(module_ref, &opt.field.type_name);
+
+    let resolver_func = format!(
+        "{}.{}",
+        def_config_path,
+        naming::field_name(&opt.field.name)
+    );
+
+    src.line("resolve: { source, args, context, eventLoopGroup, info in");
+    src.indent();
+
+    src.line("struct Args: Decodable {");
+    src.indent();
+    for arg in &def.args {
+        src.line(format!(
+            "var {}: {}",
+            arg.name,
+            source_spec::format_type_expression(s, &arg.field_type)
+        ));
+    }
+    src.dedent();
+    src.line("}");
+
+    src.line("let args: Args = try GraphQL.MapDecoder().decode(Args.self, from: args)");
+
+    let mut args = Vec::new();
+    for arg in &def.args {
+        args.push(format!("args.{}", &arg.name));
+    }
+    args.push("()".to_owned());
+    let args = args.join(", ");
+
+    if opt.sync {
+        src.line("return eventLoopGroup.next().makeSucceededFuture(");
+        src.indent();
+        src.line(format!(
+            "try {resolver_func}((source, ({args}), context, info))"
+        ));
+        src.dedent();
+        src.line(")");
+    } else {
+        src.line("return eventLoopGroup.next().makeFutureWithTask {");
+        src.indent();
+        src.line(format!(
+            "return try {resolver_func}((source, ({args}), context, info))"
+        ));
+        src.dedent();
+        src.line("}");
+    }
+    src.dedent();
+    src.line("}");
 }
 
 fn render_arg(src: &mut SourceCode, def: &InputValue) {
-    src.line(format!("{:?}: .init(", def.name));
+    src.line(format!("{:?}: GraphQL.GraphQLArgument(", def.name));
     src.indent();
     src.line(format!("type: {}", format_type_expression(&def.field_type)));
 

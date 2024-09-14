@@ -1,5 +1,5 @@
 extension RuntimeSpec {
-  .init() {
+  init() {
     self.Basic = .init()
     self.Deprecation = .init()
     self.Module_ = .init()

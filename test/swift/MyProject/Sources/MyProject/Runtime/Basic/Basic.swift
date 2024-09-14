@@ -1,5 +1,5 @@
 extension RuntimeSpec.Basic {
-  .init() {
+  init() {
     self.Definition = .init()
     self.Extension = .init()
   }

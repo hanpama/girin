@@ -6,12 +6,12 @@ use crate::schema::{
 use std::{fs::File, path::PathBuf};
 
 pub fn render(outdir: &PathBuf, s: &Project) -> Result<()> {
-    let filepath = outdir.join("Runtime.swift");
+    let filepath = outdir.join("RuntimeSpec.swift");
     let mut file = File::create(filepath)?;
 
     let mut src = SourceCode::new();
 
-    src.line("struct Runtime {");
+    src.line("struct RuntimeSpec {");
     src.indent();
     render_directory(&mut src, ModuleRef::new(s))?;
     src.dedent();
@@ -187,11 +187,11 @@ fn render_field_resolver(src: &mut SourceCode, resolve: &Resolve) {
     let arguments = if arguments.is_empty() {
         "".to_string()
     } else {
-        format!(", {}", arguments)
+        format!("{}, ", arguments)
     };
 
     src.line(&format!(
-        "var {name}: (_: (src: {source_type}, info: GraphQL.GraphQLResolveInfo{arguments})) {sig} -> {return_type}",
+        "var {name}: (_: (source: {source_type}, {arguments}context: Any, info: GraphQL.GraphQLResolveInfo)) {sig} -> {return_type}",
     ));
 }
 

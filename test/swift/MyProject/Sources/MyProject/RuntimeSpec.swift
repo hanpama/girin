@@ -4,18 +4,18 @@ struct RuntimeSpec {
   struct Basic {
     struct Definition {
       struct BasicObject {
-        var idNonNullArg: (_: (src: SourceSpec.BasicObject, info: GraphQL.GraphQLResolveInfo, args: (idNonNull: Any, _: ()))) async throws -> Any
-        var stringNonNullArg: (_: (src: SourceSpec.BasicObject, info: GraphQL.GraphQLResolveInfo, args: (stringNonNull: String, _: ()))) async throws -> String
-        var intNonNullArg: (_: (src: SourceSpec.BasicObject, info: GraphQL.GraphQLResolveInfo, args: (intNonNull: Int, _: ()))) async throws -> Int
-        var floatNonNullArg: (_: (src: SourceSpec.BasicObject, info: GraphQL.GraphQLResolveInfo, args: (floatNonNull: Float, _: ()))) async throws -> Float
-        var booleanNonNullArg: (_: (src: SourceSpec.BasicObject, info: GraphQL.GraphQLResolveInfo, args: (booleanNonNull: Bool, _: ()))) async throws -> Bool
-        var idArg: (_: (src: SourceSpec.BasicObject, info: GraphQL.GraphQLResolveInfo, args: (id: Any?, _: ()))) async throws -> Any?
-        var stringArg: (_: (src: SourceSpec.BasicObject, info: GraphQL.GraphQLResolveInfo, args: (string: String?, _: ()))) async throws -> String?
-        var intArg: (_: (src: SourceSpec.BasicObject, info: GraphQL.GraphQLResolveInfo, args: (int: Int?, _: ()))) async throws -> Int?
-        var floatArg: (_: (src: SourceSpec.BasicObject, info: GraphQL.GraphQLResolveInfo, args: (float: Float?, _: ()))) async throws -> Float?
-        var booleanArg: (_: (src: SourceSpec.BasicObject, info: GraphQL.GraphQLResolveInfo, args: (boolean: Bool?, _: ()))) async throws -> Bool?
-        var basicInputArg: (_: (src: SourceSpec.BasicObject, info: GraphQL.GraphQLResolveInfo, args: (basicInput: SourceSpec.BasicInput?, _: ()))) async throws -> String?
-        var basicInputArgWithDefault: (_: (src: SourceSpec.BasicObject, info: GraphQL.GraphQLResolveInfo, args: (basicInput: SourceSpec.BasicInput?, _: ()))) async throws -> String?
+        var idNonNullArg: (_: (source: SourceSpec.BasicObject, args: (idNonNull: Any, _: ()), context: Any, info: GraphQL.GraphQLResolveInfo)) async throws -> Any
+        var stringNonNullArg: (_: (source: SourceSpec.BasicObject, args: (stringNonNull: String, _: ()), context: Any, info: GraphQL.GraphQLResolveInfo)) async throws -> String
+        var intNonNullArg: (_: (source: SourceSpec.BasicObject, args: (intNonNull: Int, _: ()), context: Any, info: GraphQL.GraphQLResolveInfo)) async throws -> Int
+        var floatNonNullArg: (_: (source: SourceSpec.BasicObject, args: (floatNonNull: Float, _: ()), context: Any, info: GraphQL.GraphQLResolveInfo)) async throws -> Float
+        var booleanNonNullArg: (_: (source: SourceSpec.BasicObject, args: (booleanNonNull: Bool, _: ()), context: Any, info: GraphQL.GraphQLResolveInfo)) async throws -> Bool
+        var idArg: (_: (source: SourceSpec.BasicObject, args: (id: Any?, _: ()), context: Any, info: GraphQL.GraphQLResolveInfo)) async throws -> Any?
+        var stringArg: (_: (source: SourceSpec.BasicObject, args: (string: String?, _: ()), context: Any, info: GraphQL.GraphQLResolveInfo)) async throws -> String?
+        var intArg: (_: (source: SourceSpec.BasicObject, args: (int: Int?, _: ()), context: Any, info: GraphQL.GraphQLResolveInfo)) async throws -> Int?
+        var floatArg: (_: (source: SourceSpec.BasicObject, args: (float: Float?, _: ()), context: Any, info: GraphQL.GraphQLResolveInfo)) async throws -> Float?
+        var booleanArg: (_: (source: SourceSpec.BasicObject, args: (boolean: Bool?, _: ()), context: Any, info: GraphQL.GraphQLResolveInfo)) async throws -> Bool?
+        var basicInputArg: (_: (source: SourceSpec.BasicObject, args: (basicInput: SourceSpec.BasicInput?, _: ()), context: Any, info: GraphQL.GraphQLResolveInfo)) async throws -> String?
+        var basicInputArgWithDefault: (_: (source: SourceSpec.BasicObject, args: (basicInput: SourceSpec.BasicInput?, _: ()), context: Any, info: GraphQL.GraphQLResolveInfo)) async throws -> String?
       }
       struct BasicInterface {
       }
@@ -33,20 +33,20 @@ struct RuntimeSpec {
     }
     struct Extension {
       struct BasicObject {
-        var extendedFieldWithArg: (_: (src: SourceSpec.BasicObject, info: GraphQL.GraphQLResolveInfo, args: (idNonNull: Any, _: ()))) async throws -> Any
+        var extendedFieldWithArg: (_: (source: SourceSpec.BasicObject, args: (idNonNull: Any, _: ()), context: Any, info: GraphQL.GraphQLResolveInfo)) async throws -> Any
       }
       struct AnotherInterface {
       }
       struct BasicInterface {
-        var extendedFieldWithArg: (_: (src: SourceSpec.BasicInterface, info: GraphQL.GraphQLResolveInfo, args: (idNonNull: Any, _: ()))) async throws -> Any
+        var extendedFieldWithArg: (_: (source: SourceSpec.BasicInterface, args: (idNonNull: Any, _: ()), context: Any, info: GraphQL.GraphQLResolveInfo)) async throws -> Any
       }
       struct BasicInterfaceImpl {
-        var extendedFieldWithArg: (_: (src: SourceSpec.BasicInterfaceImpl, info: GraphQL.GraphQLResolveInfo, args: (idNonNull: Any, _: ()))) async throws -> Any
+        var extendedFieldWithArg: (_: (source: SourceSpec.BasicInterfaceImpl, args: (idNonNull: Any, _: ()), context: Any, info: GraphQL.GraphQLResolveInfo)) async throws -> Any
       }
       struct AnotherType {
       }
       struct Query {
-        var extendedHello: (_: (src: SourceSpec.Query, info: GraphQL.GraphQLResolveInfo, args: (name: String, _: ()))) async throws -> String
+        var extendedHello: (_: (source: SourceSpec.Query, args: (name: String, _: ()), context: Any, info: GraphQL.GraphQLResolveInfo)) async throws -> String
       }
       var BasicObject: BasicObject
       var AnotherInterface: AnotherInterface
@@ -103,28 +103,28 @@ struct RuntimeSpec {
   struct Resolve {
     struct Schema {
       struct GrandParent {
-        var echo: (_: (src: SourceSpec.GrandParent, info: GraphQL.GraphQLResolveInfo, args: (message: String, _: ()))) async throws -> String
-        var echoSync: (_: (src: SourceSpec.GrandParent, info: GraphQL.GraphQLResolveInfo, args: (message: String, _: ()))) throws -> String
+        var echo: (_: (source: SourceSpec.GrandParent, args: (message: String, _: ()), context: Any, info: GraphQL.GraphQLResolveInfo)) async throws -> String
+        var echoSync: (_: (source: SourceSpec.GrandParent, args: (message: String, _: ()), context: Any, info: GraphQL.GraphQLResolveInfo)) throws -> String
       }
       struct Parent {
-        var echo: (_: (src: SourceSpec.Parent, info: GraphQL.GraphQLResolveInfo, args: (message: String, _: ()))) async throws -> String
-        var echoSync: (_: (src: SourceSpec.Parent, info: GraphQL.GraphQLResolveInfo, args: (message: String, _: ()))) async throws -> String
+        var echo: (_: (source: SourceSpec.Parent, args: (message: String, _: ()), context: Any, info: GraphQL.GraphQLResolveInfo)) async throws -> String
+        var echoSync: (_: (source: SourceSpec.Parent, args: (message: String, _: ()), context: Any, info: GraphQL.GraphQLResolveInfo)) async throws -> String
       }
       struct Child {
-        var echo: (_: (src: SourceSpec.Child, info: GraphQL.GraphQLResolveInfo, args: (message: String, _: ()))) async throws -> String
-        var echoSync: (_: (src: SourceSpec.Child, info: GraphQL.GraphQLResolveInfo, args: (message: String, _: ()))) async throws -> String
-        var basicInterface: (_: (src: SourceSpec.Child, info: GraphQL.GraphQLResolveInfo, args: ())) async throws -> SourceSpec.BasicInterface?
-        var basicInterfaceList: (_: (src: SourceSpec.Child, info: GraphQL.GraphQLResolveInfo, args: ())) async throws -> [SourceSpec.BasicInterface?]?
-        var basicInterfaceNonNullList: (_: (src: SourceSpec.Child, info: GraphQL.GraphQLResolveInfo, args: ())) async throws -> [SourceSpec.BasicInterface?]
-        var basicInterfaceNonNullListNonNullElement: (_: (src: SourceSpec.Child, info: GraphQL.GraphQLResolveInfo, args: ())) async throws -> [SourceSpec.BasicInterface]
-        var basicUnion: (_: (src: SourceSpec.Child, info: GraphQL.GraphQLResolveInfo, args: ())) async throws -> SourceSpec.BasicUnion?
-        var basicUnionList: (_: (src: SourceSpec.Child, info: GraphQL.GraphQLResolveInfo, args: ())) async throws -> [SourceSpec.BasicUnion?]?
-        var basicUnionNonNullList: (_: (src: SourceSpec.Child, info: GraphQL.GraphQLResolveInfo, args: ())) async throws -> [SourceSpec.BasicUnion?]
-        var basicUnionNonNullListNonNullElement: (_: (src: SourceSpec.Child, info: GraphQL.GraphQLResolveInfo, args: ())) async throws -> [SourceSpec.BasicUnion]
-        var basicEnum: (_: (src: SourceSpec.Child, info: GraphQL.GraphQLResolveInfo, args: ())) async throws -> SourceSpec.BasicEnum?
-        var basicEnumList: (_: (src: SourceSpec.Child, info: GraphQL.GraphQLResolveInfo, args: ())) async throws -> [SourceSpec.BasicEnum?]?
-        var basicEnumNonNullList: (_: (src: SourceSpec.Child, info: GraphQL.GraphQLResolveInfo, args: ())) async throws -> [SourceSpec.BasicEnum?]
-        var basicEnumNonNullListNonNullElement: (_: (src: SourceSpec.Child, info: GraphQL.GraphQLResolveInfo, args: ())) async throws -> [SourceSpec.BasicEnum]
+        var echo: (_: (source: SourceSpec.Child, args: (message: String, _: ()), context: Any, info: GraphQL.GraphQLResolveInfo)) async throws -> String
+        var echoSync: (_: (source: SourceSpec.Child, args: (message: String, _: ()), context: Any, info: GraphQL.GraphQLResolveInfo)) async throws -> String
+        var basicInterface: (_: (source: SourceSpec.Child, args: (), context: Any, info: GraphQL.GraphQLResolveInfo)) async throws -> SourceSpec.BasicInterface?
+        var basicInterfaceList: (_: (source: SourceSpec.Child, args: (), context: Any, info: GraphQL.GraphQLResolveInfo)) async throws -> [SourceSpec.BasicInterface?]?
+        var basicInterfaceNonNullList: (_: (source: SourceSpec.Child, args: (), context: Any, info: GraphQL.GraphQLResolveInfo)) async throws -> [SourceSpec.BasicInterface?]
+        var basicInterfaceNonNullListNonNullElement: (_: (source: SourceSpec.Child, args: (), context: Any, info: GraphQL.GraphQLResolveInfo)) async throws -> [SourceSpec.BasicInterface]
+        var basicUnion: (_: (source: SourceSpec.Child, args: (), context: Any, info: GraphQL.GraphQLResolveInfo)) async throws -> SourceSpec.BasicUnion?
+        var basicUnionList: (_: (source: SourceSpec.Child, args: (), context: Any, info: GraphQL.GraphQLResolveInfo)) async throws -> [SourceSpec.BasicUnion?]?
+        var basicUnionNonNullList: (_: (source: SourceSpec.Child, args: (), context: Any, info: GraphQL.GraphQLResolveInfo)) async throws -> [SourceSpec.BasicUnion?]
+        var basicUnionNonNullListNonNullElement: (_: (source: SourceSpec.Child, args: (), context: Any, info: GraphQL.GraphQLResolveInfo)) async throws -> [SourceSpec.BasicUnion]
+        var basicEnum: (_: (source: SourceSpec.Child, args: (), context: Any, info: GraphQL.GraphQLResolveInfo)) async throws -> SourceSpec.BasicEnum?
+        var basicEnumList: (_: (source: SourceSpec.Child, args: (), context: Any, info: GraphQL.GraphQLResolveInfo)) async throws -> [SourceSpec.BasicEnum?]?
+        var basicEnumNonNullList: (_: (source: SourceSpec.Child, args: (), context: Any, info: GraphQL.GraphQLResolveInfo)) async throws -> [SourceSpec.BasicEnum?]
+        var basicEnumNonNullListNonNullElement: (_: (source: SourceSpec.Child, args: (), context: Any, info: GraphQL.GraphQLResolveInfo)) async throws -> [SourceSpec.BasicEnum]
       }
       var GrandParent: GrandParent
       var Parent: Parent
@@ -160,7 +160,7 @@ struct RuntimeSpec {
   struct source {
     struct source {
       struct Source {
-        var a: (_: (src: SourceSpec.Source, info: GraphQL.GraphQLResolveInfo, args: ())) async throws -> Int?
+        var a: (_: (source: SourceSpec.Source, args: (), context: Any, info: GraphQL.GraphQLResolveInfo)) async throws -> Int?
       }
       var Source: Source
     }
