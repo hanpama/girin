@@ -61,12 +61,12 @@ func buildSchema(config: RuntimeSpec) throws -> GraphQLSchema {
               defaultValue: "default"
             ),
           ],
-          resolve: { source, args, context, eventLoopGroup, info throws in
+          resolve: { source, args, context, eventLoopGroup, info in
             struct Args: Decodable {
               var idNonNull: Any
             }
             let args: Args = try GraphQL.MapDecoder().decode(Args.self, from: args)
-            return eventLoopGroup.next().makeFutureWithTask { () ->  Any in
+            return eventLoopGroup.next().makeFutureWithTask {
               return try config.Basic.Definition.BasicObject.idNonNullArg((source, (args.idNonNull, ()), context, info))
             }
           }
@@ -79,12 +79,12 @@ func buildSchema(config: RuntimeSpec) throws -> GraphQLSchema {
               defaultValue: "default"
             ),
           ],
-          resolve: { source, args, context, eventLoopGroup, info throws in
+          resolve: { source, args, context, eventLoopGroup, info in
             struct Args: Decodable {
               var stringNonNull: String
             }
             let args: Args = try GraphQL.MapDecoder().decode(Args.self, from: args)
-            return eventLoopGroup.next().makeFutureWithTask { () ->  Any in
+            return eventLoopGroup.next().makeFutureWithTask {
               return try config.Basic.Definition.BasicObject.stringNonNullArg((source, (args.stringNonNull, ()), context, info))
             }
           }
@@ -97,12 +97,12 @@ func buildSchema(config: RuntimeSpec) throws -> GraphQLSchema {
               defaultValue: 1
             ),
           ],
-          resolve: { source, args, context, eventLoopGroup, info throws in
+          resolve: { source, args, context, eventLoopGroup, info in
             struct Args: Decodable {
               var intNonNull: Int
             }
             let args: Args = try GraphQL.MapDecoder().decode(Args.self, from: args)
-            return eventLoopGroup.next().makeFutureWithTask { () ->  Any in
+            return eventLoopGroup.next().makeFutureWithTask {
               return try config.Basic.Definition.BasicObject.intNonNullArg((source, (args.intNonNull, ()), context, info))
             }
           }
@@ -115,12 +115,12 @@ func buildSchema(config: RuntimeSpec) throws -> GraphQLSchema {
               defaultValue: 1
             ),
           ],
-          resolve: { source, args, context, eventLoopGroup, info throws in
+          resolve: { source, args, context, eventLoopGroup, info in
             struct Args: Decodable {
               var floatNonNull: Float
             }
             let args: Args = try GraphQL.MapDecoder().decode(Args.self, from: args)
-            return eventLoopGroup.next().makeFutureWithTask { () ->  Any in
+            return eventLoopGroup.next().makeFutureWithTask {
               return try config.Basic.Definition.BasicObject.floatNonNullArg((source, (args.floatNonNull, ()), context, info))
             }
           }
@@ -133,12 +133,12 @@ func buildSchema(config: RuntimeSpec) throws -> GraphQLSchema {
               defaultValue: true
             ),
           ],
-          resolve: { source, args, context, eventLoopGroup, info throws in
+          resolve: { source, args, context, eventLoopGroup, info in
             struct Args: Decodable {
               var booleanNonNull: Bool
             }
             let args: Args = try GraphQL.MapDecoder().decode(Args.self, from: args)
-            return eventLoopGroup.next().makeFutureWithTask { () ->  Any in
+            return eventLoopGroup.next().makeFutureWithTask {
               return try config.Basic.Definition.BasicObject.booleanNonNullArg((source, (args.booleanNonNull, ()), context, info))
             }
           }
@@ -150,12 +150,12 @@ func buildSchema(config: RuntimeSpec) throws -> GraphQLSchema {
               type: GraphQLID
             ),
           ],
-          resolve: { source, args, context, eventLoopGroup, info throws in
+          resolve: { source, args, context, eventLoopGroup, info in
             struct Args: Decodable {
               var id: Any?
             }
             let args: Args = try GraphQL.MapDecoder().decode(Args.self, from: args)
-            return eventLoopGroup.next().makeFutureWithTask { () ->  Any in
+            return eventLoopGroup.next().makeFutureWithTask {
               return try config.Basic.Definition.BasicObject.idArg((source, (args.id, ()), context, info))
             }
           }
@@ -167,12 +167,12 @@ func buildSchema(config: RuntimeSpec) throws -> GraphQLSchema {
               type: GraphQLString
             ),
           ],
-          resolve: { source, args, context, eventLoopGroup, info throws in
+          resolve: { source, args, context, eventLoopGroup, info in
             struct Args: Decodable {
               var string: String?
             }
             let args: Args = try GraphQL.MapDecoder().decode(Args.self, from: args)
-            return eventLoopGroup.next().makeFutureWithTask { () ->  Any in
+            return eventLoopGroup.next().makeFutureWithTask {
               return try config.Basic.Definition.BasicObject.stringArg((source, (args.string, ()), context, info))
             }
           }
@@ -184,12 +184,12 @@ func buildSchema(config: RuntimeSpec) throws -> GraphQLSchema {
               type: GraphQLInt
             ),
           ],
-          resolve: { source, args, context, eventLoopGroup, info throws in
+          resolve: { source, args, context, eventLoopGroup, info in
             struct Args: Decodable {
               var int: Int?
             }
             let args: Args = try GraphQL.MapDecoder().decode(Args.self, from: args)
-            return eventLoopGroup.next().makeFutureWithTask { () ->  Any in
+            return eventLoopGroup.next().makeFutureWithTask {
               return try config.Basic.Definition.BasicObject.intArg((source, (args.int, ()), context, info))
             }
           }
@@ -201,12 +201,12 @@ func buildSchema(config: RuntimeSpec) throws -> GraphQLSchema {
               type: GraphQLFloat
             ),
           ],
-          resolve: { source, args, context, eventLoopGroup, info throws in
+          resolve: { source, args, context, eventLoopGroup, info in
             struct Args: Decodable {
               var float: Float?
             }
             let args: Args = try GraphQL.MapDecoder().decode(Args.self, from: args)
-            return eventLoopGroup.next().makeFutureWithTask { () ->  Any in
+            return eventLoopGroup.next().makeFutureWithTask {
               return try config.Basic.Definition.BasicObject.floatArg((source, (args.float, ()), context, info))
             }
           }
@@ -218,12 +218,12 @@ func buildSchema(config: RuntimeSpec) throws -> GraphQLSchema {
               type: GraphQLBoolean
             ),
           ],
-          resolve: { source, args, context, eventLoopGroup, info throws in
+          resolve: { source, args, context, eventLoopGroup, info in
             struct Args: Decodable {
               var boolean: Bool?
             }
             let args: Args = try GraphQL.MapDecoder().decode(Args.self, from: args)
-            return eventLoopGroup.next().makeFutureWithTask { () ->  Any in
+            return eventLoopGroup.next().makeFutureWithTask {
               return try config.Basic.Definition.BasicObject.booleanArg((source, (args.boolean, ()), context, info))
             }
           }
@@ -239,12 +239,12 @@ func buildSchema(config: RuntimeSpec) throws -> GraphQLSchema {
               type: GraphQLTypeReference("BasicInput")
             ),
           ],
-          resolve: { source, args, context, eventLoopGroup, info throws in
+          resolve: { source, args, context, eventLoopGroup, info in
             struct Args: Decodable {
-                var basicInput: SourceSpec.BasicInput?
+              var basicInput: BasicInput?
             }
             let args: Args = try GraphQL.MapDecoder().decode(Args.self, from: args)
-            return eventLoopGroup.next().makeFutureWithTask { () ->  Any in
+            return eventLoopGroup.next().makeFutureWithTask {
               return try config.Basic.Definition.BasicObject.basicInputArg((source, (args.basicInput, ()), context, info))
             }
           }
@@ -257,12 +257,12 @@ func buildSchema(config: RuntimeSpec) throws -> GraphQLSchema {
               defaultValue: ["basicScalar": "123", "boolean": true, "float": 1, "id": "default", "int": 1, "string": "default"]
             ),
           ],
-          resolve: { source, args, context, eventLoopGroup, info throws in
+          resolve: { source, args, context, eventLoopGroup, info in
             struct Args: Decodable {
-                var basicInput: SourceSpec.BasicInput?
+              var basicInput: BasicInput?
             }
             let args: Args = try GraphQL.MapDecoder().decode(Args.self, from: args)
-            return eventLoopGroup.next().makeFutureWithTask { () ->  Any in
+            return eventLoopGroup.next().makeFutureWithTask {
               return try config.Basic.Definition.BasicObject.basicInputArgWithDefault((source, (args.basicInput, ()), context, info))
             }
           }
@@ -279,12 +279,12 @@ func buildSchema(config: RuntimeSpec) throws -> GraphQLSchema {
               type: GraphQLNonNull(GraphQLID)
             ),
           ],
-          resolve: { source, args, context, eventLoopGroup, info throws in
+          resolve: { source, args, context, eventLoopGroup, info in
             struct Args: Decodable {
               var idNonNull: Any
             }
             let args: Args = try GraphQL.MapDecoder().decode(Args.self, from: args)
-            return eventLoopGroup.next().makeFutureWithTask { () ->  Any in
+            return eventLoopGroup.next().makeFutureWithTask {
               return try config.Basic.Extension.BasicObject.extendedFieldWithArg((source, (args.idNonNull, ()), context, info))
             }
           }
@@ -313,12 +313,12 @@ func buildSchema(config: RuntimeSpec) throws -> GraphQLSchema {
               type: GraphQLNonNull(GraphQLID)
             ),
           ],
-          resolve: { source, args, context, eventLoopGroup, info throws in
+          resolve: { source, args, context, eventLoopGroup, info in
             struct Args: Decodable {
               var idNonNull: Any
             }
             let args: Args = try GraphQL.MapDecoder().decode(Args.self, from: args)
-            return eventLoopGroup.next().makeFutureWithTask { () ->  Any in
+            return eventLoopGroup.next().makeFutureWithTask {
               return try config.Basic.Extension.BasicInterface.extendedFieldWithArg((source, (args.idNonNull, ()), context, info))
             }
           }
@@ -352,12 +352,12 @@ func buildSchema(config: RuntimeSpec) throws -> GraphQLSchema {
               type: GraphQLNonNull(GraphQLID)
             ),
           ],
-          resolve: { source, args, context, eventLoopGroup, info throws in
+          resolve: { source, args, context, eventLoopGroup, info in
             struct Args: Decodable {
               var idNonNull: Any
             }
             let args: Args = try GraphQL.MapDecoder().decode(Args.self, from: args)
-            return eventLoopGroup.next().makeFutureWithTask { () ->  Any in
+            return eventLoopGroup.next().makeFutureWithTask {
               return try config.Basic.Extension.BasicInterfaceImpl.extendedFieldWithArg((source, (args.idNonNull, ()), context, info))
             }
           }
@@ -490,28 +490,6 @@ func buildSchema(config: RuntimeSpec) throws -> GraphQLSchema {
         )
       ]
     )
-       var echo = GraphQL.GraphQLField(
-        type: GraphQLNonNull(GraphQLString),
-        args: [
-          "message": GraphQL.GraphQLArgument(
-            type: GraphQLNonNull(GraphQLString)
-          ),
-        ],
-        resolve: { source, args, context, eventLoopGroup, info in
-//            return eventLoopGroup.next().makeFutureWithTask {
-//                return ""
-//            }
-//            return ""
-          struct Args: Decodable {
-            var message: String
-          }
-          let args: Args = try GraphQL.MapDecoder().decode(Args.self, from: args)
-          return eventLoopGroup.next().makeFutureWithTask {
-              let result: Any? = 3
-              return result
-          }
-        }
-      )
     lazy var GrandParentDefinition = try! GraphQL.GraphQLInterfaceType(
       name: "GrandParent",
       fields: [
@@ -522,12 +500,12 @@ func buildSchema(config: RuntimeSpec) throws -> GraphQLSchema {
               type: GraphQLNonNull(GraphQLString)
             ),
           ],
-          resolve: { source, args, context, eventLoopGroup, info throws in
+          resolve: { source, args, context, eventLoopGroup, info in
             struct Args: Decodable {
               var message: String
             }
             let args: Args = try GraphQL.MapDecoder().decode(Args.self, from: args)
-            return eventLoopGroup.next().makeFutureWithTask { () ->  Any in
+            return eventLoopGroup.next().makeFutureWithTask {
               return try config.Resolve.Schema.GrandParent.echo((source, (args.message, ()), context, info))
             }
           }
@@ -539,7 +517,7 @@ func buildSchema(config: RuntimeSpec) throws -> GraphQLSchema {
               type: GraphQLNonNull(GraphQLString)
             ),
           ],
-          resolve: { source, args, context, eventLoopGroup, info throws in
+          resolve: { source, args, context, eventLoopGroup, info in
             struct Args: Decodable {
               var message: String
             }
@@ -564,12 +542,12 @@ func buildSchema(config: RuntimeSpec) throws -> GraphQLSchema {
               type: GraphQLNonNull(GraphQLString)
             ),
           ],
-          resolve: { source, args, context, eventLoopGroup, info throws in
+          resolve: { source, args, context, eventLoopGroup, info in
             struct Args: Decodable {
               var message: String
             }
             let args: Args = try GraphQL.MapDecoder().decode(Args.self, from: args)
-            return eventLoopGroup.next().makeFutureWithTask { () ->  Any in
+            return eventLoopGroup.next().makeFutureWithTask {
               return try config.Resolve.Schema.Parent.echo((source, (args.message, ()), context, info))
             }
           }
@@ -581,12 +559,12 @@ func buildSchema(config: RuntimeSpec) throws -> GraphQLSchema {
               type: GraphQLNonNull(GraphQLString)
             ),
           ],
-          resolve: { source, args, context, eventLoopGroup, info throws in
+          resolve: { source, args, context, eventLoopGroup, info in
             struct Args: Decodable {
               var message: String
             }
             let args: Args = try GraphQL.MapDecoder().decode(Args.self, from: args)
-            return eventLoopGroup.next().makeFutureWithTask { () ->  Any in
+            return eventLoopGroup.next().makeFutureWithTask {
               return try config.Resolve.Schema.Parent.echoSync((source, (args.message, ()), context, info))
             }
           }
@@ -603,12 +581,12 @@ func buildSchema(config: RuntimeSpec) throws -> GraphQLSchema {
               type: GraphQLNonNull(GraphQLString)
             ),
           ],
-          resolve: { source, args, context, eventLoopGroup, info throws in
+          resolve: { source, args, context, eventLoopGroup, info in
             struct Args: Decodable {
               var message: String
             }
             let args: Args = try GraphQL.MapDecoder().decode(Args.self, from: args)
-            return eventLoopGroup.next().makeFutureWithTask { () ->  Any in
+            return eventLoopGroup.next().makeFutureWithTask {
               return try config.Resolve.Schema.Child.echo((source, (args.message, ()), context, info))
             }
           }
@@ -620,144 +598,144 @@ func buildSchema(config: RuntimeSpec) throws -> GraphQLSchema {
               type: GraphQLNonNull(GraphQLString)
             ),
           ],
-          resolve: { source, args, context, eventLoopGroup, info throws in
+          resolve: { source, args, context, eventLoopGroup, info in
             struct Args: Decodable {
               var message: String
             }
             let args: Args = try GraphQL.MapDecoder().decode(Args.self, from: args)
-            return eventLoopGroup.next().makeFutureWithTask { () ->  Any in
+            return eventLoopGroup.next().makeFutureWithTask {
               return try config.Resolve.Schema.Child.echoSync((source, (args.message, ()), context, info))
             }
           }
         ),
         "basicInterface": GraphQL.GraphQLField(
           type: GraphQLTypeReference("BasicInterface"),
-          resolve: { source, args, context, eventLoopGroup, info throws in
+          resolve: { source, args, context, eventLoopGroup, info in
             struct Args: Decodable {
             }
             let args: Args = try GraphQL.MapDecoder().decode(Args.self, from: args)
-            return eventLoopGroup.next().makeFutureWithTask { () ->  Any in
+            return eventLoopGroup.next().makeFutureWithTask {
               return try config.Resolve.Schema.Child.basicInterface((source, (()), context, info))
             }
           }
         ),
         "basicInterfaceList": GraphQL.GraphQLField(
           type: GraphQLList(GraphQLTypeReference("BasicInterface")),
-          resolve: { source, args, context, eventLoopGroup, info throws in
+          resolve: { source, args, context, eventLoopGroup, info in
             struct Args: Decodable {
             }
             let args: Args = try GraphQL.MapDecoder().decode(Args.self, from: args)
-            return eventLoopGroup.next().makeFutureWithTask { () ->  Any in
+            return eventLoopGroup.next().makeFutureWithTask {
               return try config.Resolve.Schema.Child.basicInterfaceList((source, (()), context, info))
             }
           }
         ),
         "basicInterfaceNonNullList": GraphQL.GraphQLField(
           type: GraphQLNonNull(GraphQLList(GraphQLTypeReference("BasicInterface"))),
-          resolve: { source, args, context, eventLoopGroup, info throws in
+          resolve: { source, args, context, eventLoopGroup, info in
             struct Args: Decodable {
             }
             let args: Args = try GraphQL.MapDecoder().decode(Args.self, from: args)
-            return eventLoopGroup.next().makeFutureWithTask { () ->  Any in
+            return eventLoopGroup.next().makeFutureWithTask {
               return try config.Resolve.Schema.Child.basicInterfaceNonNullList((source, (()), context, info))
             }
           }
         ),
         "basicInterfaceNonNullListNonNullElement": GraphQL.GraphQLField(
           type: GraphQLNonNull(GraphQLList(GraphQLNonNull(GraphQLTypeReference("BasicInterface")))),
-          resolve: { source, args, context, eventLoopGroup, info throws in
+          resolve: { source, args, context, eventLoopGroup, info in
             struct Args: Decodable {
             }
             let args: Args = try GraphQL.MapDecoder().decode(Args.self, from: args)
-            return eventLoopGroup.next().makeFutureWithTask { () ->  Any in
+            return eventLoopGroup.next().makeFutureWithTask {
               return try config.Resolve.Schema.Child.basicInterfaceNonNullListNonNullElement((source, (()), context, info))
             }
           }
         ),
         "basicUnion": GraphQL.GraphQLField(
           type: GraphQLTypeReference("BasicUnion"),
-          resolve: { source, args, context, eventLoopGroup, info throws in
+          resolve: { source, args, context, eventLoopGroup, info in
             struct Args: Decodable {
             }
             let args: Args = try GraphQL.MapDecoder().decode(Args.self, from: args)
-            return eventLoopGroup.next().makeFutureWithTask { () ->  Any in
+            return eventLoopGroup.next().makeFutureWithTask {
               return try config.Resolve.Schema.Child.basicUnion((source, (()), context, info))
             }
           }
         ),
         "basicUnionList": GraphQL.GraphQLField(
           type: GraphQLList(GraphQLTypeReference("BasicUnion")),
-          resolve: { source, args, context, eventLoopGroup, info throws in
+          resolve: { source, args, context, eventLoopGroup, info in
             struct Args: Decodable {
             }
             let args: Args = try GraphQL.MapDecoder().decode(Args.self, from: args)
-            return eventLoopGroup.next().makeFutureWithTask { () ->  Any in
+            return eventLoopGroup.next().makeFutureWithTask {
               return try config.Resolve.Schema.Child.basicUnionList((source, (()), context, info))
             }
           }
         ),
         "basicUnionNonNullList": GraphQL.GraphQLField(
           type: GraphQLNonNull(GraphQLList(GraphQLTypeReference("BasicUnion"))),
-          resolve: { source, args, context, eventLoopGroup, info throws in
+          resolve: { source, args, context, eventLoopGroup, info in
             struct Args: Decodable {
             }
             let args: Args = try GraphQL.MapDecoder().decode(Args.self, from: args)
-            return eventLoopGroup.next().makeFutureWithTask { () ->  Any in
+            return eventLoopGroup.next().makeFutureWithTask {
               return try config.Resolve.Schema.Child.basicUnionNonNullList((source, (()), context, info))
             }
           }
         ),
         "basicUnionNonNullListNonNullElement": GraphQL.GraphQLField(
           type: GraphQLNonNull(GraphQLList(GraphQLNonNull(GraphQLTypeReference("BasicUnion")))),
-          resolve: { source, args, context, eventLoopGroup, info throws in
+          resolve: { source, args, context, eventLoopGroup, info in
             struct Args: Decodable {
             }
             let args: Args = try GraphQL.MapDecoder().decode(Args.self, from: args)
-            return eventLoopGroup.next().makeFutureWithTask { () ->  Any in
+            return eventLoopGroup.next().makeFutureWithTask {
               return try config.Resolve.Schema.Child.basicUnionNonNullListNonNullElement((source, (()), context, info))
             }
           }
         ),
         "basicEnum": GraphQL.GraphQLField(
           type: GraphQLTypeReference("BasicEnum"),
-          resolve: { source, args, context, eventLoopGroup, info throws in
+          resolve: { source, args, context, eventLoopGroup, info in
             struct Args: Decodable {
             }
             let args: Args = try GraphQL.MapDecoder().decode(Args.self, from: args)
-            return eventLoopGroup.next().makeFutureWithTask { () ->  Any in
+            return eventLoopGroup.next().makeFutureWithTask {
               return try config.Resolve.Schema.Child.basicEnum((source, (()), context, info))
             }
           }
         ),
         "basicEnumList": GraphQL.GraphQLField(
           type: GraphQLList(GraphQLTypeReference("BasicEnum")),
-          resolve: { source, args, context, eventLoopGroup, info throws in
+          resolve: { source, args, context, eventLoopGroup, info in
             struct Args: Decodable {
             }
             let args: Args = try GraphQL.MapDecoder().decode(Args.self, from: args)
-            return eventLoopGroup.next().makeFutureWithTask { () ->  Any in
+            return eventLoopGroup.next().makeFutureWithTask {
               return try config.Resolve.Schema.Child.basicEnumList((source, (()), context, info))
             }
           }
         ),
         "basicEnumNonNullList": GraphQL.GraphQLField(
           type: GraphQLNonNull(GraphQLList(GraphQLTypeReference("BasicEnum"))),
-          resolve: { source, args, context, eventLoopGroup, info throws in
+          resolve: { source, args, context, eventLoopGroup, info in
             struct Args: Decodable {
             }
             let args: Args = try GraphQL.MapDecoder().decode(Args.self, from: args)
-            return eventLoopGroup.next().makeFutureWithTask { () ->  Any in
+            return eventLoopGroup.next().makeFutureWithTask {
               return try config.Resolve.Schema.Child.basicEnumNonNullList((source, (()), context, info))
             }
           }
         ),
         "basicEnumNonNullListNonNullElement": GraphQL.GraphQLField(
           type: GraphQLNonNull(GraphQLList(GraphQLNonNull(GraphQLTypeReference("BasicEnum")))),
-          resolve: { source, args, context, eventLoopGroup, info throws in
+          resolve: { source, args, context, eventLoopGroup, info in
             struct Args: Decodable {
             }
             let args: Args = try GraphQL.MapDecoder().decode(Args.self, from: args)
-            return eventLoopGroup.next().makeFutureWithTask { () ->  Any in
+            return eventLoopGroup.next().makeFutureWithTask {
               return try config.Resolve.Schema.Child.basicEnumNonNullListNonNullElement((source, (()), context, info))
             }
           }
@@ -809,12 +787,12 @@ func buildSchema(config: RuntimeSpec) throws -> GraphQLSchema {
               type: GraphQLNonNull(GraphQLString)
             ),
           ],
-          resolve: { source, args, context, eventLoopGroup, info throws in
+          resolve: { source, args, context, eventLoopGroup, info in
             struct Args: Decodable {
               var name: String
             }
             let args: Args = try GraphQL.MapDecoder().decode(Args.self, from: args)
-            return eventLoopGroup.next().makeFutureWithTask { () ->  Any in
+            return eventLoopGroup.next().makeFutureWithTask {
               return try config.Basic.Extension.Query.extendedHello((source, (args.name, ()), context, info))
             }
           }
@@ -835,11 +813,11 @@ func buildSchema(config: RuntimeSpec) throws -> GraphQLSchema {
       fields: [
         "a": GraphQL.GraphQLField(
           type: GraphQLInt,
-          resolve: { source, args, context, eventLoopGroup, info throws in
+          resolve: { source, args, context, eventLoopGroup, info in
             struct Args: Decodable {
             }
             let args: Args = try GraphQL.MapDecoder().decode(Args.self, from: args)
-            return eventLoopGroup.next().makeFutureWithTask { () ->  Any in
+            return eventLoopGroup.next().makeFutureWithTask {
               return try config.source.source.Source.a((source, (()), context, info))
             }
           }

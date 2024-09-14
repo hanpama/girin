@@ -133,9 +133,9 @@ fn render_scalar_spec(src: &mut SourceCode, s: &Project, def: &ScalarDefinition)
     ));
     src.indent();
 
-    src.line("var serialize: (_ value: Any) throws -> GraphQL.Map");
-    src.line("var parseValue: (_ value: GraphQL.Map) throws -> GraphQL.Map");
-    src.line("var parseLiteral: (_ value: GraphQL.Value) throws -> GraphQL.Map");
+    src.line("var serialize: @escaping (_ value: Any) throws -> GraphQL.Map");
+    src.line("var parseValue: @escaping (_ value: GraphQL.Map) throws -> GraphQL.Map");
+    src.line("var parseLiteral: @escaping (_ value: GraphQL.Value) throws -> GraphQL.Map");
 
     src.dedent();
     src.line("}");
@@ -191,7 +191,7 @@ fn render_field_resolver(src: &mut SourceCode, resolve: &Resolve) {
     };
 
     src.line(&format!(
-        "var {name}: (_: (source: {source_type}, {arguments}context: Any, info: GraphQL.GraphQLResolveInfo)) {sig} -> {return_type}",
+        "var {name}: @escaping (_: (source: {source_type}, {arguments}context: Any, info: GraphQL.GraphQLResolveInfo)) {sig} -> {return_type}",
     ));
 }
 
