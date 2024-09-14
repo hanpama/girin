@@ -1,5 +1,5 @@
 extension RuntimeSpec.source {
-  init() {
-    self.source = .init()
-  }
+    init() {
+        self.source = .init()
+    }
 }

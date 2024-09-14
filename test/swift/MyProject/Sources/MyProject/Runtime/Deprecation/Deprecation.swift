@@ -1,5 +1,5 @@
 extension RuntimeSpec.Deprecation {
-  init() {
-    self.Definition = .init()
-  }
+    init() {
+        self.Definition = .init()
+    }
 }

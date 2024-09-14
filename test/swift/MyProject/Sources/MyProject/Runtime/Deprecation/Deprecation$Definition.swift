@@ -1,6 +1,6 @@
 extension RuntimeSpec.Deprecation.Definition {
-  init() {
-    self.DeprecatedFieldObject = .init(
-    )
-  }
+    init() {
+        self.DeprecatedFieldObject = .init(
+        )
+    }
 }
