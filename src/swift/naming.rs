@@ -15,9 +15,6 @@ pub fn field_name<S: Into<String>>(field_name: S) -> String {
 pub fn type_instance(def_name: &str) -> String {
     format!("{}Definition", def_name)
 }
-pub fn type_defining_function(def_name: &str) -> String {
-    format!("define{}", def_name)
-}
 
 pub fn source(def_name: &str) -> String {
     format!("{}", escape(def_name))

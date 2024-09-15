@@ -1,19 +1,17 @@
 use crate::schema::Project;
 use std::{error::Error, path::PathBuf};
-mod builder;
 mod error;
 mod naming;
-mod type_expr;
-mod source_spec;
-mod source_code;
 mod runtime;
-mod runtime_spec;
+mod runtime_wiring;
+mod source_code;
+mod source_spec;
+mod type_expr;
 
 pub fn generate_swift_code(outdir: PathBuf, schema: &Project) -> Result<(), SwiftGenerationError> {
     source_spec::render(&outdir, schema).unwrap();
-    builder::render(&outdir, schema).unwrap();
-    runtime_spec::render(&outdir, schema).unwrap();
     runtime::render(&outdir, schema).unwrap();
+    runtime_wiring::render(&outdir, schema).unwrap();
 
     Ok(())
 }

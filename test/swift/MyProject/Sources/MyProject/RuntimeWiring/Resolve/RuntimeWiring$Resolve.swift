@@ -1,4 +1,4 @@
-extension RuntimeSpec.Resolve {
+extension Runtime.Wiring.Resolve {
     init() {
         self.Schema = .init()
     }

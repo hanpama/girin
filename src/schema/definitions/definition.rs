@@ -93,6 +93,20 @@ impl Definition {
         }
     }
 
+    pub fn is_interface(&self) -> bool {
+        match self {
+            Definition::InterfaceDefinition(_) => true,
+            _ => false,
+        }
+    }
+
+    pub fn is_interface_ext(&self) -> bool {
+        match self {
+            Definition::InterfaceExtension(_) => true,
+            _ => false,
+        }
+    }
+
     pub fn as_schema(&self) -> &SchemaDefinition {
         match self {
             Definition::SchemaDefinition(schema) => schema,

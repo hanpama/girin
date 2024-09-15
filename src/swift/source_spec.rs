@@ -113,7 +113,7 @@ fn render_interface_source(src: &mut SourceCode, s: &Project, def: &InterfaceDef
 
 fn render_input_source(src: &mut SourceCode, s: &Project, def: &InputDefinition) {
     let name = naming::source_spec(&def.name);
-    src.line(&format!("struct {name} {{"));
+    src.line(&format!("struct {name}: Decodable {{"));
     src.indent();
     for field in s.collect_input_fields(&def.name) {
         let field_name = &field.name;
@@ -122,6 +122,29 @@ fn render_input_source(src: &mut SourceCode, s: &Project, def: &InputDefinition)
             "let {field_name}: (value: {field_type}, isSet: Bool)"
         ));
     }
+    src.line("init(from decoder: Decoder) throws {");
+    src.indent();
+    src.line("let container = try decoder.container(keyedBy: CodingKeys.self)");
+    for field in s.collect_input_fields(&def.name) {
+        let field_name = &field.name;
+        let field_type = format_type_expression(s, &field.field_type);
+        src.line(&format!(
+            "{field_name} = (value: try container.decode({field_type}.self, forKey: .{field_name}), isSet: container.contains(.{field_name}))"
+        ));
+    }
+    src.dedent();
+    src.line("}");
+
+    src.line("enum CodingKeys: String, CodingKey {");
+    src.indent();
+    for field in s.collect_input_fields(&def.name) {
+        let field_name = &field.name;
+
+        src.line(&format!("case {field_name}", field_name = field_name));
+    }
+    src.dedent();
+    src.line("}");
+
     src.dedent();
     src.line("}");
 }
@@ -149,7 +172,7 @@ fn render_scalar_source(src: &mut SourceCode, s: &Project, def: &ScalarDefinitio
         ));
     } else {
         src.line(&format!(
-            "typealias {name} = Any",
+            "typealias {name} = String",
             name = naming::source_spec(&def.name)
         ));
     }
@@ -192,7 +215,7 @@ fn format_named_type(name: &str) -> String {
         "Int" => return "Int".to_owned(),
         "Float" => return "Float".to_owned(),
         "Boolean" => return "Bool".to_owned(),
-        "ID" => return "Any".to_owned(),
+        "ID" => return "String".to_owned(),
         _ => {}
     }
     naming::source_spec(name)

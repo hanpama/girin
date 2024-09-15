@@ -1,4 +1,4 @@
-extension RuntimeSpec.Module_.module {
+extension Runtime.Wiring.Module_.module {
     init() {
         self.ModuleA = .init(
         )

@@ -1,4 +1,4 @@
-extension RuntimeSpec.graphql {
+extension Runtime.Wiring.graphql {
     init() {
         self.GraphQLObject = .init(
         )

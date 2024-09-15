@@ -12,7 +12,7 @@ impl SourceCode {
     pub fn new() -> SourceCode {
         SourceCode {
             prelude: String::new(),
-            indent_unit: "  ".to_string(),
+            indent_unit: "    ".to_string(),
             indent_level: 0,
             imports: BTreeSet::new(),
             body: String::new(),
@@ -48,6 +48,6 @@ impl SourceCode {
         if self.imports.len() > 0 {
             writeln!(w)?;
         }
-        write!(w, "{}", self.body.trim())
+        write!(w, "{}\n", self.body.trim())
     }
 }

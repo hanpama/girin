@@ -1,5 +1,5 @@
 use std::{
-    collections::{BTreeMap, BTreeSet, HashMap},
+    collections::{BTreeMap, BTreeSet, HashMap, HashSet},
     path::PathBuf,
 };
 
@@ -12,25 +12,26 @@ pub struct Project {
     schema_loc: Option<Loc>,
     def_locs: HashMap<String, Loc>,
     ext_locs: HashMap<String, Vec<Loc>>,
-    obj_unions: HashMap<String, Vec<String>>,
     module_children: HashMap<PathBuf, BTreeSet<PathBuf>>,
     type_field_locs: HashMap<(String, String), Loc>,
+
+    object_unions: HashMap<String, HashSet<String>>,
+    interface_interfaces: HashMap<String, HashSet<String>>,
 }
 
 impl Project {
     pub fn new(root_dir: PathBuf) -> Self {
         Self {
-            // query: None,
-            // mutation: None,
-            // subscription: None,
             root_dir,
             definitions: BTreeMap::new(),
             schema_loc: None,
             def_locs: HashMap::new(),
             ext_locs: HashMap::new(),
-            obj_unions: HashMap::new(),
             module_children: HashMap::new(),
             type_field_locs: HashMap::new(),
+
+            object_unions: HashMap::new(),
+            interface_interfaces: HashMap::new(),
         }
     }
     pub fn get_query(&self) -> Option<&str> {
@@ -72,6 +73,50 @@ impl Project {
                 _ => None,
             })
         })
+    }
+
+    pub fn collect_type_definitions_in_order<'a>(&'a self) -> Vec<&'a Definition> {
+        let mut scalar_types = vec![];
+        let mut enum_types = vec![];
+        let mut input_types = vec![];
+        let mut object_types = vec![];
+        let mut interface_types = vec![];
+        let mut union_types = vec![];
+
+        for def in self.iter_type_definitions() {
+            match def {
+                Definition::ScalarDefinition(_) => scalar_types.push(def),
+                Definition::EnumDefinition(_) => enum_types.push(def),
+                Definition::InputDefinition(_) => input_types.push(def),
+                Definition::ObjectDefinition(_) => object_types.push(def),
+                Definition::InterfaceDefinition(_) => interface_types.push(def),
+                Definition::UnionDefinition(_) => union_types.push(def),
+                _ => {}
+            }
+        }
+
+        interface_types.sort_by(|a, b| {
+            let a_name = a.get_definition_name().unwrap();
+            let b_name = b.get_definition_name().unwrap();
+            let a_interfaces = self.interface_interfaces.get(a_name).unwrap();
+            let b_interfaces = self.interface_interfaces.get(b_name).unwrap();
+            if a_interfaces.contains(b_name) {
+                std::cmp::Ordering::Greater
+            } else if b_interfaces.contains(a_name) {
+                std::cmp::Ordering::Less
+            } else {
+                std::cmp::Ordering::Equal
+            }
+        });
+
+        scalar_types
+            .into_iter()
+            .chain(enum_types)
+            .chain(input_types)
+            .chain(interface_types)
+            .chain(object_types)
+            .chain(union_types)
+            .collect()
     }
 
     pub fn collect_interfaces<'a>(&'a self, name: &'a str) -> Vec<&'a str> {
@@ -133,7 +178,7 @@ impl Project {
     }
 
     pub fn collect_object_unions<'a>(&'a self, name: &'a str) -> Vec<&'a str> {
-        self.obj_unions
+        self.object_unions
             .get(name)
             .into_iter()
             .flat_map(|unions| unions.iter())
@@ -164,7 +209,8 @@ impl Project {
         self.definitions.get(file)
     }
 
-    pub fn resolve_field_resolve<'a>(&'a self, field: &'a Field) -> Option<Resolve<'a>> { // TODO: 필드수준으로 옮길 것
+    pub fn resolve_field_resolve<'a>(&'a self, field: &'a Field) -> Option<Resolve<'a>> {
+        // TODO: 필드수준으로 옮길 것
         if let Some(conf) = &field.resolve {
             return Some(Resolve::new(conf.sync, field));
         }
@@ -183,9 +229,9 @@ impl Project {
             .or_insert_with(Vec::new);
 
         for field in type_.iter_fields() {
-            let name = type_.get_definition_name().unwrap().to_owned();
+            let name = type_.get_definition_name().unwrap();
 
-            let type_field = (name, field.name.clone());
+            let type_field = (name.to_owned(), field.name.clone());
             let loc = Loc(file.clone(), module_types.len());
             self.type_field_locs.insert(type_field, loc);
         }
@@ -193,35 +239,55 @@ impl Project {
             self.schema_loc = Some(Loc(file.clone(), module_types.len()));
         }
         if type_.is_type_definition() {
-            let name = type_.get_definition_name().unwrap().to_owned();
+            let name = type_.get_definition_name().unwrap();
             self.def_locs
-                .insert(name, Loc(file.clone(), module_types.len()));
+                .insert(name.to_owned(), Loc(file.clone(), module_types.len()));
         }
         if type_.is_type_extension() {
-            let name = type_.get_definition_name().unwrap().to_owned();
+            let name = type_.get_definition_name().unwrap();
             self.ext_locs
-                .entry(name)
+                .entry(name.to_owned())
                 .or_insert_with(Vec::new)
                 .push(Loc(file.clone(), module_types.len()));
         }
         if type_.is_union() {
-            let name = type_.get_definition_name().unwrap().to_owned();
+            let name = type_.get_definition_name().unwrap();
             let objs = type_.as_union().iter_types().map(|t| t.to_owned());
             for obj in objs {
-                self.obj_unions
+                self.object_unions
                     .entry(obj)
-                    .or_insert_with(Vec::new)
-                    .push(name.clone());
+                    .or_insert_with(HashSet::new)
+                    .insert(name.to_owned());
             }
         }
         if type_.is_union_ext() {
-            let name = type_.get_definition_name().unwrap().to_owned();
+            let name = type_.get_definition_name().unwrap();
             let objs = type_.as_union_ext().iter_types().map(|t| t.to_owned());
             for obj in objs {
-                self.obj_unions
+                self.object_unions
                     .entry(obj)
-                    .or_insert_with(Vec::new)
-                    .push(name.clone());
+                    .or_insert_with(HashSet::new)
+                    .insert(name.to_owned());
+            }
+        }
+        if type_.is_interface() {
+            let name = type_.get_definition_name().unwrap();
+            let hashset = self
+                .interface_interfaces
+                .entry(name.to_owned())
+                .or_insert_with(HashSet::new);
+            for interface in type_.as_interface().iter_interfaces() {
+                hashset.insert(interface.to_owned());
+            }
+        }
+        if type_.is_interface_ext() {
+            let name = type_.get_definition_name().unwrap();
+            let hashset = self
+                .interface_interfaces
+                .entry(name.to_owned())
+                .or_insert_with(HashSet::new);
+            for interface in type_.as_interface_ext().iter_interfaces() {
+                hashset.insert(interface.to_owned());
             }
         }
 

@@ -25,7 +25,7 @@ pub fn format_named_type(source_ns: Option<&str>, name: &str) -> String {
         "Int" => return "Int".to_owned(),
         "Float" => return "Float".to_owned(),
         "Boolean" => return "Bool".to_owned(),
-        "ID" => return "Any".to_owned(),
+        "ID" => return "String".to_owned(),
         _ => {
             if let Some(ns) = source_ns {
                 format!("{}.{}", ns, naming::source(name))
