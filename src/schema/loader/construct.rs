@@ -255,7 +255,7 @@ pub fn construct_field_definition(
         deprecation_reason,
         args,
         field_type: build_type_expression(&def.field_type),
-        resolve,
+        resolve_config: resolve,
         source_configs,
         type_name: type_name.to_string(),
         position: build_position(file, &def.position),
@@ -356,10 +356,7 @@ fn handle_source(file: &Path, directive: &schema::Directive<String>) -> Result<S
         });
     }
     if type_.is_none() {
-        violations.push(GraphQLValidationViolation::ProvidedRequiredArguments {
-            pos: build_position(file, &directive.position),
-            name: "type".to_string(),
-        });
+        type_ = Some(TypeExpression::NamedType("String".to_string()));
     }
 
     if !violations.is_empty() {

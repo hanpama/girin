@@ -13,7 +13,7 @@ mod union;
 pub use definition::Definition;
 pub use directive::DirectiveDefinition;
 pub use enum_::{EnumDefinition, EnumExtension, EnumValue};
-pub use field::{Field, Resolve, ResolveConfig, SourceConfig};
+pub use field::{Field, ResolveConfig, SourceConfig};
 pub use input::{InputDefinition, InputExtension};
 pub use input_value::InputValue;
 pub use interface::{InterfaceDefinition, InterfaceExtension};

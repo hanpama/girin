@@ -2,7 +2,7 @@ use super::{error::Error, naming, source_code::SourceCode};
 use crate::{
     schema::{
         Definition, EnumDefinition, EnumValue, Field, InputDefinition, InputValue,
-        InterfaceDefinition, InterfaceExtension, ModuleRef, ObjectDefinition, ObjectExtension,
+        InterfaceDefinition, ModuleRef, ObjectDefinition, ObjectExtension,
         Project, Resolve, ScalarDefinition, TypeExpression, UnionDefinition, Value,
     },
     swift::type_expr,
@@ -55,14 +55,8 @@ fn render_directory_spec(src: &mut SourceCode, d: ModuleRef) -> Result<(), Error
                 Definition::ObjectDefinition(inner) => {
                     render_object_spec(src, d.schema, inner);
                 }
-                Definition::InterfaceDefinition(inner) => {
-                    render_interface_spec(src, d.schema, inner);
-                }
                 Definition::ObjectExtension(inner) => {
                     render_object_ext_spec(src, d.schema, inner);
-                }
-                Definition::InterfaceExtension(inner) => {
-                    render_interface_ext_spec(src, d.schema, inner);
                 }
                 _ => { /* noop */ }
             }
@@ -81,15 +75,7 @@ fn render_directory_spec(src: &mut SourceCode, d: ModuleRef) -> Result<(), Error
                     let name = naming::runtime_spec(&inner.name);
                     src.line(format!("var {name}: {name}"));
                 }
-                Definition::InterfaceDefinition(inner) => {
-                    let name = naming::runtime_spec(&inner.name);
-                    src.line(format!("var {name}: {name}"));
-                }
                 Definition::ObjectExtension(inner) => {
-                    let name = naming::runtime_spec(&inner.name);
-                    src.line(format!("var {name}: {name}"));
-                }
-                Definition::InterfaceExtension(inner) => {
                     let name = naming::runtime_spec(&inner.name);
                     src.line(format!("var {name}: {name}"));
                 }
@@ -117,23 +103,6 @@ fn render_object_spec(src: &mut SourceCode, s: &Project, def: &ObjectDefinition)
     src.line("}");
 }
 
-fn render_interface_spec(src: &mut SourceCode, s: &Project, def: &InterfaceDefinition) {
-    src.line(&format!(
-        "struct {name} {{",
-        name = naming::runtime_spec(&def.name)
-    ));
-    src.indent();
-
-    for field in def.iter_fields() {
-        if let Some(resolve) = s.resolve_field_resolve(field) {
-            render_field_resolver_spec(src, &resolve);
-        }
-    }
-
-    src.dedent();
-    src.line("}");
-}
-
 fn render_object_ext_spec(src: &mut SourceCode, s: &Project, def: &ObjectExtension) {
     let name = naming::runtime_spec(&def.name);
     src.line(&format!("struct {name} {{"));
@@ -145,22 +114,6 @@ fn render_object_ext_spec(src: &mut SourceCode, s: &Project, def: &ObjectExtensi
         }
     }
 
-    src.dedent();
-    src.line("}");
-}
-
-fn render_interface_ext_spec(src: &mut SourceCode, s: &Project, def: &InterfaceExtension) {
-    src.line(&format!(
-        "struct {name} {{",
-        name = naming::runtime_spec(&def.name)
-    ));
-    src.indent();
-
-    for field in def.iter_fields() {
-        if let Some(resolve) = s.resolve_field_resolve(field) {
-            render_field_resolver_spec(src, &resolve);
-        }
-    }
     src.dedent();
     src.line("}");
 }
@@ -301,7 +254,7 @@ fn render_interface_type(src: &mut SourceCode, s: &Project, def: &InterfaceDefin
 
     if let Some(description) = &def.description {
         src.append(",");
-        src.line(format!("description: {:?},", description));
+        src.line(format!("description: {:?}", description));
     }
 
     if def.interfaces.len() > 0 {
@@ -316,7 +269,6 @@ fn render_interface_type(src: &mut SourceCode, s: &Project, def: &InterfaceDefin
     }
 
     src.append(",");
-
     src.line("fields: [");
     src.indent();
     for (i, field) in s.collect_fields(&def.name).iter().enumerate() {
@@ -522,7 +474,9 @@ fn render_field_resolver(src: &mut SourceCode, s: &Project, def: &Field, opt: &R
     for arg in &def.args {
         args.push(format!("args.{}", &arg.name));
     }
-    args.push("()".to_owned());
+    if args.len() == 1 {
+        args.push("()".to_owned());
+    }
     let args = args.join(", ");
 
     if opt.sync {

@@ -18,7 +18,7 @@ fn main() {
     //     .subcommand_required(true)
     //     .subcommand(Command::new("python").about("Generate Python code"));
 
-    let schema_dir = PathBuf::from("test/GraphQL");
+    let schema_dir = PathBuf::from("test/schema");
     // let out_dir = PathBuf::from("test/SchemaGeneration/Sources/SchemaGeneration");
 
     let prj = schema::load(&schema_dir).unwrap();

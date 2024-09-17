@@ -1,0 +1,47 @@
+"""
+An object with an ID
+"""
+interface Node {
+  """
+  The id of the object.
+  """
+  id: ID! @source(name: "id", type: "ID!")
+}
+
+"""
+Information about pagination in a connection.
+"""
+type PageInfo {
+  """
+  When paginating forwards, are there more items?
+  """
+  hasNextPage: Boolean!
+  """
+  When paginating backwards, are there more items?
+  """
+  hasPreviousPage: Boolean!
+  """
+  When paginating backwards, the cursor to continue.
+  """
+  startCursor: Cursor
+  """
+  When paginating forwards, the cursor to continue.
+  """
+  endCursor: Cursor
+}
+
+extend type Query {
+  """
+  Fetches an object given its ID
+  """
+  node(id: ID!): Node
+
+  """
+  Fetches objects given their IDs
+  """
+  nodes(ids: [ID!]!): [Node]!
+}
+
+scalar Cursor
+    @sourceType(alias: "swift:String")
+    @sourceType(alias: "python:str")

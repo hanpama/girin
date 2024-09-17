@@ -1,0 +1,26 @@
+type Query {
+  version: String! @resolve(sync: true)
+}
+
+type Mutation {
+  version: String!
+}
+
+schema {
+  query: Query
+  mutation: Mutation
+}
+
+"""
+An [ISO-8601](https://en.wikipedia.org/wiki/ISO_8601) encoded UTC date string.
+"""
+scalar Timestamp 
+    @sourceType(alias: "swift:Date")
+    @sourceType(alias: "python:datetime.datetime")
+
+"""
+Decimal floating point partially implmenting http://speleotrove.com/decimal/decarith.html
+"""
+scalar Decimal
+    @sourceType(alias: "swift:Decimal")
+    @sourceType(alias: "python:decimal.Decimal")

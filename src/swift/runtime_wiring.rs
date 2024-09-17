@@ -1,8 +1,5 @@
 use super::{error::Result, naming, source_code::SourceCode};
-use crate::schema::{
-    Definition, InterfaceDefinition, InterfaceExtension, ModuleRef, ObjectDefinition,
-    ObjectExtension, Project, Resolve,
-};
+use crate::schema::{Definition, ModuleRef, ObjectDefinition, ObjectExtension, Project, Resolve};
 use std::{fs::File, path::PathBuf};
 
 pub fn render(outdir: &PathBuf, s: &Project) -> Result<()> {
@@ -89,14 +86,8 @@ fn render_config_index<'a>(outdir: &PathBuf, d: &ModuleRef) -> Result<()> {
                 Definition::ObjectDefinition(inner) => {
                     render_object_config(&d, &mut src, d.schema, inner);
                 }
-                Definition::InterfaceDefinition(inner) => {
-                    render_interface_config(&d, &mut src, d.schema, inner);
-                }
                 Definition::ObjectExtension(inner) => {
                     render_object_ext_config(&d, &mut src, d.schema, inner);
-                }
-                Definition::InterfaceExtension(inner) => {
-                    render_interface_ext_config(&d, &mut src, d.schema, inner);
                 }
                 _ => { /* noop */ }
             }
@@ -134,61 +125,11 @@ fn render_object_config(d: &ModuleRef, src: &mut SourceCode, s: &Project, def: &
     src.line(")");
 }
 
-fn render_interface_config(
-    d: &ModuleRef,
-    src: &mut SourceCode,
-    s: &Project,
-    def: &InterfaceDefinition,
-) {
-    let impl_name = naming::runtime_spec(&def.name);
-    src.line(format!("self.{impl_name} = .init("));
-    src.indent();
-
-    let resolves = def
-        .iter_fields()
-        .filter_map(|field| s.resolve_field_resolve(field));
-
-    for (i, resolve) in resolves.enumerate() {
-        if i > 0 {
-            src.append(",");
-        }
-        render_field_resolver(d, src, &resolve);
-    }
-
-    src.dedent();
-    src.line(")");
-}
-
 fn render_object_ext_config(
     d: &ModuleRef,
     src: &mut SourceCode,
     s: &Project,
     def: &ObjectExtension,
-) {
-    let impl_name = naming::runtime_spec(&def.name);
-    src.line(format!("self.{impl_name} = .init("));
-    src.indent();
-
-    let resolves = def
-        .iter_fields()
-        .filter_map(|field| s.resolve_field_resolve(field));
-
-    for (i, resolve) in resolves.enumerate() {
-        if i > 0 {
-            src.append(",");
-        }
-        render_field_resolver(d, src, &resolve);
-    }
-
-    src.dedent();
-    src.line(")");
-}
-
-fn render_interface_ext_config(
-    d: &ModuleRef,
-    src: &mut SourceCode,
-    s: &Project,
-    def: &InterfaceExtension,
 ) {
     let impl_name = naming::runtime_spec(&def.name);
     src.line(format!("self.{impl_name} = .init("));

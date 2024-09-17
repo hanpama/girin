@@ -1,0 +1,39 @@
+type User implements Node {
+  id: ID! @resolve(sync: true)
+}
+
+scalar UserID
+    @sourceType(alias: "swift:UUID")
+    @sourceType(alias: "python:uuid.UUID")
+
+input UserFilter {
+  id: UserIDFilter
+  q: String
+}
+
+input UserIDFilter {
+  eq: UserID
+  in: [UserID!]
+}
+
+type UserConnection {
+  edges: [UserEdge!]!
+  pageInfo: PageInfo!
+}
+
+type UserEdge {
+  node: User @resolve
+  cursor: Cursor!
+}
+
+extend type Query {
+  user(id: UserID!): User!
+  userConnection(
+    first: Int
+    after: Cursor
+    last: Int
+    before: Cursor
+    offset: Int
+    filter: UserFilter
+  ): UserConnection!
+}

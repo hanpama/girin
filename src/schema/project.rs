@@ -209,16 +209,16 @@ impl Project {
         self.definitions.get(file)
     }
 
-    pub fn resolve_field_resolve<'a>(&'a self, field: &'a Field) -> Option<Resolve<'a>> {
-        // TODO: 필드수준으로 옮길 것
-        if let Some(conf) = &field.resolve {
-            return Some(Resolve::new(conf.sync, field));
-        }
-        if field.args.len() > 0 {
-            return Some(Resolve::new(false, field));
-        }
-        None
-    }
+    // pub fn resolve_field_resolve<'a>(&'a self, field: &'a Field) -> Option<Resolve<'a>> {
+    //     // TODO: 필드수준으로 옮길 것
+    //     if let Some(conf) = &field.resolve {
+    //         return Some(Resolve::new(conf.sync, field));
+    //     }
+    //     if field.args.len() > 0 {
+    //         return Some(Resolve::new(false, field));
+    //     }
+    //     None
+    // }
 
     pub fn add_definition(&mut self, type_: Definition) {
         let file = type_.get_position().file.clone();

@@ -1,0 +1,110 @@
+type Order implements Node {
+  id: ID! @resolve(sync: true)
+
+  createdAt: Timestamp!
+  updatedAt: Timestamp!
+
+  orderer: User! @resolve @source(name: "ordererId", type: "UserID!")
+  status: OrderStatus!
+  destination: String!
+
+  products: [OrderProduct!]!
+
+  currency: Currency!
+  taxRate: Decimal!
+  productsSubtotalAmount: Decimal!
+  shippingAmount: Decimal!
+  taxAmount: Decimal!
+  totalAmount: Decimal!
+}
+
+enum OrderStatus {
+  DRAFT
+  PENDING
+  CONFIRMED
+  CANCELLED
+  SHIPPED
+  DELIVERED
+}
+
+type OrderProduct {
+  description: String!
+  quantity: Int!
+  unitPrice: Decimal!
+  amount: Decimal!
+}
+
+input OrderProductInput {
+  description: String
+  quantity: Int = 1
+  unitPrice: Decimal
+  amount: Decimal
+}
+
+scalar OrderID
+    @sourceType(alias: "swift:UUID")
+    @sourceType(alias: "python:uuid.UUID")
+
+input OrderFilter {
+  id: OrderIDFilter
+  q: String
+}
+
+input OrderIDFilter {
+  eq: OrderID
+  in: [OrderID!]
+}
+
+type OrderConnection {
+  edges: [OrderEdge!]!
+  pageInfo: PageInfo!
+}
+
+type OrderEdge {
+  node: Order @resolve
+  cursor: Cursor!
+}
+
+extend type Query {
+  order(id: OrderID!): Order!
+  orderConnection(
+    first: Int
+    after: Cursor
+    last: Int
+    before: Cursor
+    offset: Int
+    filter: OrderFilter
+  ): OrderConnection!
+}
+
+extend type User {
+  orders(
+    first: Int
+    after: Cursor
+    last: Int
+    before: Cursor
+    offset: Int
+    filter: OrderFilter
+  ): OrderConnection! @resolve
+}
+
+input OrderCreateInDraftInput {
+  products: [OrderProductInput!]! = [
+    {
+      description: "Example Product",
+      unitPrice: 199.0
+    }
+  ]
+  currency: Currency! = USD
+  taxRate: Decimal! = 0.1
+  shippingAmount: Decimal! = 0.0
+  destination: String! = "PUKRKJE"
+}
+
+type OrderCreateInDraftPayload {
+  orderCreatedInDraft: Order!
+}
+
+extend type Mutation {
+  orderCreateInDraft(input: OrderCreateInDraftInput!): OrderCreateInDraftPayload!
+}

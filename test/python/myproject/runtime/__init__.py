@@ -1,22 +1,16 @@
 # GENERATED. DO NOT EDIT.
 # fmt: off
-from . import Basic
-from . import Deprecation
-from . import Module
-from . import Nested1
-from . import Resolve
-from . import graphql_
-from . import root
-from . import source
+from . import Currency
+from . import IAM
+from . import Orders
+from . import Relay
+from . import Root
 
 
 __all__ = [
-    "Basic",
-    "Deprecation",
-    "Module",
-    "Nested1",
-    "Resolve",
-    "graphql_",
-    "root",
-    "source",
+    "Currency",
+    "IAM",
+    "Orders",
+    "Relay",
+    "Root",
 ]

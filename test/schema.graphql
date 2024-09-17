@@ -1,190 +1,711 @@
 """
-  BasicObject description
+  Currency (ISO 4217)
 """
-type BasicObject {
-  idNonNull: ID!
-  stringNonNull: String!
-  intNonNull: Int!
-  floatNonNull: Float!
-  booleanNonNull: Boolean!
+enum Currency {
   """
-    id description
+    United Arab Emirates dirham
+  """ AED
   """
-  id: ID
+    Afghan afghani
+  """ AFN
   """
-    string description
+    Albanian lek
+  """ ALL
   """
-  string: String
+    Armenian dram
+  """ AMD
   """
-    int description
+    Netherlands Antillean guilder
+  """ ANG
   """
-  int: Int
+    Angolan kwanza
+  """ AOA
   """
-    float description
+    Argentine peso
+  """ ARS
   """
-  float: Float
+    Australian dollar
+  """ AUD
   """
-    boolean description
+    Aruban florin
+  """ AWG
   """
-  boolean: Boolean
-  idNonNullArg("""
-    idNonNull description
-  """ idNonNull: ID! = "default"): ID!
-  stringNonNullArg(stringNonNull: String! = "default"): String!
-  intNonNullArg(intNonNull: Int! = 1): Int!
-  floatNonNullArg(floatNonNull: Float! = 1): Float!
-  booleanNonNullArg(booleanNonNull: Boolean! = true): Boolean!
-  idArg(id: ID): ID
-  stringArg(string: String): String
-  intArg(int: Int): Int
-  floatArg(float: Float): Float
-  booleanArg(boolean: Boolean): Boolean
-  basicScalar: BasicScalar
-  basicInputArg(basicInput: BasicInput): String
-  basicInputArgWithDefault(basicInput: BasicInput = {basicScalar: "123", boolean: true, float: 1, id: "default", int: 1, string: "default"}): String
+    Azerbaijani manat
+  """ AZN
   """
-    extendedField description
+    Bosnia and Herzegovina convertible mark
+  """ BAM
   """
-  extendedField: ID!
-  extendedFieldWithArg(idNonNull: ID!): ID!
+    Barbados dollar
+  """ BBD
+  """
+    Bangladeshi taka
+  """ BDT
+  """
+    Bulgarian lev
+  """ BGN
+  """
+    Bahraini dinar
+  """ BHD
+  """
+    Burundian franc
+  """ BIF
+  """
+    Bermudian dollar
+  """ BMD
+  """
+    Brunei dollar
+  """ BND
+  """
+    Boliviano
+  """ BOB
+  """
+    Bolivian Mvdol (funds code)
+  """ BOV
+  """
+    Brazilian real
+  """ BRL
+  """
+    Bahamian dollar
+  """ BSD
+  """
+    Bhutanese ngultrum
+  """ BTN
+  """
+    Botswana pula
+  """ BWP
+  """
+    Belarusian ruble
+  """ BYN
+  """
+    Belize dollar
+  """ BZD
+  """
+    Canadian dollar
+  """ CAD
+  """
+    Congolese franc
+  """ CDF
+  """
+    WIR euro (complementary currency)
+  """ CHE
+  """
+    Swiss franc
+  """ CHF
+  """
+    WIR franc (complementary currency)
+  """ CHW
+  """
+    Unidad de Fomento (funds code)
+  """ CLF
+  """
+    Chilean peso
+  """ CLP
+  """
+    Chinese yuan
+  """ CNY
+  """
+    Colombian peso
+  """ COP
+  """
+    Unidad de Valor Real (UVR) (funds code)
+  """ COU
+  """
+    Costa Rican colon
+  """ CRC
+  """
+    Cuban convertible peso
+  """ CUC
+  """
+    Cuban peso
+  """ CUP
+  """
+    Cape Verdean escudo
+  """ CVE
+  """
+    Czech koruna
+  """ CZK
+  """
+    Djiboutian franc
+  """ DJF
+  """
+    Danish krone
+  """ DKK
+  """
+    Dominican peso
+  """ DOP
+  """
+    Algerian dinar
+  """ DZD
+  """
+    Egyptian pound
+  """ EGP
+  """
+    Eritrean nakfa
+  """ ERN
+  """
+    Ethiopian birr
+  """ ETB
+  """
+    Euro
+  """ EUR
+  """
+    Fiji dollar
+  """ FJD
+  """
+    Falkland Islands pound
+  """ FKP
+  """
+    Pound sterling
+  """ GBP
+  """
+    Georgian lari
+  """ GEL
+  """
+    Ghanaian cedi
+  """ GHS
+  """
+    Gibraltar pound
+  """ GIP
+  """
+    Gambian dalasi
+  """ GMD
+  """
+    Guinean franc
+  """ GNF
+  """
+    Guatemalan quetzal
+  """ GTQ
+  """
+    Guyanese dollar
+  """ GYD
+  """
+    Hong Kong dollar
+  """ HKD
+  """
+    Honduran lempira
+  """ HNL
+  """
+    Croatian kuna
+  """ HRK
+  """
+    Haitian gourde
+  """ HTG
+  """
+    Hungarian forint
+  """ HUF
+  """
+    Indonesian rupiah
+  """ IDR
+  """
+    Israeli new shekel
+  """ ILS
+  """
+    Indian rupee
+  """ INR
+  """
+    Iraqi dinar
+  """ IQD
+  """
+    Iranian rial
+  """ IRR
+  """
+    Icelandic króna (plural: krónur)
+  """ ISK
+  """
+    Jamaican dollar
+  """ JMD
+  """
+    Jordanian dinar
+  """ JOD
+  """
+    Japanese yen
+  """ JPY
+  """
+    Kenyan shilling
+  """ KES
+  """
+    Kyrgyzstani som
+  """ KGS
+  """
+    Cambodian riel
+  """ KHR
+  """
+    Comoro franc
+  """ KMF
+  """
+    North Korean won
+  """ KPW
+  """
+    South Korean won
+  """ KRW
+  """
+    Kuwaiti dinar
+  """ KWD
+  """
+    Cayman Islands dollar
+  """ KYD
+  """
+    Kazakhstani tenge
+  """ KZT
+  """
+    Lao kip
+  """ LAK
+  """
+    Lebanese pound
+  """ LBP
+  """
+    Sri Lankan rupee
+  """ LKR
+  """
+    Liberian dollar
+  """ LRD
+  """
+    Lesotho loti
+  """ LSL
+  """
+    Libyan dinar
+  """ LYD
+  """
+    Moroccan dirham
+  """ MAD
+  """
+    Moldovan leu
+  """ MDL
+  """
+    Malagasy ariary
+  """ MGA
+  """
+    Macedonian denar
+  """ MKD
+  """
+    Myanmar kyat
+  """ MMK
+  """
+    Mongolian tögrög
+  """ MNT
+  """
+    Macanese pataca
+  """ MOP
+  """
+    Mauritanian ouguiya
+  """ MRU
+  """
+    Mauritian rupee
+  """ MUR
+  """
+    Maldivian rufiyaa
+  """ MVR
+  """
+    Malawian kwacha
+  """ MWK
+  """
+    Mexican peso
+  """ MXN
+  """
+    Mexican Unidad de Inversion (UDI) (funds code)
+  """ MXV
+  """
+    Malaysian ringgit
+  """ MYR
+  """
+    Mozambican metical
+  """ MZN
+  """
+    Namibian dollar
+  """ NAD
+  """
+    Nigerian naira
+  """ NGN
+  """
+    Nicaraguan córdoba
+  """ NIO
+  """
+    Norwegian krone
+  """ NOK
+  """
+    Nepalese rupee
+  """ NPR
+  """
+    New Zealand dollar
+  """ NZD
+  """
+    Omani rial
+  """ OMR
+  """
+    Panamanian balboa
+  """ PAB
+  """
+    Peruvian sol
+  """ PEN
+  """
+    Papua New Guinean kina
+  """ PGK
+  """
+    Philippine peso
+  """ PHP
+  """
+    Pakistani rupee
+  """ PKR
+  """
+    Polish złoty
+  """ PLN
+  """
+    Paraguayan guaraní
+  """ PYG
+  """
+    Qatari riyal
+  """ QAR
+  """
+    Romanian leu
+  """ RON
+  """
+    Serbian dinar
+  """ RSD
+  """
+    Russian ruble
+  """ RUB
+  """
+    Rwandan franc
+  """ RWF
+  """
+    Saudi riyal
+  """ SAR
+  """
+    Solomon Islands dollar
+  """ SBD
+  """
+    Seychelles rupee
+  """ SCR
+  """
+    Sudanese pound
+  """ SDG
+  """
+    Swedish krona (plural: kronor)
+  """ SEK
+  """
+    Singapore dollar
+  """ SGD
+  """
+    Saint Helena pound
+  """ SHP
+  """
+    Sierra Leonean leone
+  """ SLL
+  """
+    Somali shilling
+  """ SOS
+  """
+    Surinamese dollar
+  """ SRD
+  """
+    South Sudanese pound
+  """ SSP
+  """
+    São Tomé and Príncipe dobra
+  """ STN
+  """
+    Salvadoran colón
+  """ SVC
+  """
+    Syrian pound
+  """ SYP
+  """
+    Swazi lilangeni
+  """ SZL
+  """
+    Thai baht
+  """ THB
+  """
+    Tajikistani somoni
+  """ TJS
+  """
+    Turkmenistan manat
+  """ TMT
+  """
+    Tunisian dinar
+  """ TND
+  """
+    Tongan paʻanga
+  """ TOP
+  """
+    Turkish lira
+  """ TRY
+  """
+    Trinidad and Tobago dollar
+  """ TTD
+  """
+    New Taiwan dollar
+  """ TWD
+  """
+    Tanzanian shilling
+  """ TZS
+  """
+    Ukrainian hryvnia
+  """ UAH
+  """
+    Ugandan shilling
+  """ UGX
+  """
+    United States dollar
+  """ USD
+  """
+    United States dollar (next day) (funds code)
+  """ USN
+  """
+    Uruguay Peso en Unidades Indexadas (URUIURUI) (funds code)
+  """ UYI
+  """
+    Uruguayan peso
+  """ UYU
+  """
+    Unidad previsional
+  """ UYW
+  """
+    Uzbekistan som
+  """ UZS
+  """
+    Venezuelan bolívar digital
+  """ VED
+  """
+    Venezuelan bolívar soberano
+  """ VES
+  """
+    Vietnamese đồng
+  """ VND
+  """
+    Vanuatu vatu
+  """ VUV
+  """
+    Samoan tala
+  """ WST
+  """
+    CFA franc BEAC
+  """ XAF
+  """
+    Silver
+  """ XAG
+  """
+    Gold
+  """ XAU
+  """
+    European Composite Unit
+  """ XBA
+  """
+    European Monetary Unit
+  """ XBB
+  """
+    European Unit of Account 9
+  """ XBC
+  """
+    European Unit of Account 17
+  """ XBD
+  """
+    East Caribbean dollar
+  """ XCD
+  """
+    Special drawing rights
+  """ XDR
+  """
+    CFA franc BCEAO
+  """ XOF
+  """
+    Palladium
+  """ XPD
+  """
+    CFP franc
+  """ XPF
+  """
+    Platinum
+  """ XPT
+  """
+    SUCRE
+  """ XSU
+  """
+    Testing
+  """ XTS
+  """
+    ADB Unit of Account
+  """ XUA
+  """
+    No currency
+  """ XXX
+  """
+    Yemeni rial
+  """ YER
+  """
+    South African rand
+  """ ZAR
+  """
+    Zambian kwacha
+  """ ZMW
+  """
+    Zimbabwean dollar
+  """ ZWL
 }
 
-interface BasicInterface implements AnotherInterface {
-  interfaceField: String
-  basicScalar: BasicScalar
-  extendedField: ID!
-  extendedFieldWithArg(idNonNull: ID!): ID!
-  anotherField: ID!
-}
-
-type BasicInterfaceImpl implements BasicInterface & AnotherInterface {
-  interfaceField: String
-  basicScalar: BasicScalar
-  """
-    extendedField description
-  """
-  extendedField: ID!
-  extendedFieldWithArg(idNonNull: ID!): ID!
-  anotherField: ID!
-}
-
-union BasicUnion = BasicObject | BasicInterfaceImpl | AnotherType
-
-enum BasicEnum {
-  """
-    ENUM_VALUE_1 description
-  """ ENUM_VALUE_1
-  ENUM_VALUE_2
-  """
-    EXTENDED_VALUE description
-  """ EXTENDED_VALUE
-}
-
-input BasicInput {
-  """
-    idNonNull description
-  """ idNonNull: ID! = "default"
-  stringNonNull: String! = "default"
-  intNonNull: Int! = 1
-  floatNonNull: Float! = 1
-  booleanNonNull: Boolean! = true
-  basicScalarNotNull: BasicScalar! = "123"
-  id: ID
-  string: String
-  int: Int
-  float: Float
-  boolean: Boolean
-  basicScalar: BasicScalar
-  """
-    extendedField description
-  """ extendedField: ID!
-}
-
-"""
-  BasicScalar description
-"""
-scalar BasicScalar
-
-interface AnotherInterface {
-  anotherField: ID!
-}
-
-type AnotherType {
-  anotherField: ID!
-}
-
-type DeprecatedFieldObject {
-  deprecatedField: String @deprecated(reason: "No longer supported")
-}
-
-type ModuleB {
+type User implements Node {
   id: ID!
-  name: String!
+  orders(first: Int, after: Cursor, last: Int, before: Cursor, offset: Int, filter: OrderFilter): OrderConnection!
 }
 
-type ModuleA {
+scalar UserID
+
+input UserFilter {
+  id: UserIDFilter
+  q: String
+}
+
+input UserIDFilter {
+  eq: UserID
+  in: [UserID!]
+}
+
+type UserConnection {
+  edges: [UserEdge!]!
+  pageInfo: PageInfo!
+}
+
+type UserEdge {
+  node: User
+  cursor: Cursor!
+}
+
+type Order implements Node {
   id: ID!
-  name: String!
+  createdAt: Timestamp!
+  updatedAt: Timestamp!
+  orderer: User!
+  status: OrderStatus!
+  destination: String!
+  products: [OrderProduct!]!
+  currency: Currency!
+  taxRate: Decimal!
+  productsSubtotalAmount: Decimal!
+  shippingAmount: Decimal!
+  taxAmount: Decimal!
+  totalAmount: Decimal!
 }
 
-type Nested2 {
-  value: String
+enum OrderStatus {
+  DRAFT
+  PENDING
+  CONFIRMED
+  CANCELLED
+  SHIPPED
+  DELIVERED
 }
 
-type Nested1 {
-  nested2: Nested2
+type OrderProduct {
+  description: String!
+  quantity: Int!
+  unitPrice: Decimal!
+  amount: Decimal!
 }
 
-interface GrandParent {
-  echo(message: String!): String!
-  echoSync(message: String!): String!
+input OrderProductInput {
+  description: String
+  quantity: Int = 1
+  unitPrice: Decimal
+  amount: Decimal
 }
 
-interface Parent implements GrandParent {
-  echo(message: String!): String!
-  echoSync(message: String!): String!
+scalar OrderID
+
+input OrderFilter {
+  id: OrderIDFilter
+  q: String
 }
 
-type Child implements GrandParent & Parent {
-  echo(message: String!): String!
-  echoSync(message: String!): String!
-  basicInterface: BasicInterface
-  basicInterfaceList: [BasicInterface]
-  basicInterfaceNonNullList: [BasicInterface]!
-  basicInterfaceNonNullListNonNullElement: [BasicInterface!]!
-  basicUnion: BasicUnion
-  basicUnionList: [BasicUnion]
-  basicUnionNonNullList: [BasicUnion]!
-  basicUnionNonNullListNonNullElement: [BasicUnion!]!
-  basicEnum: BasicEnum
-  basicEnumList: [BasicEnum]
-  basicEnumNonNullList: [BasicEnum]!
-  basicEnumNonNullListNonNullElement: [BasicEnum!]!
+input OrderIDFilter {
+  eq: OrderID
+  in: [OrderID!]
 }
 
-type GraphQLObject {
-  foo: String!
+type OrderConnection {
+  edges: [OrderEdge!]!
+  pageInfo: PageInfo!
 }
 
-type graphql {
-  bar: String!
+type OrderEdge {
+  node: Order
+  cursor: Cursor!
 }
 
-type typing {
-  baz: String!
+input OrderCreateInDraftInput {
+  products: [OrderProductInput!]! = [{description: "Example Product", unitPrice: 199}]
+  currency: Currency! = USD
+  taxRate: Decimal! = 0.1
+  shippingAmount: Decimal! = 0
+  destination: String! = "PUKRKJE"
 }
+
+type OrderCreateInDraftPayload {
+  orderCreatedInDraft: Order!
+}
+
+"""
+  An object with an ID
+"""
+interface Node {
+  """
+    The id of the object.
+  """
+  id: ID!
+}
+
+"""
+  Information about pagination in a connection.
+"""
+type PageInfo {
+  """
+    When paginating forwards, are there more items?
+  """
+  hasNextPage: Boolean!
+  """
+    When paginating backwards, are there more items?
+  """
+  hasPreviousPage: Boolean!
+  """
+    When paginating backwards, the cursor to continue.
+  """
+  startCursor: Cursor
+  """
+    When paginating forwards, the cursor to continue.
+  """
+  endCursor: Cursor
+}
+
+scalar Cursor
 
 type Query {
-  version: String
-  extendedHello(name: String!): String!
+  version: String!
+  """
+    Fetches an object given its ID
+  """
+  node(id: ID!): Node
+  """
+    Fetches objects given their IDs
+  """
+  nodes(ids: [ID!]!): [Node]!
+  user(id: UserID!): User!
+  userConnection(first: Int, after: Cursor, last: Int, before: Cursor, offset: Int, filter: UserFilter): UserConnection!
+  viewer: User
+  order(id: OrderID!): Order!
+  orderConnection(first: Int, after: Cursor, last: Int, before: Cursor, offset: Int, filter: OrderFilter): OrderConnection!
 }
 
 type Mutation {
-  version: String
+  version: String!
+  orderCreateInDraft(input: OrderCreateInDraftInput!): OrderCreateInDraftPayload!
 }
 
-scalar DateTime
+"""
+  An [ISO-8601](https://en.wikipedia.org/wiki/ISO_8601) encoded UTC date string.
+"""
+scalar Timestamp
 
-type Source {
-  a: Int
-}
+"""
+  Decimal floating point partially implmenting http://speleotrove.com/decimal/decarith.html
+"""
+scalar Decimal

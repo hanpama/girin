@@ -1,12 +1,9 @@
 extension Runtime.Wiring {
     init() {
-        self.Basic = .init()
-        self.Deprecation = .init()
-        self.Module_ = .init()
-        self.Nested1 = .init()
-        self.Resolve = .init()
-        self.graphql = .init()
-        self.root = .init()
-        self.source = .init()
+        self.Currency = .init()
+        self.IAM = .init()
+        self.Orders = .init()
+        self.Relay = .init()
+        self.Root = .init()
     }
 }

@@ -116,7 +116,7 @@ fn render_input_source(src: &mut SourceCode, s: &Project, def: &InputDefinition)
     src.line(&format!("struct {name}: Decodable {{"));
     src.indent();
     for field in s.collect_input_fields(&def.name) {
-        let field_name = &field.name;
+        let field_name = naming::field_name(&field.name);
         let field_type = format_type_expression(s, &field.field_type);
         src.line(&format!(
             "let {field_name}: (value: {field_type}, isSet: Bool)"
@@ -126,7 +126,7 @@ fn render_input_source(src: &mut SourceCode, s: &Project, def: &InputDefinition)
     src.indent();
     src.line("let container = try decoder.container(keyedBy: CodingKeys.self)");
     for field in s.collect_input_fields(&def.name) {
-        let field_name = &field.name;
+        let field_name = naming::field_name(&field.name);
         let field_type = format_type_expression(s, &field.field_type);
         src.line(&format!(
             "{field_name} = (value: try container.decode({field_type}.self, forKey: .{field_name}), isSet: container.contains(.{field_name}))"
@@ -138,9 +138,8 @@ fn render_input_source(src: &mut SourceCode, s: &Project, def: &InputDefinition)
     src.line("enum CodingKeys: String, CodingKey {");
     src.indent();
     for field in s.collect_input_fields(&def.name) {
-        let field_name = &field.name;
-
-        src.line(&format!("case {field_name}", field_name = field_name));
+        let field_name = naming::field_name(&field.name);
+        src.line(&format!("case {field_name}"));
     }
     src.dedent();
     src.line("}");
@@ -154,6 +153,7 @@ fn render_enum_source(src: &mut SourceCode, s: &Project, def: &EnumDefinition) {
     src.line(&format!("enum {name} {{"));
     src.indent();
     for value in s.collect_enum_values(&def.name) {
+        naming::enum_value_name(&value.name);
         src.line(&format!("case {}", value.name));
     }
     src.dedent();
@@ -162,19 +162,12 @@ fn render_enum_source(src: &mut SourceCode, s: &Project, def: &EnumDefinition) {
 
 fn render_scalar_source(src: &mut SourceCode, s: &Project, def: &ScalarDefinition) {
     let alias = def.type_aliases.get("swift");
+    let name = naming::source_spec(&def.name);
     if let Some(alias) = alias {
-        // Import
         let alias = format_type_alias(src, alias.clone());
-        src.line(&format!(
-            "{name} = {alias}",
-            name = naming::source_spec(&def.name),
-            alias = alias,
-        ));
+        src.line(&format!("typealias {name} = {alias}"));
     } else {
-        src.line(&format!(
-            "typealias {name} = String",
-            name = naming::source_spec(&def.name)
-        ));
+        src.line(&format!("typealias {name} = String"));
     }
 }
 
