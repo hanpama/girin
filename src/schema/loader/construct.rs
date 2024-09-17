@@ -1,9 +1,10 @@
+use super::type_expr::parse_type_expression;
 use super::{violation::GraphQLValidationViolation, ScalarDefinition};
 use crate::schema::{
     Definition, DirectiveDefinition, EnumDefinition, EnumExtension, EnumValue, Field,
-    InputDefinition, InputExtension, InputValue, InterfaceDefinition, InterfaceExtension,
-    ObjectDefinition, ObjectExtension, Position, ResolveConfig, SchemaDefinition, SourceConfig,
-    TypeExpression, UnionDefinition, UnionExtension, Value,
+    FieldResolveConfig, FieldSourceConfig, InputDefinition, InputExtension, InputValue,
+    InterfaceDefinition, InterfaceExtension, ObjectDefinition, ObjectExtension, Position,
+    SchemaDefinition, TypeExpression, UnionDefinition, UnionExtension, Value,
 };
 use graphql_parser::schema::{self, TypeDefinition, TypeExtension};
 use std::collections::{BTreeMap, HashMap};
@@ -73,7 +74,7 @@ fn construct_type_definition(file: &Path, def: TypeDefinition<String>) -> Result
             Definition::InputDefinition(build_input_type_definition(file, &def)?)
         }
         TypeDefinition::Scalar(def) => {
-            Definition::ScalarDefinition(build_scalar_type_definition(file, &def)?)
+            Definition::ScalarDefinition(build_scalar_source_type_definition(file, &def)?)
         }
     })
 }
@@ -109,7 +110,7 @@ fn construct_object_definition(
     let mut fields = vec![];
 
     for fdef in def.fields.iter() {
-        match construct_field_definition(file, &def.name, &fdef) {
+        match construct_object_field_definition(file, &fdef) {
             Ok(fdef) => fields.push(fdef),
             Err(err) => violations.extend(err.violations),
         }
@@ -136,7 +137,7 @@ fn construct_object_extension(
     let mut fields = vec![];
 
     for fdef in def.fields.iter() {
-        match construct_field_definition(file, &def.name, &fdef) {
+        match construct_object_field_definition(file, &fdef) {
             Ok(fdef) => fields.push(fdef),
             Err(err) => violations.extend(err.violations),
         }
@@ -162,7 +163,7 @@ fn construct_interface_definition(
     let mut fields = vec![];
 
     for fdef in def.fields.iter() {
-        match construct_field_definition(file, &def.name, &fdef) {
+        match construct_interface_field_definition(file, &fdef) {
             Ok(fdef) => fields.push(fdef),
             Err(err) => violations.extend(err.violations),
         }
@@ -189,7 +190,7 @@ fn construct_interface_extension(
     let mut fields = vec![];
 
     for fdef in def.fields.iter() {
-        match construct_field_definition(file, &def.name, &fdef) {
+        match construct_interface_field_definition(file, &fdef) {
             Ok(fdef) => fields.push(fdef),
             Err(err) => violations.extend(err.violations),
         }
@@ -207,14 +208,10 @@ fn construct_interface_extension(
     });
 }
 
-pub fn construct_field_definition(
-    file: &Path,
-    type_name: &str,
-    def: &schema::Field<String>,
-) -> Result<Field> {
+fn construct_object_field_definition(file: &Path, def: &schema::Field<String>) -> Result<Field> {
     let mut deprecation_reason: Option<String> = None;
-    let mut resolve: Option<ResolveConfig> = None;
-    let mut source_configs: Vec<SourceConfig> = Vec::new();
+    let mut resolve: Option<FieldResolveConfig> = None;
+    let mut source_configs: Vec<FieldSourceConfig> = Vec::new();
     let mut violations = vec![];
     let mut args = vec![];
 
@@ -249,6 +246,19 @@ pub fn construct_field_definition(
         return Err(Error { violations });
     }
 
+    if args.is_empty() {
+        if source_configs.is_empty() && resolve.is_none() {
+            source_configs.push(FieldSourceConfig {
+                name: def.name.clone(),
+                type_: build_type_expression(&def.field_type),
+            });
+        }
+    } else {
+        if resolve.is_none() {
+            resolve = Some(FieldResolveConfig { sync: false });
+        }
+    }
+
     return Ok(Field {
         name: def.name.clone(),
         description: def.description.clone(),
@@ -256,8 +266,54 @@ pub fn construct_field_definition(
         args,
         field_type: build_type_expression(&def.field_type),
         resolve_config: resolve,
-        source_configs,
-        type_name: type_name.to_string(),
+        source_configs: source_configs,
+        // type_name: type_name.to_string(),
+        position: build_position(file, &def.position),
+    });
+}
+
+fn construct_interface_field_definition(file: &Path, def: &schema::Field<String>) -> Result<Field> {
+    let mut deprecation_reason: Option<String> = None;
+    let mut violations = vec![];
+    let mut args = vec![];
+
+    for dir in def.directives.iter() {
+        match dir.name.as_str() {
+            "deprecated" => match handle_deprecate(file, &dir) {
+                Ok(reason) => deprecation_reason = Some(reason),
+                Err(err) => violations.extend(err.violations),
+            },
+            "resolve" => {
+                todo!("resolve directive is not allowed on interface fields")
+            }
+            "source" => {
+                todo!("source directive is not allowed on interface fields")
+            }
+            _ => {
+                // TODO: handle other directives
+            }
+        }
+    }
+
+    for arg in def.arguments.iter() {
+        match build_input_field_definition(file, &arg) {
+            Ok(arg) => args.push(arg),
+            Err(err) => violations.extend(err.violations),
+        }
+    }
+
+    if !violations.is_empty() {
+        return Err(Error { violations });
+    }
+
+    return Ok(Field {
+        name: def.name.clone(),
+        description: def.description.clone(),
+        deprecation_reason,
+        args,
+        field_type: build_type_expression(&def.field_type),
+        resolve_config: None,
+        source_configs: Vec::new(),
         position: build_position(file, &def.position),
     });
 }
@@ -275,8 +331,11 @@ fn construct_directive_definition(
     todo!()
 }
 
-fn handle_resolve(file: &Path, directive: &schema::Directive<String>) -> Result<ResolveConfig> {
-    let mut def = ResolveConfig { sync: false };
+fn handle_resolve(
+    file: &Path,
+    directive: &schema::Directive<String>,
+) -> Result<FieldResolveConfig> {
+    let mut def = FieldResolveConfig { sync: false };
     let mut violations = vec![];
 
     for (key, value) in directive.arguments.iter() {
@@ -309,7 +368,7 @@ fn handle_resolve(file: &Path, directive: &schema::Directive<String>) -> Result<
     return Ok(def);
 }
 
-fn handle_source(file: &Path, directive: &schema::Directive<String>) -> Result<SourceConfig> {
+fn handle_source(file: &Path, directive: &schema::Directive<String>) -> Result<FieldSourceConfig> {
     let mut name: Option<String> = None;
     let mut type_: Option<TypeExpression> = None;
     let mut violations = vec![];
@@ -330,7 +389,7 @@ fn handle_source(file: &Path, directive: &schema::Directive<String>) -> Result<S
             },
             "type" => match value {
                 schema::Value::String(value) => {
-                    type_ = Some(TypeExpression::NamedType(value.clone()));
+                    type_ = Some(parse_type_expression(value));
                 }
                 _ => {
                     violations.push(GraphQLValidationViolation::ValuesOfCorrectType {
@@ -363,7 +422,7 @@ fn handle_source(file: &Path, directive: &schema::Directive<String>) -> Result<S
         return Err(Error { violations });
     }
 
-    let def = SourceConfig {
+    let def = FieldSourceConfig {
         name: name.unwrap(),
         type_: type_.unwrap(),
     };
@@ -619,7 +678,7 @@ fn handle_deprecate(file: &Path, directive: &schema::Directive<String>) -> Resul
     return Ok(reason);
 }
 
-pub fn build_scalar_type_definition(
+pub fn build_scalar_source_type_definition(
     file: &Path,
     def: &schema::ScalarType<String>,
 ) -> Result<ScalarDefinition> {
@@ -628,8 +687,8 @@ pub fn build_scalar_type_definition(
 
     for dir in def.directives.iter() {
         match dir.name.as_str() {
-            "type" => match handle_type_alias(file, &dir) {
-                Ok(map) => type_aliases = map,
+            "sourceType" => match handle_type_alias(file, &dir) {
+                Ok(map) => type_aliases.extend(map),
                 Err(err) => violations.extend(err.violations),
             },
             _ => {

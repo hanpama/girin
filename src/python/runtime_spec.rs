@@ -1,7 +1,7 @@
 use super::{error::Result, format_type_expression, naming, source_code::SourceCode};
 use crate::schema::{
-    Definition, InputValue, InterfaceDefinition, InterfaceExtension, ModuleRef, ObjectDefinition,
-    ObjectExtension, Project, Resolve, ScalarDefinition,
+    Definition, Field, InputValue, ModuleRef, ObjectDefinition, ObjectExtension, Project,
+    ScalarDefinition,
 };
 use std::{fs::File, path::PathBuf};
 
@@ -41,20 +41,12 @@ fn render_directory(src: &mut SourceCode, d: ModuleRef) -> Result<()> {
                     render_object_spec(src, d.schema, inner);
                     src.newline();
                 }
-                Definition::InterfaceDefinition(inner) => {
-                    render_interface_spec(src, d.schema, inner);
-                    src.newline();
-                }
                 Definition::ScalarDefinition(inner) => {
                     render_scalar_spec(src, d.schema, inner);
                     src.newline();
                 }
                 Definition::ObjectExtension(inner) => {
                     render_object_ext_spec(src, d.schema, inner);
-                    src.newline();
-                }
-                Definition::InterfaceExtension(inner) => {
-                    render_interface_ext_spec(src, d.schema, inner);
                     src.newline();
                 }
                 _ => { /* noop */ }
@@ -74,33 +66,9 @@ fn render_object_spec(src: &mut SourceCode, s: &Project, def: &ObjectDefinition)
 
     let mut pass = true;
 
-    for field in def.iter_fields() {
-        if let Some(resolve) = s.resolve_field_resolve(field) {
-            pass = false;
-            render_field_resolver(src, &resolve);
-        }
-    }
-
-    if pass {
-        src.line("pass");
-    }
-    src.dedent();
-}
-
-fn render_interface_spec(src: &mut SourceCode, s: &Project, def: &InterfaceDefinition) {
-    src.line(&format!(
-        "class {name}(typing.Protocol):",
-        name = naming::runtime_spec_type(&def.name)
-    ));
-    src.indent();
-
-    let mut pass = true;
-
-    for field in def.iter_fields() {
-        if let Some(resolve) = s.resolve_field_resolve(field) {
-            pass = false;
-            render_field_resolver(src, &resolve);
-        }
+    for field in def.iter_fields().filter(|f| f.has_resolve_config()) {
+        pass = false;
+        render_field_resolver(src, &def.name, &field);
     }
 
     if pass {
@@ -134,11 +102,9 @@ fn render_object_ext_spec(src: &mut SourceCode, s: &Project, def: &ObjectExtensi
 
     let mut pass = true;
 
-    for field in def.iter_fields() {
-        if let Some(resolve) = s.resolve_field_resolve(field) {
-            pass = false;
-            render_field_resolver(src, &resolve);
-        }
+    for field in def.iter_fields().filter(|f| f.has_resolve_config()) {
+        pass = false;
+        render_field_resolver(src, &def.name, &field);
     }
 
     if pass {
@@ -147,33 +113,14 @@ fn render_object_ext_spec(src: &mut SourceCode, s: &Project, def: &ObjectExtensi
     src.dedent();
 }
 
-fn render_interface_ext_spec(src: &mut SourceCode, s: &Project, def: &InterfaceExtension) {
-    src.line(&format!(
-        "class {name}(typing.Protocol):",
-        name = naming::runtime_spec_type(&def.name)
-    ));
-    src.indent();
-    let mut pass = true;
+fn render_field_resolver(src: &mut SourceCode, def_name: &str, field: &Field) {
+    let resolve = field.get_resolve_config().unwrap();
 
-    for field in def.iter_fields() {
-        if let Some(resolve) = s.resolve_field_resolve(field) {
-            pass = false;
-            render_field_resolver(src, &resolve);
-        }
-    }
-
-    if pass {
-        src.line("pass");
-    }
-    src.dedent();
-}
-
-fn render_field_resolver(src: &mut SourceCode, resolve: &Resolve) {
     let sig = if resolve.sync { "def" } else { "async def" };
-    let name = naming::field_name(&resolve.field.name);
-    let source_type = naming::source_reference(&resolve.field.type_name);
-    let return_type = format_type_expression(Some("source_spec"), &resolve.field.field_type);
-    let arguments = format_argument_list(&resolve.field.args);
+    let name = naming::field_name(&field.name);
+    let source_type = format!("source_spec.{}", naming::source(def_name));
+    let return_type = format_type_expression(Some("source_spec"), &field.field_type);
+    let arguments = format_argument_list(&field.args);
 
     src.line(&format!(
         "{sig} {name}(self, obj: {source_type}, info: graphql.GraphQLResolveInfo, {arguments}) -> {return_type}: ...",

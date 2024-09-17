@@ -6,10 +6,13 @@ import typing
 
 @typing.final
 class Order(runtime_spec.Orders.Order.Order):
-    def id(self, obj: source_spec.Order, info: graphql.GraphQLResolveInfo, ) -> object:
+    def id(self, obj: OrderSource, info: graphql.GraphQLResolveInfo, ) -> object:
         raise NotImplementedError()
 
-    async def orderer(self, obj: source_spec.Order, info: graphql.GraphQLResolveInfo, ) -> source_spec.User:
+    async def orderer(self, obj: OrderSource, info: graphql.GraphQLResolveInfo, ) -> source_spec.UserSource:
+        raise NotImplementedError()
+
+    async def viewer_has_bookmarked(self, obj: OrderSource, info: graphql.GraphQLResolveInfo, ) -> bool:
         raise NotImplementedError()
 
 
@@ -38,24 +41,24 @@ class OrderConnection(runtime_spec.Orders.Order.OrderConnection):
 
 @typing.final
 class OrderEdge(runtime_spec.Orders.Order.OrderEdge):
-    async def node(self, obj: source_spec.OrderEdge, info: graphql.GraphQLResolveInfo, ) -> source_spec.Order | None:
+    async def node(self, obj: OrderEdgeSource, info: graphql.GraphQLResolveInfo, ) -> source_spec.OrderSource | None:
         raise NotImplementedError()
 
 
 
 @typing.final
 class Query(runtime_spec.Orders.Order.Query):
-    async def order(self, obj: source_spec.Query, info: graphql.GraphQLResolveInfo, id: source_spec.OrderID) -> source_spec.Order:
+    async def order(self, obj: QuerySource, info: graphql.GraphQLResolveInfo, id: source_spec.OrderIDSource) -> source_spec.OrderSource:
         raise NotImplementedError()
 
-    async def order_connection(self, obj: source_spec.Query, info: graphql.GraphQLResolveInfo, first: int | None = None, after: source_spec.Cursor | None = None, last: int | None = None, before: source_spec.Cursor | None = None, offset: int | None = None, filter: source_spec.OrderFilter | None = None) -> source_spec.OrderConnection:
+    async def order_connection(self, obj: QuerySource, info: graphql.GraphQLResolveInfo, first: int | None = None, after: source_spec.CursorSource | None = None, last: int | None = None, before: source_spec.CursorSource | None = None, offset: int | None = None, filters: list[source_spec.OrderFilterSource] | None = None) -> source_spec.OrderConnectionSource:
         raise NotImplementedError()
 
 
 
 @typing.final
 class User(runtime_spec.Orders.Order.User):
-    async def orders(self, obj: source_spec.User, info: graphql.GraphQLResolveInfo, first: int | None = None, after: source_spec.Cursor | None = None, last: int | None = None, before: source_spec.Cursor | None = None, offset: int | None = None, filter: source_spec.OrderFilter | None = None) -> source_spec.OrderConnection:
+    async def orders(self, obj: UserSource, info: graphql.GraphQLResolveInfo, first: int | None = None, after: source_spec.CursorSource | None = None, last: int | None = None, before: source_spec.CursorSource | None = None, offset: int | None = None, filters: list[source_spec.OrderFilterSource] | None = None) -> source_spec.OrderConnectionSource:
         raise NotImplementedError()
 
 
@@ -67,5 +70,5 @@ class OrderCreateInDraftPayload(runtime_spec.Orders.Order.OrderCreateInDraftPayl
 
 @typing.final
 class Mutation(runtime_spec.Orders.Order.Mutation):
-    async def order_create_in_draft(self, obj: source_spec.Mutation, info: graphql.GraphQLResolveInfo, input: source_spec.OrderCreateInDraftInput) -> source_spec.OrderCreateInDraftPayload:
+    async def order_create_in_draft(self, obj: MutationSource, info: graphql.GraphQLResolveInfo, input: source_spec.OrderCreateInDraftInputSource) -> source_spec.OrderCreateInDraftPayloadSource | None:
         raise NotImplementedError()

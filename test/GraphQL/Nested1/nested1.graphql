@@ -1,3 +1,0 @@
-type Nested1 {
-    nested2: Nested2
-}

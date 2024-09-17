@@ -3,21 +3,54 @@ import GraphQL
 public struct Runtime {
     public let schema: GraphQLSchema
     public struct Wiring {
+        struct Bookmark {
+            struct Bookmark {
+                struct Bookmark {
+                    var bookmarker: (_ source: SourceSpec.BookmarkSource, _ args: (), _ context: Any, _ info: GraphQL.GraphQLResolveInfo) async throws -> SourceSpec.UserSource
+                    var bookmarkable: (_ source: SourceSpec.BookmarkSource, _ args: (), _ context: Any, _ info: GraphQL.GraphQLResolveInfo) async throws -> SourceSpec.BookmarkableSource
+                }
+                struct BookmarkConnection {
+                }
+                struct BookmarkEdge {
+                    var node: (_ source: SourceSpec.BookmarkEdgeSource, _ args: (), _ context: Any, _ info: GraphQL.GraphQLResolveInfo) async throws -> SourceSpec.BookmarkSource?
+                }
+                var Bookmark: Bookmark
+                var BookmarkConnection: BookmarkConnection
+                var BookmarkEdge: BookmarkEdge
+            }
+            struct Bookmarkable {
+                struct BookmarkableBookmarkPayload {
+                    var bookmarkableBookmarked: (_ source: SourceSpec.BookmarkableBookmarkPayloadSource, _ args: (), _ context: Any, _ info: GraphQL.GraphQLResolveInfo) async throws -> SourceSpec.BookmarkableSource
+                }
+                struct BookmarkableUnbookmarkPayload {
+                    var bookmarkableUnbookmarked: (_ source: SourceSpec.BookmarkableUnbookmarkPayloadSource, _ args: (), _ context: Any, _ info: GraphQL.GraphQLResolveInfo) async throws -> SourceSpec.BookmarkableSource
+                }
+                struct Mutation {
+                    var bookmarkBookmarkable: (_ source: SourceSpec.MutationSource, _ args: (input: SourceSpec.BookmarkableBookmarkInputSource, _: ()), _ context: Any, _ info: GraphQL.GraphQLResolveInfo) async throws -> SourceSpec.BookmarkableBookmarkPayloadSource?
+                    var unbookmarkBookmarkable: (_ source: SourceSpec.MutationSource, _ args: (input: SourceSpec.BookmarkableUnbookmarkInputSource, _: ()), _ context: Any, _ info: GraphQL.GraphQLResolveInfo) async throws -> SourceSpec.BookmarkableUnbookmarkPayloadSource?
+                }
+                var BookmarkableBookmarkPayload: BookmarkableBookmarkPayload
+                var BookmarkableUnbookmarkPayload: BookmarkableUnbookmarkPayload
+                var Mutation: Mutation
+            }
+            var Bookmark: Bookmark
+            var Bookmarkable: Bookmarkable
+        }
         struct Currency {
         }
         struct IAM {
             struct User {
                 struct User {
-                    var id: (_ source: SourceSpec.User, _ args: (), _ context: Any, _ info: GraphQL.GraphQLResolveInfo) throws -> String
+                    var id: (_ source: SourceSpec.UserSource, _ args: (), _ context: Any, _ info: GraphQL.GraphQLResolveInfo) throws -> String
                 }
                 struct UserConnection {
                 }
                 struct UserEdge {
-                    var node: (_ source: SourceSpec.UserEdge, _ args: (), _ context: Any, _ info: GraphQL.GraphQLResolveInfo) async throws -> SourceSpec.User?
+                    var node: (_ source: SourceSpec.UserEdgeSource, _ args: (), _ context: Any, _ info: GraphQL.GraphQLResolveInfo) async throws -> SourceSpec.UserSource?
                 }
                 struct Query {
-                    var user: (_ source: SourceSpec.Query, _ args: (id: SourceSpec.UserID, _: ()), _ context: Any, _ info: GraphQL.GraphQLResolveInfo) async throws -> SourceSpec.User
-                    var userConnection: (_ source: SourceSpec.Query, _ args: (first: Int?, after: SourceSpec.Cursor?, last: Int?, before: SourceSpec.Cursor?, offset: Int?, filter: SourceSpec.UserFilter?), _ context: Any, _ info: GraphQL.GraphQLResolveInfo) async throws -> SourceSpec.UserConnection
+                    var user: (_ source: SourceSpec.QuerySource, _ args: (id: SourceSpec.UserIDSource, _: ()), _ context: Any, _ info: GraphQL.GraphQLResolveInfo) async throws -> SourceSpec.UserSource
+                    var userConnection: (_ source: SourceSpec.QuerySource, _ args: (first: Int?, after: SourceSpec.CursorSource?, last: Int?, before: SourceSpec.CursorSource?, offset: Int?, filter: SourceSpec.UserFilterSource?), _ context: Any, _ info: GraphQL.GraphQLResolveInfo) async throws -> SourceSpec.UserConnectionSource
                 }
                 var User: User
                 var UserConnection: UserConnection
@@ -26,7 +59,7 @@ public struct Runtime {
             }
             struct Viewer {
                 struct Query {
-                    var viewer: (_ source: SourceSpec.Query, _ args: (), _ context: Any, _ info: GraphQL.GraphQLResolveInfo) async throws -> SourceSpec.User?
+                    var viewer: (_ source: SourceSpec.QuerySource, _ args: (), _ context: Any, _ info: GraphQL.GraphQLResolveInfo) async throws -> SourceSpec.UserSource?
                 }
                 var Query: Query
             }
@@ -36,27 +69,28 @@ public struct Runtime {
         struct Orders {
             struct Order {
                 struct Order {
-                    var id: (_ source: SourceSpec.Order, _ args: (), _ context: Any, _ info: GraphQL.GraphQLResolveInfo) throws -> String
-                    var orderer: (_ source: SourceSpec.Order, _ args: (), _ context: Any, _ info: GraphQL.GraphQLResolveInfo) async throws -> SourceSpec.User
+                    var id: (_ source: SourceSpec.OrderSource, _ args: (), _ context: Any, _ info: GraphQL.GraphQLResolveInfo) throws -> String
+                    var orderer: (_ source: SourceSpec.OrderSource, _ args: (), _ context: Any, _ info: GraphQL.GraphQLResolveInfo) async throws -> SourceSpec.UserSource
+                    var viewerHasBookmarked: (_ source: SourceSpec.OrderSource, _ args: (), _ context: Any, _ info: GraphQL.GraphQLResolveInfo) async throws -> Bool
                 }
                 struct OrderProduct {
                 }
                 struct OrderConnection {
                 }
                 struct OrderEdge {
-                    var node: (_ source: SourceSpec.OrderEdge, _ args: (), _ context: Any, _ info: GraphQL.GraphQLResolveInfo) async throws -> SourceSpec.Order?
+                    var node: (_ source: SourceSpec.OrderEdgeSource, _ args: (), _ context: Any, _ info: GraphQL.GraphQLResolveInfo) async throws -> SourceSpec.OrderSource?
                 }
                 struct Query {
-                    var order: (_ source: SourceSpec.Query, _ args: (id: SourceSpec.OrderID, _: ()), _ context: Any, _ info: GraphQL.GraphQLResolveInfo) async throws -> SourceSpec.Order
-                    var orderConnection: (_ source: SourceSpec.Query, _ args: (first: Int?, after: SourceSpec.Cursor?, last: Int?, before: SourceSpec.Cursor?, offset: Int?, filter: SourceSpec.OrderFilter?), _ context: Any, _ info: GraphQL.GraphQLResolveInfo) async throws -> SourceSpec.OrderConnection
+                    var order: (_ source: SourceSpec.QuerySource, _ args: (id: SourceSpec.OrderIDSource, _: ()), _ context: Any, _ info: GraphQL.GraphQLResolveInfo) async throws -> SourceSpec.OrderSource
+                    var orderConnection: (_ source: SourceSpec.QuerySource, _ args: (first: Int?, after: SourceSpec.CursorSource?, last: Int?, before: SourceSpec.CursorSource?, offset: Int?, filters: [SourceSpec.OrderFilterSource]?), _ context: Any, _ info: GraphQL.GraphQLResolveInfo) async throws -> SourceSpec.OrderConnectionSource
                 }
                 struct User {
-                    var orders: (_ source: SourceSpec.User, _ args: (first: Int?, after: SourceSpec.Cursor?, last: Int?, before: SourceSpec.Cursor?, offset: Int?, filter: SourceSpec.OrderFilter?), _ context: Any, _ info: GraphQL.GraphQLResolveInfo) async throws -> SourceSpec.OrderConnection
+                    var orders: (_ source: SourceSpec.UserSource, _ args: (first: Int?, after: SourceSpec.CursorSource?, last: Int?, before: SourceSpec.CursorSource?, offset: Int?, filters: [SourceSpec.OrderFilterSource]?), _ context: Any, _ info: GraphQL.GraphQLResolveInfo) async throws -> SourceSpec.OrderConnectionSource
                 }
                 struct OrderCreateInDraftPayload {
                 }
                 struct Mutation {
-                    var orderCreateInDraft: (_ source: SourceSpec.Mutation, _ args: (input: SourceSpec.OrderCreateInDraftInput, _: ()), _ context: Any, _ info: GraphQL.GraphQLResolveInfo) async throws -> SourceSpec.OrderCreateInDraftPayload
+                    var orderCreateInDraft: (_ source: SourceSpec.MutationSource, _ args: (input: SourceSpec.OrderCreateInDraftInputSource, _: ()), _ context: Any, _ info: GraphQL.GraphQLResolveInfo) async throws -> SourceSpec.OrderCreateInDraftPayloadSource?
                 }
                 var Order: Order
                 var OrderProduct: OrderProduct
@@ -73,21 +107,22 @@ public struct Runtime {
             struct PageInfo {
             }
             struct Query {
-                var node: (_ source: SourceSpec.Query, _ args: (id: String, _: ()), _ context: Any, _ info: GraphQL.GraphQLResolveInfo) async throws -> SourceSpec.Node?
-                var nodes: (_ source: SourceSpec.Query, _ args: (ids: [String], _: ()), _ context: Any, _ info: GraphQL.GraphQLResolveInfo) async throws -> [SourceSpec.Node?]
+                var node: (_ source: SourceSpec.QuerySource, _ args: (id: String, _: ()), _ context: Any, _ info: GraphQL.GraphQLResolveInfo) async throws -> SourceSpec.NodeSource?
+                var nodes: (_ source: SourceSpec.QuerySource, _ args: (ids: [String], _: ()), _ context: Any, _ info: GraphQL.GraphQLResolveInfo) async throws -> [SourceSpec.NodeSource?]
             }
             var PageInfo: PageInfo
             var Query: Query
         }
         struct Root {
             struct Query {
-                var version: (_ source: SourceSpec.Query, _ args: (), _ context: Any, _ info: GraphQL.GraphQLResolveInfo) throws -> String
+                var version: (_ source: SourceSpec.QuerySource, _ args: (), _ context: Any, _ info: GraphQL.GraphQLResolveInfo) throws -> String
             }
             struct Mutation {
             }
             var Query: Query
             var Mutation: Mutation
         }
+        var Bookmark: Bookmark
         var Currency: Currency
         var IAM: IAM
         var Orders: Orders
@@ -95,6 +130,24 @@ public struct Runtime {
         var Root: Root
     }
     init(wiring: Wiring, encoder: GraphQL.MapEncoder, decoder: GraphQL.MapDecoder) {
+        let BookmarkIDDefinition = try! GraphQL.GraphQLScalarType(
+            name: "BookmarkID",
+            serialize: { value in
+                guard let value = value as? Encodable else {
+                    throw GraphQLError(message: "BookmarkID cannot represent value: \(value)")
+                }
+                return try encoder.encode(value)
+            }
+        )
+        let BookmarkableIDDefinition = try! GraphQL.GraphQLScalarType(
+            name: "BookmarkableID",
+            serialize: { value in
+                guard let value = value as? Encodable else {
+                    throw GraphQLError(message: "BookmarkableID cannot represent value: \(value)")
+                }
+                return try encoder.encode(value)
+            }
+        )
         let UserIDDefinition = try! GraphQL.GraphQLScalarType(
             name: "UserID",
             serialize: { value in
@@ -138,6 +191,15 @@ public struct Runtime {
             serialize: { value in
                 guard let value = value as? Encodable else {
                     throw GraphQLError(message: "Decimal cannot represent value: \(value)")
+                }
+                return try encoder.encode(value)
+            }
+        )
+        let TypeIDDefinition = try! GraphQL.GraphQLScalarType(
+            name: "TypeID",
+            serialize: { value in
+                guard let value = value as? Encodable else {
+                    throw GraphQLError(message: "TypeID cannot represent value: \(value)")
                 }
                 return try encoder.encode(value)
             }
@@ -891,6 +953,58 @@ public struct Runtime {
                 )
             ]
         )
+        let BookmarkIDFilterDefinition = try! GraphQL.GraphQLInputObjectType(
+            name: "BookmarkIDFilter",
+            fields: [
+                "eq": .init(
+                    type: GraphQLTypeReference("BookmarkID")
+                ),
+                "in": .init(
+                    type: GraphQLList(GraphQLNonNull(GraphQLTypeReference("BookmarkID")))
+                ),
+            ]
+        )
+        let BookmarkFilterDefinition = try! GraphQL.GraphQLInputObjectType(
+            name: "BookmarkFilter",
+            fields: [
+                "id": .init(
+                    type: GraphQLTypeReference("BookmarkIDFilter")
+                ),
+                "bookmarkableId": .init(
+                    type: GraphQLTypeReference("BookmarkableIDFilter")
+                ),
+                "bookmarkerId": .init(
+                    type: GraphQLTypeReference("UserIDFilter")
+                ),
+            ]
+        )
+        let BookmarkableIDFilterDefinition = try! GraphQL.GraphQLInputObjectType(
+            name: "BookmarkableIDFilter",
+            fields: [
+                "eq": .init(
+                    type: GraphQLTypeReference("BookmarkableID")
+                ),
+                "in": .init(
+                    type: GraphQLList(GraphQLNonNull(GraphQLTypeReference("BookmarkableID")))
+                ),
+            ]
+        )
+        let BookmarkableBookmarkInputDefinition = try! GraphQL.GraphQLInputObjectType(
+            name: "BookmarkableBookmarkInput",
+            fields: [
+                "bookmarkableId": .init(
+                    type: GraphQLNonNull(GraphQLTypeReference("BookmarkableID"))
+                ),
+            ]
+        )
+        let BookmarkableUnbookmarkInputDefinition = try! GraphQL.GraphQLInputObjectType(
+            name: "BookmarkableUnbookmarkInput",
+            fields: [
+                "bookmarkableId": .init(
+                    type: GraphQLNonNull(GraphQLTypeReference("BookmarkableID"))
+                ),
+            ]
+        )
         let UserFilterDefinition = try! GraphQL.GraphQLInputObjectType(
             name: "UserFilter",
             fields: [
@@ -983,13 +1097,148 @@ public struct Runtime {
                 )
             ]
         )
+        let BookmarkableDefinition = try! GraphQL.GraphQLInterfaceType(
+            name: "Bookmarkable",
+            interfaces: [
+                NodeDefinition,
+            ],
+            fields: [
+                "id": GraphQL.GraphQLField(
+                    type: GraphQLNonNull(GraphQLID),
+                    resolve: nil
+                ),
+                "viewerHasBookmarked": GraphQL.GraphQLField(
+                    type: GraphQLNonNull(GraphQLBoolean),
+                    resolve: nil
+                ),
+                "bookmarks": GraphQL.GraphQLField(
+                    type: GraphQLNonNull(GraphQLTypeReference("BookmarkConnection")),
+                    args: [
+                        "first": GraphQL.GraphQLArgument(
+                            type: GraphQLInt
+                        ),
+                        "after": GraphQL.GraphQLArgument(
+                            type: GraphQLTypeReference("Cursor")
+                        ),
+                        "last": GraphQL.GraphQLArgument(
+                            type: GraphQLInt
+                        ),
+                        "before": GraphQL.GraphQLArgument(
+                            type: GraphQLTypeReference("Cursor")
+                        ),
+                        "filters": GraphQL.GraphQLArgument(
+                            type: GraphQLList(GraphQLNonNull(GraphQLTypeReference("BookmarkFilter")))
+                        ),
+                    ],
+                    resolve: nil
+                )
+            ]
+        )
+        let BookmarkDefinition = try! GraphQL.GraphQLObjectType(
+            name: "Bookmark",
+            fields: [
+                "id": GraphQL.GraphQLField(
+                    type: GraphQLNonNull(GraphQLID),
+                    resolve: nil
+                ),
+                "createdAt": GraphQL.GraphQLField(
+                    type: GraphQLNonNull(GraphQLTypeReference("Timestamp")),
+                    resolve: nil
+                ),
+                "bookmarker": GraphQL.GraphQLField(
+                    type: GraphQLNonNull(GraphQLTypeReference("User")),
+                    resolve: { source, args, context, eventLoopGroup, info in
+                        let source = source as! SourceSpec.BookmarkSource
+                        let function = wiring.Bookmark.Bookmark.Bookmark.bookmarker
+                        return eventLoopGroup.next().makeFutureWithTask {
+                            return try await function(source, (), context, info)
+                        }
+                    }
+                ),
+                "bookmarkable": GraphQL.GraphQLField(
+                    type: GraphQLNonNull(GraphQLTypeReference("Bookmarkable")),
+                    resolve: { source, args, context, eventLoopGroup, info in
+                        let source = source as! SourceSpec.BookmarkSource
+                        let function = wiring.Bookmark.Bookmark.Bookmark.bookmarkable
+                        return eventLoopGroup.next().makeFutureWithTask {
+                            return try await function(source, (), context, info)
+                        }
+                    }
+                )
+            ],
+            interfaces: [
+                NodeDefinition,
+            ]
+        )
+        let BookmarkConnectionDefinition = try! GraphQL.GraphQLObjectType(
+            name: "BookmarkConnection",
+            fields: [
+                "edges": GraphQL.GraphQLField(
+                    type: GraphQLNonNull(GraphQLList(GraphQLNonNull(GraphQLTypeReference("BookmarkEdge")))),
+                    resolve: nil
+                ),
+                "pageInfo": GraphQL.GraphQLField(
+                    type: GraphQLNonNull(GraphQLTypeReference("PageInfo")),
+                    resolve: nil
+                )
+            ]
+        )
+        let BookmarkEdgeDefinition = try! GraphQL.GraphQLObjectType(
+            name: "BookmarkEdge",
+            fields: [
+                "node": GraphQL.GraphQLField(
+                    type: GraphQLTypeReference("Bookmark"),
+                    resolve: { source, args, context, eventLoopGroup, info in
+                        let source = source as! SourceSpec.BookmarkEdgeSource
+                        let function = wiring.Bookmark.Bookmark.BookmarkEdge.node
+                        return eventLoopGroup.next().makeFutureWithTask {
+                            return try await function(source, (), context, info)
+                        }
+                    }
+                ),
+                "cursor": GraphQL.GraphQLField(
+                    type: GraphQLNonNull(GraphQLTypeReference("Cursor")),
+                    resolve: nil
+                )
+            ]
+        )
+        let BookmarkableBookmarkPayloadDefinition = try! GraphQL.GraphQLObjectType(
+            name: "BookmarkableBookmarkPayload",
+            fields: [
+                "bookmarkableBookmarked": GraphQL.GraphQLField(
+                    type: GraphQLNonNull(GraphQLTypeReference("Bookmarkable")),
+                    resolve: { source, args, context, eventLoopGroup, info in
+                        let source = source as! SourceSpec.BookmarkableBookmarkPayloadSource
+                        let function = wiring.Bookmark.Bookmarkable.BookmarkableBookmarkPayload.bookmarkableBookmarked
+                        return eventLoopGroup.next().makeFutureWithTask {
+                            return try await function(source, (), context, info)
+                        }
+                    }
+                )
+            ]
+        )
+        let BookmarkableUnbookmarkPayloadDefinition = try! GraphQL.GraphQLObjectType(
+            name: "BookmarkableUnbookmarkPayload",
+            fields: [
+                "bookmarkableUnbookmarked": GraphQL.GraphQLField(
+                    type: GraphQLNonNull(GraphQLTypeReference("Bookmarkable")),
+                    resolve: { source, args, context, eventLoopGroup, info in
+                        let source = source as! SourceSpec.BookmarkableUnbookmarkPayloadSource
+                        let function = wiring.Bookmark.Bookmarkable.BookmarkableUnbookmarkPayload.bookmarkableUnbookmarked
+                        return eventLoopGroup.next().makeFutureWithTask {
+                            return try await function(source, (), context, info)
+                        }
+                    }
+                )
+            ]
+        )
         let UserDefinition = try! GraphQL.GraphQLObjectType(
             name: "User",
             fields: [
                 "id": GraphQL.GraphQLField(
                     type: GraphQLNonNull(GraphQLID),
                     resolve: { source, args, context, eventLoopGroup, info in
-                        let source = source as! SourceSpec.User
+                        let source = source as! SourceSpec.UserSource
                         let function = wiring.IAM.User.User.id
                         return eventLoopGroup.next().makeSucceededFuture(
                             try function(source, (), context, info)
@@ -1014,24 +1263,24 @@ public struct Runtime {
                         "offset": GraphQL.GraphQLArgument(
                             type: GraphQLInt
                         ),
-                        "filter": GraphQL.GraphQLArgument(
-                            type: GraphQLTypeReference("OrderFilter")
+                        "filters": GraphQL.GraphQLArgument(
+                            type: GraphQLList(GraphQLNonNull(GraphQLTypeReference("OrderFilter")))
                         ),
                     ],
                     resolve: { source, args, context, eventLoopGroup, info in
-                        let source = source as! SourceSpec.User
+                        let source = source as! SourceSpec.UserSource
                         let function = wiring.Orders.Order.User.orders
                         struct Args: Decodable {
                             var first: Int?
-                            var after: SourceSpec.Cursor?
+                            var after: SourceSpec.CursorSource?
                             var last: Int?
-                            var before: SourceSpec.Cursor?
+                            var before: SourceSpec.CursorSource?
                             var offset: Int?
-                            var filter: SourceSpec.OrderFilter?
+                            var filters: [SourceSpec.OrderFilterSource]?
                         }
                         let args: Args = try decoder.decode(Args.self, from: args)
                         return eventLoopGroup.next().makeFutureWithTask {
-                            return try await function(source, (args.first, args.after, args.last, args.before, args.offset, args.filter), context, info)
+                            return try await function(source, (args.first, args.after, args.last, args.before, args.offset, args.filters), context, info)
                         }
                     }
                 )
@@ -1059,7 +1308,7 @@ public struct Runtime {
                 "node": GraphQL.GraphQLField(
                     type: GraphQLTypeReference("User"),
                     resolve: { source, args, context, eventLoopGroup, info in
-                        let source = source as! SourceSpec.UserEdge
+                        let source = source as! SourceSpec.UserEdgeSource
                         let function = wiring.IAM.User.UserEdge.node
                         return eventLoopGroup.next().makeFutureWithTask {
                             return try await function(source, (), context, info)
@@ -1078,7 +1327,7 @@ public struct Runtime {
                 "id": GraphQL.GraphQLField(
                     type: GraphQLNonNull(GraphQLID),
                     resolve: { source, args, context, eventLoopGroup, info in
-                        let source = source as! SourceSpec.Order
+                        let source = source as! SourceSpec.OrderSource
                         let function = wiring.Orders.Order.Order.id
                         return eventLoopGroup.next().makeSucceededFuture(
                             try function(source, (), context, info)
@@ -1096,7 +1345,7 @@ public struct Runtime {
                 "orderer": GraphQL.GraphQLField(
                     type: GraphQLNonNull(GraphQLTypeReference("User")),
                     resolve: { source, args, context, eventLoopGroup, info in
-                        let source = source as! SourceSpec.Order
+                        let source = source as! SourceSpec.OrderSource
                         let function = wiring.Orders.Order.Order.orderer
                         return eventLoopGroup.next().makeFutureWithTask {
                             return try await function(source, (), context, info)
@@ -1138,10 +1387,21 @@ public struct Runtime {
                 "totalAmount": GraphQL.GraphQLField(
                     type: GraphQLNonNull(GraphQLTypeReference("Decimal")),
                     resolve: nil
+                ),
+                "viewerHasBookmarked": GraphQL.GraphQLField(
+                    type: GraphQLNonNull(GraphQLBoolean),
+                    resolve: { source, args, context, eventLoopGroup, info in
+                        let source = source as! SourceSpec.OrderSource
+                        let function = wiring.Orders.Order.Order.viewerHasBookmarked
+                        return eventLoopGroup.next().makeFutureWithTask {
+                            return try await function(source, (), context, info)
+                        }
+                    }
                 )
             ],
             interfaces: [
                 NodeDefinition,
+                BookmarkableDefinition,
             ]
         )
         let OrderProductDefinition = try! GraphQL.GraphQLObjectType(
@@ -1184,7 +1444,7 @@ public struct Runtime {
                 "node": GraphQL.GraphQLField(
                     type: GraphQLTypeReference("Order"),
                     resolve: { source, args, context, eventLoopGroup, info in
-                        let source = source as! SourceSpec.OrderEdge
+                        let source = source as! SourceSpec.OrderEdgeSource
                         let function = wiring.Orders.Order.OrderEdge.node
                         return eventLoopGroup.next().makeFutureWithTask {
                             return try await function(source, (), context, info)
@@ -1238,7 +1498,7 @@ public struct Runtime {
                 "version": GraphQL.GraphQLField(
                     type: GraphQLNonNull(GraphQLString),
                     resolve: { source, args, context, eventLoopGroup, info in
-                        let source = source as! SourceSpec.Query
+                        let source = source as! SourceSpec.QuerySource
                         let function = wiring.Root.Query.version
                         return eventLoopGroup.next().makeSucceededFuture(
                             try function(source, (), context, info)
@@ -1254,7 +1514,7 @@ public struct Runtime {
                         ),
                     ],
                     resolve: { source, args, context, eventLoopGroup, info in
-                        let source = source as! SourceSpec.Query
+                        let source = source as! SourceSpec.QuerySource
                         let function = wiring.Relay.Query.node
                         struct Args: Decodable {
                             var id: String
@@ -1274,7 +1534,7 @@ public struct Runtime {
                         ),
                     ],
                     resolve: { source, args, context, eventLoopGroup, info in
-                        let source = source as! SourceSpec.Query
+                        let source = source as! SourceSpec.QuerySource
                         let function = wiring.Relay.Query.nodes
                         struct Args: Decodable {
                             var ids: [String]
@@ -1293,10 +1553,10 @@ public struct Runtime {
                         ),
                     ],
                     resolve: { source, args, context, eventLoopGroup, info in
-                        let source = source as! SourceSpec.Query
+                        let source = source as! SourceSpec.QuerySource
                         let function = wiring.IAM.User.Query.user
                         struct Args: Decodable {
-                            var id: SourceSpec.UserID
+                            var id: SourceSpec.UserIDSource
                         }
                         let args: Args = try decoder.decode(Args.self, from: args)
                         return eventLoopGroup.next().makeFutureWithTask {
@@ -1327,15 +1587,15 @@ public struct Runtime {
                         ),
                     ],
                     resolve: { source, args, context, eventLoopGroup, info in
-                        let source = source as! SourceSpec.Query
+                        let source = source as! SourceSpec.QuerySource
                         let function = wiring.IAM.User.Query.userConnection
                         struct Args: Decodable {
                             var first: Int?
-                            var after: SourceSpec.Cursor?
+                            var after: SourceSpec.CursorSource?
                             var last: Int?
-                            var before: SourceSpec.Cursor?
+                            var before: SourceSpec.CursorSource?
                             var offset: Int?
-                            var filter: SourceSpec.UserFilter?
+                            var filter: SourceSpec.UserFilterSource?
                         }
                         let args: Args = try decoder.decode(Args.self, from: args)
                         return eventLoopGroup.next().makeFutureWithTask {
@@ -1346,7 +1606,7 @@ public struct Runtime {
                 "viewer": GraphQL.GraphQLField(
                     type: GraphQLTypeReference("User"),
                     resolve: { source, args, context, eventLoopGroup, info in
-                        let source = source as! SourceSpec.Query
+                        let source = source as! SourceSpec.QuerySource
                         let function = wiring.IAM.Viewer.Query.viewer
                         return eventLoopGroup.next().makeFutureWithTask {
                             return try await function(source, (), context, info)
@@ -1361,10 +1621,10 @@ public struct Runtime {
                         ),
                     ],
                     resolve: { source, args, context, eventLoopGroup, info in
-                        let source = source as! SourceSpec.Query
+                        let source = source as! SourceSpec.QuerySource
                         let function = wiring.Orders.Order.Query.order
                         struct Args: Decodable {
-                            var id: SourceSpec.OrderID
+                            var id: SourceSpec.OrderIDSource
                         }
                         let args: Args = try decoder.decode(Args.self, from: args)
                         return eventLoopGroup.next().makeFutureWithTask {
@@ -1390,24 +1650,24 @@ public struct Runtime {
                         "offset": GraphQL.GraphQLArgument(
                             type: GraphQLInt
                         ),
-                        "filter": GraphQL.GraphQLArgument(
-                            type: GraphQLTypeReference("OrderFilter")
+                        "filters": GraphQL.GraphQLArgument(
+                            type: GraphQLList(GraphQLNonNull(GraphQLTypeReference("OrderFilter")))
                         ),
                     ],
                     resolve: { source, args, context, eventLoopGroup, info in
-                        let source = source as! SourceSpec.Query
+                        let source = source as! SourceSpec.QuerySource
                         let function = wiring.Orders.Order.Query.orderConnection
                         struct Args: Decodable {
                             var first: Int?
-                            var after: SourceSpec.Cursor?
+                            var after: SourceSpec.CursorSource?
                             var last: Int?
-                            var before: SourceSpec.Cursor?
+                            var before: SourceSpec.CursorSource?
                             var offset: Int?
-                            var filter: SourceSpec.OrderFilter?
+                            var filters: [SourceSpec.OrderFilterSource]?
                         }
                         let args: Args = try decoder.decode(Args.self, from: args)
                         return eventLoopGroup.next().makeFutureWithTask {
-                            return try await function(source, (args.first, args.after, args.last, args.before, args.offset, args.filter), context, info)
+                            return try await function(source, (args.first, args.after, args.last, args.before, args.offset, args.filters), context, info)
                         }
                     }
                 )
@@ -1420,18 +1680,56 @@ public struct Runtime {
                     type: GraphQLNonNull(GraphQLString),
                     resolve: nil
                 ),
+                "bookmarkBookmarkable": GraphQL.GraphQLField(
+                    type: GraphQLTypeReference("BookmarkableBookmarkPayload"),
+                    args: [
+                        "input": GraphQL.GraphQLArgument(
+                            type: GraphQLNonNull(GraphQLTypeReference("BookmarkableBookmarkInput"))
+                        ),
+                    ],
+                    resolve: { source, args, context, eventLoopGroup, info in
+                        let source = source as! SourceSpec.MutationSource
+                        let function = wiring.Bookmark.Bookmarkable.Mutation.bookmarkBookmarkable
+                        struct Args: Decodable {
+                            var input: SourceSpec.BookmarkableBookmarkInputSource
+                        }
+                        let args: Args = try decoder.decode(Args.self, from: args)
+                        return eventLoopGroup.next().makeFutureWithTask {
+                            return try await function(source, (args.input, ()), context, info)
+                        }
+                    }
+                ),
+                "unbookmarkBookmarkable": GraphQL.GraphQLField(
+                    type: GraphQLTypeReference("BookmarkableUnbookmarkPayload"),
+                    args: [
+                        "input": GraphQL.GraphQLArgument(
+                            type: GraphQLNonNull(GraphQLTypeReference("BookmarkableUnbookmarkInput"))
+                        ),
+                    ],
+                    resolve: { source, args, context, eventLoopGroup, info in
+                        let source = source as! SourceSpec.MutationSource
+                        let function = wiring.Bookmark.Bookmarkable.Mutation.unbookmarkBookmarkable
+                        struct Args: Decodable {
+                            var input: SourceSpec.BookmarkableUnbookmarkInputSource
+                        }
+                        let args: Args = try decoder.decode(Args.self, from: args)
+                        return eventLoopGroup.next().makeFutureWithTask {
+                            return try await function(source, (args.input, ()), context, info)
+                        }
+                    }
+                ),
                 "orderCreateInDraft": GraphQL.GraphQLField(
-                    type: GraphQLNonNull(GraphQLTypeReference("OrderCreateInDraftPayload")),
+                    type: GraphQLTypeReference("OrderCreateInDraftPayload"),
                     args: [
                         "input": GraphQL.GraphQLArgument(
                             type: GraphQLNonNull(GraphQLTypeReference("OrderCreateInDraftInput"))
                         ),
                     ],
                     resolve: { source, args, context, eventLoopGroup, info in
-                        let source = source as! SourceSpec.Mutation
+                        let source = source as! SourceSpec.MutationSource
                         let function = wiring.Orders.Order.Mutation.orderCreateInDraft
                         struct Args: Decodable {
-                            var input: SourceSpec.OrderCreateInDraftInput
+                            var input: SourceSpec.OrderCreateInDraftInputSource
                         }
                         let args: Args = try decoder.decode(Args.self, from: args)
                         return eventLoopGroup.next().makeFutureWithTask {
@@ -1445,6 +1743,19 @@ public struct Runtime {
             query: QueryDefinition,
             mutation: MutationDefinition,
             types: [
+                BookmarkDefinition,
+                BookmarkIDDefinition,
+                BookmarkIDFilterDefinition,
+                BookmarkFilterDefinition,
+                BookmarkConnectionDefinition,
+                BookmarkEdgeDefinition,
+                BookmarkableDefinition,
+                BookmarkableIDDefinition,
+                BookmarkableIDFilterDefinition,
+                BookmarkableBookmarkInputDefinition,
+                BookmarkableBookmarkPayloadDefinition,
+                BookmarkableUnbookmarkInputDefinition,
+                BookmarkableUnbookmarkPayloadDefinition,
                 CurrencyDefinition,
                 UserDefinition,
                 UserIDDefinition,
@@ -1470,6 +1781,7 @@ public struct Runtime {
                 MutationDefinition,
                 TimestampDefinition,
                 DecimalDefinition,
+                TypeIDDefinition,
             ]
         )
     }

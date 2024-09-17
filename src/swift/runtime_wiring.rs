@@ -1,5 +1,5 @@
 use super::{error::Result, naming, source_code::SourceCode};
-use crate::schema::{Definition, ModuleRef, ObjectDefinition, ObjectExtension, Project, Resolve};
+use crate::schema::{Definition, Field, ModuleRef, ObjectDefinition, ObjectExtension, Project};
 use std::{fs::File, path::PathBuf};
 
 pub fn render(outdir: &PathBuf, s: &Project) -> Result<()> {
@@ -70,32 +70,40 @@ fn render_config_index<'a>(outdir: &PathBuf, d: &ModuleRef) -> Result<()> {
     src.line(format!("extension {extention_target} {{"));
     src.indent();
 
-    src.line("init() {");
-    src.indent();
+    let has_init = d.has_children()
+        || d.iter_definitions().any(|def| match def {
+            Definition::ObjectDefinition(_) => true,
+            Definition::ObjectExtension(_) => true,
+            _ => false,
+        });
 
-    if d.has_children() {
-        for dir in d.iter_children() {
-            let name = naming::module_name(dir.get_name());
-            src.line(&format!("self.{name} = .init()",));
-        }
-    }
+    if has_init {
+        src.line("init() {");
+        src.indent();
 
-    if d.has_definition() {
-        for def in d.iter_definitions() {
-            match def {
-                Definition::ObjectDefinition(inner) => {
-                    render_object_config(&d, &mut src, d.schema, inner);
-                }
-                Definition::ObjectExtension(inner) => {
-                    render_object_ext_config(&d, &mut src, d.schema, inner);
-                }
-                _ => { /* noop */ }
+        if d.has_children() {
+            for dir in d.iter_children() {
+                let name = naming::module_name(dir.get_name());
+                src.line(&format!("self.{name} = .init()",));
             }
         }
-    }
 
-    src.dedent();
-    src.line("}");
+        if d.has_definition() {
+            for def in d.iter_definitions() {
+                match def {
+                    Definition::ObjectDefinition(inner) => {
+                        render_object_config(&d, &mut src, d.schema, inner);
+                    }
+                    Definition::ObjectExtension(inner) => {
+                        render_object_ext_config(&d, &mut src, d.schema, inner);
+                    }
+                    _ => { /* noop */ }
+                }
+            }
+        }
+        src.dedent();
+        src.line("}");
+    }
 
     src.dedent();
     src.line("}");
@@ -110,15 +118,15 @@ fn render_object_config(d: &ModuleRef, src: &mut SourceCode, s: &Project, def: &
     src.line(format!("self.{impl_name} = .init("));
     src.indent();
 
-    let resolves = def
+    for (i, field) in def
         .iter_fields()
-        .filter_map(|field| s.resolve_field_resolve(field));
-
-    for (i, resolve) in resolves.enumerate() {
+        .filter(|field| field.has_resolve_config())
+        .enumerate()
+    {
         if i > 0 {
             src.append(",");
         }
-        render_field_resolver(d, src, &resolve);
+        render_field_resolver(d, src, &field);
     }
 
     src.dedent();
@@ -135,23 +143,23 @@ fn render_object_ext_config(
     src.line(format!("self.{impl_name} = .init("));
     src.indent();
 
-    let resolves = def
+    for (i, field) in def
         .iter_fields()
-        .filter_map(|field| s.resolve_field_resolve(field));
-
-    for (i, resolve) in resolves.enumerate() {
+        .filter(|field| field.has_resolve_config())
+        .enumerate()
+    {
         if i > 0 {
             src.append(",");
         }
-        render_field_resolver(d, src, &resolve);
+        render_field_resolver(d, src, &field);
     }
 
     src.dedent();
     src.line(")");
 }
 
-fn render_field_resolver(d: &ModuleRef, src: &mut SourceCode, resolve: &Resolve) {
-    let name = naming::field_name(&resolve.field.name);
+fn render_field_resolver(d: &ModuleRef, src: &mut SourceCode, field: &Field) {
+    let name = naming::field_name(&field.name);
     src.line(&format!("{name}: {{ source, args, context, info in",));
 
     src.indent();

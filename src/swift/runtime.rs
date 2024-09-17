@@ -2,8 +2,8 @@ use super::{error::Error, naming, source_code::SourceCode};
 use crate::{
     schema::{
         Definition, EnumDefinition, EnumValue, Field, InputDefinition, InputValue,
-        InterfaceDefinition, ModuleRef, ObjectDefinition, ObjectExtension,
-        Project, Resolve, ScalarDefinition, TypeExpression, UnionDefinition, Value,
+        InterfaceDefinition, ModuleRef, ObjectDefinition, ObjectExtension, Project,
+        ScalarDefinition, TypeExpression, UnionDefinition, Value,
     },
     swift::type_expr,
 };
@@ -94,10 +94,8 @@ fn render_object_spec(src: &mut SourceCode, s: &Project, def: &ObjectDefinition)
     ));
     src.indent();
 
-    for field in def.iter_fields() {
-        if let Some(resolve) = s.resolve_field_resolve(field) {
-            render_field_resolver_spec(src, &resolve);
-        }
+    for resolver in def.iter_fields().filter(|f| f.has_resolve_config()) {
+        render_field_resolver_spec(src, &def.name, &resolver);
     }
     src.dedent();
     src.line("}");
@@ -108,27 +106,26 @@ fn render_object_ext_spec(src: &mut SourceCode, s: &Project, def: &ObjectExtensi
     src.line(&format!("struct {name} {{"));
     src.indent();
 
-    for field in def.iter_fields() {
-        if let Some(resolve) = s.resolve_field_resolve(field) {
-            render_field_resolver_spec(src, &resolve);
-        }
+    for resolver in def.iter_fields().filter(|f| f.has_resolve_config()) {
+        render_field_resolver_spec(src, &def.name, &resolver);
     }
 
     src.dedent();
     src.line("}");
 }
 
-fn render_field_resolver_spec(src: &mut SourceCode, resolve: &Resolve) {
-    let sig = if resolve.sync {
+fn render_field_resolver_spec(src: &mut SourceCode, type_name: &str, field: &Field) {
+    let resolver = field.get_resolve_config().unwrap();
+
+    let sig = if resolver.sync {
         "throws"
     } else {
         "async throws"
     };
-    let name = naming::field_name(&resolve.field.name);
-    let source_type = type_expr::format_named_type(Some("SourceSpec"), &resolve.field.type_name);
-    let return_type =
-        type_expr::format_type_expression(Some("SourceSpec"), &resolve.field.field_type);
-    let arguments = format_argument_list(&resolve.field.args);
+    let name = naming::field_name(&field.name);
+    let source_type = type_expr::format_named_type(Some("SourceSpec"), type_name);
+    let return_type = type_expr::format_type_expression(Some("SourceSpec"), &field.field_type);
+    let arguments = format_argument_list(&field.args);
 
     let arguments = if arguments.is_empty() {
         "".to_string()
@@ -225,7 +222,7 @@ fn render_object_type(src: &mut SourceCode, s: &Project, def: &ObjectDefinition)
         if i > 0 {
             src.append(",");
         }
-        render_field(src, s, field)
+        render_field(src, s, &def.name, field)
     }
     src.dedent();
     src.line("]");
@@ -275,7 +272,7 @@ fn render_interface_type(src: &mut SourceCode, s: &Project, def: &InterfaceDefin
         if i > 0 {
             src.append(",");
         }
-        render_field(src, s, field)
+        render_field(src, s, &def.name, field)
     }
     src.dedent();
     src.line("]");
@@ -405,7 +402,7 @@ fn render_union_type(src: &mut SourceCode, s: &Project, def: &UnionDefinition) {
     src.line(")");
 }
 
-fn render_field(src: &mut SourceCode, s: &Project, def: &Field) {
+fn render_field(src: &mut SourceCode, s: &Project, type_name: &str, def: &Field) {
     src.line(format!("{:?}: GraphQL.GraphQLField(", def.name));
     src.indent();
 
@@ -429,8 +426,8 @@ fn render_field(src: &mut SourceCode, s: &Project, def: &Field) {
         src.dedent();
         src.line("],");
     }
-    if let Some(opt) = s.resolve_field_resolve(def) {
-        render_field_resolver(src, s, def, &opt);
+    if def.has_resolve_config() {
+        render_field_resolver(src, s, type_name, &def);
     } else {
         src.line("resolve: nil");
     }
@@ -439,27 +436,28 @@ fn render_field(src: &mut SourceCode, s: &Project, def: &Field) {
     src.line(")");
 }
 
-fn render_field_resolver(src: &mut SourceCode, s: &Project, def: &Field, opt: &Resolve) {
-    let module_ref = s.get_module_ref(&opt.field.position.file);
-    let def_config_path = format_definition_config_path(module_ref, &opt.field.type_name);
+fn render_field_resolver(src: &mut SourceCode, s: &Project, type_name: &str, field: &Field) {
+    let opt = field.get_resolve_config().unwrap();
+    let module_ref = s.get_module_ref(&field.position.file);
+    let def_config_path = format_definition_config_path(module_ref, type_name);
 
     src.line("resolve: { source, args, context, eventLoopGroup, info in");
     src.indent();
 
     src.line(format!(
         "let source = source as! SourceSpec.{}",
-        naming::source_spec(&def.type_name)
+        naming::source_spec(type_name)
     ));
     src.line(format!(
         "let function = {}.{}",
         def_config_path,
-        naming::field_name(&opt.field.name)
+        naming::field_name(&field.name)
     ));
 
-    if !def.args.is_empty() {
+    if !field.args.is_empty() {
         src.line("struct Args: Decodable {");
         src.indent();
-        for arg in &def.args {
+        for arg in &field.args {
             let arg_name = naming::field_name(&arg.name);
             let arg_type = type_expr::format_type_expression(Some("SourceSpec"), &arg.field_type);
             src.line(format!("var {arg_name}: {arg_type}"));
@@ -471,7 +469,7 @@ fn render_field_resolver(src: &mut SourceCode, s: &Project, def: &Field, opt: &R
     }
 
     let mut args = Vec::new();
-    for arg in &def.args {
+    for arg in &field.args {
         args.push(format!("args.{}", &arg.name));
     }
     if args.len() == 1 {

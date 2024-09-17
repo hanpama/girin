@@ -28,9 +28,9 @@ pub fn format_named_type(source_ns: Option<&str>, name: &str) -> String {
         "ID" => return "String".to_owned(),
         _ => {
             if let Some(ns) = source_ns {
-                format!("{}.{}", ns, naming::source(name))
+                format!("{}.{}", ns, naming::source_spec(name))
             } else {
-                naming::source(name)
+                naming::source_spec(name)
             }
         }
     }

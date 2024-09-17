@@ -5,7 +5,7 @@ interface Node {
   """
   The id of the object.
   """
-  id: ID! @source(name: "id", type: "ID!")
+  id: ID!
 }
 
 """

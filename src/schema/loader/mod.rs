@@ -6,6 +6,7 @@ use std::{fs::File, io::Read};
 use validate::validate_schema;
 
 mod construct;
+mod type_expr;
 mod validate;
 mod violation;
 

@@ -1,4 +1,4 @@
-use super::{Field, Position, SourceConfig};
+use super::{Field, Position, FieldSourceConfig};
 
 #[derive(Debug)]
 pub struct ObjectDefinition {
@@ -22,10 +22,10 @@ impl ObjectDefinition {
         self.fields.iter()
     }
 
-    pub fn collect_source_configs(&self) -> Vec<SourceConfig> {
+    pub fn collect_source_configs(&self) -> Vec<&FieldSourceConfig> {
         self.fields
             .iter()
-            .flat_map(|field| field.collect_source_configs())
+            .flat_map(|field| field.get_source_configs())
             .collect()
     }
 }
@@ -51,10 +51,10 @@ impl ObjectExtension {
         self.fields.iter()
     }
 
-    pub fn collect_source_configs(&self) -> Vec<SourceConfig> {
+    pub fn collect_source_configs(&self) -> Vec<&FieldSourceConfig> {
         self.fields
             .iter()
-            .flat_map(|field| field.collect_source_configs())
+            .flat_map(|field| field.get_source_configs())
             .collect()
     }
 }

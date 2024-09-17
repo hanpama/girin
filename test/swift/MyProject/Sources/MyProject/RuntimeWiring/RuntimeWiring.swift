@@ -1,5 +1,6 @@
 extension Runtime.Wiring {
     init() {
+        self.Bookmark = .init()
         self.Currency = .init()
         self.IAM = .init()
         self.Orders = .init()

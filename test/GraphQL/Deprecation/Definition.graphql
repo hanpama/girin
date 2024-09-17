@@ -1,3 +1,0 @@
-type DeprecatedFieldObject {
-  deprecatedField: String @deprecated(reason: "No longer supported")
-}

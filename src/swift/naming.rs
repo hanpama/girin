@@ -5,7 +5,7 @@ pub fn runtime_spec(def_name: &str) -> String {
 }
 
 pub fn source_spec(def_name: &str) -> String {
-    format!("{}", escape(def_name))
+    format!("{}Source", escape(def_name))
 }
 
 pub fn field_name(field_name: &str) -> String {
@@ -18,10 +18,6 @@ pub fn enum_value_name(field_name: &str) -> String {
 
 pub fn type_instance(def_name: &str) -> String {
     format!("{}Definition", def_name)
-}
-
-pub fn source(def_name: &str) -> String {
-    format!("{}", escape(def_name))
 }
 
 pub fn module_name(module_name: &str) -> String {

@@ -107,6 +107,20 @@ impl Definition {
         }
     }
 
+    pub fn is_object(&self) -> bool {
+        match self {
+            Definition::ObjectDefinition(_) => true,
+            _ => false,
+        }
+    }
+
+    pub fn is_object_ext(&self) -> bool {
+        match self {
+            Definition::ObjectExtension(_) => true,
+            _ => false,
+        }
+    }
+
     pub fn as_schema(&self) -> &SchemaDefinition {
         match self {
             Definition::SchemaDefinition(schema) => schema,

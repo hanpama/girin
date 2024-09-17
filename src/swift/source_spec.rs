@@ -75,7 +75,7 @@ fn render_object_source(src: &mut SourceCode, s: &Project, def: &ObjectDefinitio
     let source_configs = s
         .collect_fields(&def.name)
         .into_iter()
-        .flat_map(|f| f.collect_source_configs());
+        .flat_map(|f| f.get_source_configs());
 
     for conf in source_configs {
         src.line(&format!(
@@ -97,7 +97,7 @@ fn render_interface_source(src: &mut SourceCode, s: &Project, def: &InterfaceDef
     let source_configs = s
         .collect_fields(&def.name)
         .into_iter()
-        .flat_map(|f| f.collect_source_configs());
+        .flat_map(|f| f.get_source_configs());
 
     for conf in source_configs {
         src.line(&format!(
@@ -150,7 +150,7 @@ fn render_input_source(src: &mut SourceCode, s: &Project, def: &InputDefinition)
 
 fn render_enum_source(src: &mut SourceCode, s: &Project, def: &EnumDefinition) {
     let name = naming::source_spec(&def.name);
-    src.line(&format!("enum {name} {{"));
+    src.line(&format!("enum {name}: String, Codable {{"));
     src.indent();
     for value in s.collect_enum_values(&def.name) {
         naming::enum_value_name(&value.name);
@@ -161,8 +161,9 @@ fn render_enum_source(src: &mut SourceCode, s: &Project, def: &EnumDefinition) {
 }
 
 fn render_scalar_source(src: &mut SourceCode, s: &Project, def: &ScalarDefinition) {
+    println!("render_scalar_source, {:?}", def);
     let alias = def.type_aliases.get("swift");
-    let name = naming::source_spec(&def.name);
+    let name: String = naming::source_spec(&def.name);
     if let Some(alias) = alias {
         let alias = format_type_alias(src, alias.clone());
         src.line(&format!("typealias {name} = {alias}"));
@@ -178,8 +179,7 @@ fn render_union_source(src: &mut SourceCode, s: &Project, def: &UnionDefinition)
 
 fn format_type_alias(src: &mut SourceCode, expr: String) -> String {
     if expr.contains(".") {
-        todo!();
-        // return src.import(&expr);
+        src.import(expr.split(".").nth(0).unwrap());
     }
     return expr;
 }

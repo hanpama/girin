@@ -6,6 +6,9 @@ extension Runtime.Wiring.Orders.Order {
             },
             orderer: { source, args, context, info in
                 fatalError("Not implemented")
+            },
+            viewerHasBookmarked: { source, args, context, info in
+                fatalError("Not implemented")
             }
         )
         self.OrderProduct = .init(

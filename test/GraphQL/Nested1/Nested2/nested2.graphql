@@ -1,3 +1,0 @@
-type Nested2 {
-    value: String
-}

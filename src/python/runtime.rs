@@ -1,7 +1,7 @@
 use super::{error::Result, format_type_expression, naming, source_code::SourceCode};
 use crate::schema::{
-    Definition, InputValue, InterfaceDefinition, InterfaceExtension, ModuleRef, ObjectDefinition,
-    ObjectExtension, Project, Resolve, ScalarDefinition,
+    Definition, Field, InputValue, ModuleRef, ObjectDefinition, ObjectExtension, Project,
+    ScalarDefinition,
 };
 use std::{fs::File, path::PathBuf};
 
@@ -82,11 +82,6 @@ fn render_module_config(filepath: &PathBuf, d: &ModuleRef) -> Result<()> {
                 src.newline();
                 src.newline();
             }
-            Definition::InterfaceDefinition(inner) => {
-                render_interface_config(&d, &mut src, d.schema, inner);
-                src.newline();
-                src.newline();
-            }
             Definition::ScalarDefinition(inner) => {
                 render_scalar_config(&d, &mut src, d.schema, inner);
                 src.newline();
@@ -95,11 +90,6 @@ fn render_module_config(filepath: &PathBuf, d: &ModuleRef) -> Result<()> {
 
             Definition::ObjectExtension(inner) => {
                 render_object_ext_config(&d, &mut src, d.schema, inner);
-                src.newline();
-                src.newline();
-            }
-            Definition::InterfaceExtension(inner) => {
-                render_interface_ext_config(&d, &mut src, d.schema, inner);
                 src.newline();
                 src.newline();
             }
@@ -126,45 +116,10 @@ fn render_object_config(d: &ModuleRef, src: &mut SourceCode, s: &Project, def: &
 
     let mut pass = true;
 
-    for field in def.iter_fields() {
-        if let Some(resolve) = s.resolve_field_resolve(field) {
-            pass = false;
-            render_field_resolver(d, src, &resolve);
-            src.newline();
-        }
-    }
-
-    if pass {
-        src.line("pass");
-    }
-    src.dedent();
-}
-
-fn render_interface_config(
-    d: &ModuleRef,
-    src: &mut SourceCode,
-    s: &Project,
-    def: &InterfaceDefinition,
-) {
-    let module_accessor = naming::module_path(&d.get_breadcrumbs());
-    let impl_name = naming::impl_type(&def.name);
-    let spec_name = naming::runtime_spec_type(&def.name);
-
-    src.import("import typing");
-    src.line("@typing.final");
-    src.line(&format!(
-        "class {impl_name}(runtime_spec.{module_accessor}.{spec_name}):",
-    ));
-    src.indent();
-
-    let mut pass = true;
-
-    for field in def.iter_fields() {
-        if let Some(resolve) = s.resolve_field_resolve(field) {
-            pass = false;
-            render_field_resolver(d, src, &resolve);
-            src.newline();
-        }
+    for field in def.iter_fields().filter(|f| f.has_resolve_config()) {
+        pass = false;
+        render_field_resolver(d, src, &def.name, field);
+        src.newline();
     }
 
     if pass {
@@ -226,12 +181,10 @@ fn render_object_ext_config(
 
     let mut pass = true;
 
-    for field in def.iter_fields() {
-        if let Some(resolve) = s.resolve_field_resolve(field) {
-            pass = false;
-            render_field_resolver(d, src, &resolve);
-            src.newline();
-        }
+    for field in def.iter_fields().filter(|f| f.has_resolve_config()) {
+        pass = false;
+        render_field_resolver(d, src, &def.name, field);
+        src.newline();
     }
 
     if pass {
@@ -240,39 +193,7 @@ fn render_object_ext_config(
     src.dedent();
 }
 
-fn render_interface_ext_config(
-    d: &ModuleRef,
-    src: &mut SourceCode,
-    s: &Project,
-    def: &InterfaceExtension,
-) {
-    let module_accessor = naming::module_path(&d.get_breadcrumbs());
-    let impl_name = naming::impl_type(&def.name);
-    let spec_name = naming::runtime_spec_type(&def.name);
-
-    src.import("import typing");
-    src.line("@typing.final");
-    src.line(&format!(
-        "class {impl_name}(runtime_spec.{module_accessor}.{spec_name}):",
-    ));
-    src.indent();
-    let mut pass = true;
-
-    for field in def.iter_fields() {
-        if let Some(resolve) = s.resolve_field_resolve(field) {
-            pass = false;
-            render_field_resolver(d, src, &resolve);
-            src.newline();
-        }
-    }
-
-    if pass {
-        src.line("pass");
-    }
-    src.dedent();
-}
-
-fn render_field_resolver(d: &ModuleRef, src: &mut SourceCode, resolve: &Resolve) {
+fn render_field_resolver(d: &ModuleRef, src: &mut SourceCode, def_name: &str, field: &Field) {
     src.import("import graphql");
     src.import("import typing");
     src.import(&format!(
@@ -280,11 +201,17 @@ fn render_field_resolver(d: &ModuleRef, src: &mut SourceCode, resolve: &Resolve)
         ".".repeat(d.get_depth())
     ));
 
-    let sig = if resolve.sync { "def" } else { "async def" };
-    let name = naming::field_name(&resolve.field.name);
-    let source_type = naming::source_reference(&resolve.field.type_name);
-    let return_type = format_type_expression(Some("source_spec"), &resolve.field.field_type);
-    let arguments = format_argument_list(&resolve.field.args);
+    let resolve_config = field.get_resolve_config().unwrap();
+
+    let sig = if resolve_config.sync {
+        "def"
+    } else {
+        "async def"
+    };
+    let name = naming::field_name(&field.name);
+    let source_type = naming::source(def_name);
+    let return_type = format_type_expression(Some("source_spec"), &field.field_type);
+    let arguments = format_argument_list(&field.args);
 
     src.line(&format!(
         "{sig} {name}(self, obj: {source_type}, info: graphql.GraphQLResolveInfo, {arguments}) -> {return_type}:",

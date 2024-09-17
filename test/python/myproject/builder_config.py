@@ -4,6 +4,19 @@ from . import runtime
 
 
 class BuilderConfig:
+    class Bookmark:
+        class Bookmark:
+            Bookmark = runtime.Bookmark.Bookmark.Bookmark()
+            BookmarkID = runtime.Bookmark.Bookmark.BookmarkID()
+            BookmarkConnection = runtime.Bookmark.Bookmark.BookmarkConnection()
+            BookmarkEdge = runtime.Bookmark.Bookmark.BookmarkEdge()
+
+        class Bookmarkable:
+            BookmarkableID = runtime.Bookmark.Bookmarkable.BookmarkableID()
+            BookmarkableBookmarkPayload = runtime.Bookmark.Bookmarkable.BookmarkableBookmarkPayload()
+            BookmarkableUnbookmarkPayload = runtime.Bookmark.Bookmarkable.BookmarkableUnbookmarkPayload()
+            Mutation = runtime.Bookmark.Bookmarkable.Mutation()
+
     class Currency:
         pass
 
@@ -31,7 +44,6 @@ class BuilderConfig:
             Mutation = runtime.Orders.Order.Mutation()
 
     class Relay:
-        Node = runtime.Relay.Node()
         PageInfo = runtime.Relay.PageInfo()
         Query = runtime.Relay.Query()
         Cursor = runtime.Relay.Cursor()
@@ -41,3 +53,4 @@ class BuilderConfig:
         Mutation = runtime.Root.Mutation()
         Timestamp = runtime.Root.Timestamp()
         Decimal = runtime.Root.Decimal()
+        TypeID = runtime.Root.TypeID()

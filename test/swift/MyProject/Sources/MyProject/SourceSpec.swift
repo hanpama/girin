@@ -1,5 +1,111 @@
+import Foundation
+
 struct SourceSpec {
-    enum Currency {
+    protocol BookmarkSource: NodeSource {
+        var id: String { get }
+        var createdAt: TimestampSource { get }
+        var bookmarkerId: String { get }
+        var bookmarkableId: BookmarkableIDSource { get }
+        var bookmarkableTypeId: TypeIDSource { get }
+    }
+
+    typealias BookmarkIDSource = UUID
+
+    struct BookmarkIDFilterSource: Decodable {
+        let eq: (value: BookmarkIDSource?, isSet: Bool)
+        let in_: (value: [BookmarkIDSource]?, isSet: Bool)
+        init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            eq = (value: try container.decode(BookmarkIDSource?.self, forKey: .eq), isSet: container.contains(.eq))
+            in_ = (value: try container.decode([BookmarkIDSource]?.self, forKey: .in_), isSet: container.contains(.in_))
+        }
+        enum CodingKeys: String, CodingKey {
+            case eq
+            case in_
+        }
+    }
+
+
+    struct BookmarkFilterSource: Decodable {
+        let id: (value: BookmarkIDFilterSource?, isSet: Bool)
+        let bookmarkableId: (value: BookmarkableIDFilterSource?, isSet: Bool)
+        let bookmarkerId: (value: UserIDFilterSource?, isSet: Bool)
+        init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            id = (value: try container.decode(BookmarkIDFilterSource?.self, forKey: .id), isSet: container.contains(.id))
+            bookmarkableId = (value: try container.decode(BookmarkableIDFilterSource?.self, forKey: .bookmarkableId), isSet: container.contains(.bookmarkableId))
+            bookmarkerId = (value: try container.decode(UserIDFilterSource?.self, forKey: .bookmarkerId), isSet: container.contains(.bookmarkerId))
+        }
+        enum CodingKeys: String, CodingKey {
+            case id
+            case bookmarkableId
+            case bookmarkerId
+        }
+    }
+
+
+    protocol BookmarkConnectionSource {
+        var edges: [BookmarkEdgeSource] { get }
+        var pageInfo: PageInfoSource { get }
+    }
+
+    protocol BookmarkEdgeSource {
+        var cursor: CursorSource { get }
+    }
+
+    protocol BookmarkableSource {
+    }
+
+    typealias BookmarkableIDSource = BookmarkableID
+
+    struct BookmarkableIDFilterSource: Decodable {
+        let eq: (value: BookmarkableIDSource?, isSet: Bool)
+        let in_: (value: [BookmarkableIDSource]?, isSet: Bool)
+        init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            eq = (value: try container.decode(BookmarkableIDSource?.self, forKey: .eq), isSet: container.contains(.eq))
+            in_ = (value: try container.decode([BookmarkableIDSource]?.self, forKey: .in_), isSet: container.contains(.in_))
+        }
+        enum CodingKeys: String, CodingKey {
+            case eq
+            case in_
+        }
+    }
+
+
+    struct BookmarkableBookmarkInputSource: Decodable {
+        let bookmarkableId: (value: BookmarkableIDSource, isSet: Bool)
+        init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            bookmarkableId = (value: try container.decode(BookmarkableIDSource.self, forKey: .bookmarkableId), isSet: container.contains(.bookmarkableId))
+        }
+        enum CodingKeys: String, CodingKey {
+            case bookmarkableId
+        }
+    }
+
+
+    protocol BookmarkableBookmarkPayloadSource {
+        var bookmarkableBookmarkedId: BookmarkableIDSource { get }
+    }
+
+    struct BookmarkableUnbookmarkInputSource: Decodable {
+        let bookmarkableId: (value: BookmarkableIDSource, isSet: Bool)
+        init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            bookmarkableId = (value: try container.decode(BookmarkableIDSource.self, forKey: .bookmarkableId), isSet: container.contains(.bookmarkableId))
+        }
+        enum CodingKeys: String, CodingKey {
+            case bookmarkableId
+        }
+    }
+
+
+    protocol BookmarkableUnbookmarkPayloadSource {
+        var bookmarkableUnbookmarkedId: BookmarkableIDSource { get }
+    }
+
+    enum CurrencySource: String, Codable {
         case AED
         case AFN
         case ALL
@@ -182,17 +288,17 @@ struct SourceSpec {
         case ZWL
     }
 
-    protocol User: Node {
+    protocol UserSource: NodeSource {
     }
 
-    typealias UserID = String
+    typealias UserIDSource = UUID
 
-    struct UserFilter: Decodable {
-        let id: (value: UserIDFilter?, isSet: Bool)
+    struct UserFilterSource: Decodable {
+        let id: (value: UserIDFilterSource?, isSet: Bool)
         let q: (value: String?, isSet: Bool)
         init(from decoder: Decoder) throws {
             let container = try decoder.container(keyedBy: CodingKeys.self)
-            id = (value: try container.decode(UserIDFilter?.self, forKey: .id), isSet: container.contains(.id))
+            id = (value: try container.decode(UserIDFilterSource?.self, forKey: .id), isSet: container.contains(.id))
             q = (value: try container.decode(String?.self, forKey: .q), isSet: container.contains(.q))
         }
         enum CodingKeys: String, CodingKey {
@@ -202,13 +308,13 @@ struct SourceSpec {
     }
 
 
-    struct UserIDFilter: Decodable {
-        let eq: (value: UserID?, isSet: Bool)
-        let in_: (value: [UserID]?, isSet: Bool)
+    struct UserIDFilterSource: Decodable {
+        let eq: (value: UserIDSource?, isSet: Bool)
+        let in_: (value: [UserIDSource]?, isSet: Bool)
         init(from decoder: Decoder) throws {
             let container = try decoder.container(keyedBy: CodingKeys.self)
-            eq = (value: try container.decode(UserID?.self, forKey: .eq), isSet: container.contains(.eq))
-            in_ = (value: try container.decode([UserID]?.self, forKey: .in_), isSet: container.contains(.in_))
+            eq = (value: try container.decode(UserIDSource?.self, forKey: .eq), isSet: container.contains(.eq))
+            in_ = (value: try container.decode([UserIDSource]?.self, forKey: .in_), isSet: container.contains(.in_))
         }
         enum CodingKeys: String, CodingKey {
             case eq
@@ -217,31 +323,31 @@ struct SourceSpec {
     }
 
 
-    protocol UserConnection {
-        var edges: [UserEdge] { get }
-        var pageInfo: PageInfo { get }
+    protocol UserConnectionSource {
+        var edges: [UserEdgeSource] { get }
+        var pageInfo: PageInfoSource { get }
     }
 
-    protocol UserEdge {
-        var cursor: Cursor { get }
+    protocol UserEdgeSource {
+        var cursor: CursorSource { get }
     }
 
-    protocol Order: Node {
-        var createdAt: Timestamp { get }
-        var updatedAt: Timestamp { get }
-        var ordererId: UserID!? { get }
-        var status: OrderStatus { get }
+    protocol OrderSource: NodeSource, BookmarkableSource {
+        var createdAt: TimestampSource { get }
+        var updatedAt: TimestampSource { get }
+        var ordererId: UserIDSource { get }
+        var status: OrderStatusSource { get }
         var destination: String { get }
-        var products: [OrderProduct] { get }
-        var currency: Currency { get }
-        var taxRate: Decimal { get }
-        var productsSubtotalAmount: Decimal { get }
-        var shippingAmount: Decimal { get }
-        var taxAmount: Decimal { get }
-        var totalAmount: Decimal { get }
+        var products: [OrderProductSource] { get }
+        var currency: CurrencySource { get }
+        var taxRate: DecimalSource { get }
+        var productsSubtotalAmount: DecimalSource { get }
+        var shippingAmount: DecimalSource { get }
+        var taxAmount: DecimalSource { get }
+        var totalAmount: DecimalSource { get }
     }
 
-    enum OrderStatus {
+    enum OrderStatusSource: String, Codable {
         case DRAFT
         case PENDING
         case CONFIRMED
@@ -250,24 +356,24 @@ struct SourceSpec {
         case DELIVERED
     }
 
-    protocol OrderProduct {
+    protocol OrderProductSource {
         var description: String { get }
         var quantity: Int { get }
-        var unitPrice: Decimal { get }
-        var amount: Decimal { get }
+        var unitPrice: DecimalSource { get }
+        var amount: DecimalSource { get }
     }
 
-    struct OrderProductInput: Decodable {
+    struct OrderProductInputSource: Decodable {
         let description: (value: String?, isSet: Bool)
         let quantity: (value: Int?, isSet: Bool)
-        let unitPrice: (value: Decimal?, isSet: Bool)
-        let amount: (value: Decimal?, isSet: Bool)
+        let unitPrice: (value: DecimalSource?, isSet: Bool)
+        let amount: (value: DecimalSource?, isSet: Bool)
         init(from decoder: Decoder) throws {
             let container = try decoder.container(keyedBy: CodingKeys.self)
             description = (value: try container.decode(String?.self, forKey: .description), isSet: container.contains(.description))
             quantity = (value: try container.decode(Int?.self, forKey: .quantity), isSet: container.contains(.quantity))
-            unitPrice = (value: try container.decode(Decimal?.self, forKey: .unitPrice), isSet: container.contains(.unitPrice))
-            amount = (value: try container.decode(Decimal?.self, forKey: .amount), isSet: container.contains(.amount))
+            unitPrice = (value: try container.decode(DecimalSource?.self, forKey: .unitPrice), isSet: container.contains(.unitPrice))
+            amount = (value: try container.decode(DecimalSource?.self, forKey: .amount), isSet: container.contains(.amount))
         }
         enum CodingKeys: String, CodingKey {
             case description
@@ -278,14 +384,14 @@ struct SourceSpec {
     }
 
 
-    typealias OrderID = String
+    typealias OrderIDSource = UUID
 
-    struct OrderFilter: Decodable {
-        let id: (value: OrderIDFilter?, isSet: Bool)
+    struct OrderFilterSource: Decodable {
+        let id: (value: OrderIDFilterSource?, isSet: Bool)
         let q: (value: String?, isSet: Bool)
         init(from decoder: Decoder) throws {
             let container = try decoder.container(keyedBy: CodingKeys.self)
-            id = (value: try container.decode(OrderIDFilter?.self, forKey: .id), isSet: container.contains(.id))
+            id = (value: try container.decode(OrderIDFilterSource?.self, forKey: .id), isSet: container.contains(.id))
             q = (value: try container.decode(String?.self, forKey: .q), isSet: container.contains(.q))
         }
         enum CodingKeys: String, CodingKey {
@@ -295,13 +401,13 @@ struct SourceSpec {
     }
 
 
-    struct OrderIDFilter: Decodable {
-        let eq: (value: OrderID?, isSet: Bool)
-        let in_: (value: [OrderID]?, isSet: Bool)
+    struct OrderIDFilterSource: Decodable {
+        let eq: (value: OrderIDSource?, isSet: Bool)
+        let in_: (value: [OrderIDSource]?, isSet: Bool)
         init(from decoder: Decoder) throws {
             let container = try decoder.container(keyedBy: CodingKeys.self)
-            eq = (value: try container.decode(OrderID?.self, forKey: .eq), isSet: container.contains(.eq))
-            in_ = (value: try container.decode([OrderID]?.self, forKey: .in_), isSet: container.contains(.in_))
+            eq = (value: try container.decode(OrderIDSource?.self, forKey: .eq), isSet: container.contains(.eq))
+            in_ = (value: try container.decode([OrderIDSource]?.self, forKey: .in_), isSet: container.contains(.in_))
         }
         enum CodingKeys: String, CodingKey {
             case eq
@@ -310,27 +416,27 @@ struct SourceSpec {
     }
 
 
-    protocol OrderConnection {
-        var edges: [OrderEdge] { get }
-        var pageInfo: PageInfo { get }
+    protocol OrderConnectionSource {
+        var edges: [OrderEdgeSource] { get }
+        var pageInfo: PageInfoSource { get }
     }
 
-    protocol OrderEdge {
-        var cursor: Cursor { get }
+    protocol OrderEdgeSource {
+        var cursor: CursorSource { get }
     }
 
-    struct OrderCreateInDraftInput: Decodable {
-        let products: (value: [OrderProductInput], isSet: Bool)
-        let currency: (value: Currency, isSet: Bool)
-        let taxRate: (value: Decimal, isSet: Bool)
-        let shippingAmount: (value: Decimal, isSet: Bool)
+    struct OrderCreateInDraftInputSource: Decodable {
+        let products: (value: [OrderProductInputSource], isSet: Bool)
+        let currency: (value: CurrencySource, isSet: Bool)
+        let taxRate: (value: DecimalSource, isSet: Bool)
+        let shippingAmount: (value: DecimalSource, isSet: Bool)
         let destination: (value: String, isSet: Bool)
         init(from decoder: Decoder) throws {
             let container = try decoder.container(keyedBy: CodingKeys.self)
-            products = (value: try container.decode([OrderProductInput].self, forKey: .products), isSet: container.contains(.products))
-            currency = (value: try container.decode(Currency.self, forKey: .currency), isSet: container.contains(.currency))
-            taxRate = (value: try container.decode(Decimal.self, forKey: .taxRate), isSet: container.contains(.taxRate))
-            shippingAmount = (value: try container.decode(Decimal.self, forKey: .shippingAmount), isSet: container.contains(.shippingAmount))
+            products = (value: try container.decode([OrderProductInputSource].self, forKey: .products), isSet: container.contains(.products))
+            currency = (value: try container.decode(CurrencySource.self, forKey: .currency), isSet: container.contains(.currency))
+            taxRate = (value: try container.decode(DecimalSource.self, forKey: .taxRate), isSet: container.contains(.taxRate))
+            shippingAmount = (value: try container.decode(DecimalSource.self, forKey: .shippingAmount), isSet: container.contains(.shippingAmount))
             destination = (value: try container.decode(String.self, forKey: .destination), isSet: container.contains(.destination))
         }
         enum CodingKeys: String, CodingKey {
@@ -343,32 +449,33 @@ struct SourceSpec {
     }
 
 
-    protocol OrderCreateInDraftPayload {
-        var orderCreatedInDraft: Order { get }
+    protocol OrderCreateInDraftPayloadSource {
+        var orderCreatedInDraft: OrderSource { get }
     }
 
-    protocol Node {
-        var id: ID!? { get }
+    protocol NodeSource {
     }
 
-    protocol PageInfo {
+    protocol PageInfoSource {
         var hasNextPage: Bool { get }
         var hasPreviousPage: Bool { get }
-        var startCursor: Cursor? { get }
-        var endCursor: Cursor? { get }
+        var startCursor: CursorSource? { get }
+        var endCursor: CursorSource? { get }
     }
 
-    typealias Cursor = String
+    typealias CursorSource = String
 
-    protocol Query {
+    protocol QuerySource {
     }
 
-    protocol Mutation {
+    protocol MutationSource {
         var version: String { get }
     }
 
-    typealias Timestamp = String
+    typealias TimestampSource = Foundation.Date
 
-    typealias Decimal = String
+    typealias DecimalSource = Foundation.Decimal
+
+    typealias TypeIDSource = Foundation.UUID
 
 }

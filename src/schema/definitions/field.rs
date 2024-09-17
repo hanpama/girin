@@ -7,36 +7,38 @@ pub struct Field {
     pub deprecation_reason: Option<String>,
     pub args: Vec<InputValue>,
     pub field_type: TypeExpression,
-    pub resolve_config: Option<ResolveConfig>,
-    pub source_configs: Vec<SourceConfig>,
-    pub type_name: String,
+    pub resolve_config: Option<FieldResolveConfig>,
+    pub source_configs: Vec<FieldSourceConfig>,
+    // pub type_name: String,
     pub position: Position,
 }
 
+pub enum FieldResolverKind {
+    Sync,
+    Async,
+}
+
 impl Field {
-    pub fn collect_source_configs(&self) -> Vec<SourceConfig> {
-        if !self.source_configs.is_empty() {
-            return self.source_configs.clone();
-        } else if self.resolve_config.is_some() {
-            return Vec::new();
-        } else if !self.args.is_empty() {
-            return Vec::new();
-        } else {
-            vec![SourceConfig {
-                name: self.name.clone(),
-                type_: self.field_type.clone(),
-            }]
-        }
+    pub fn get_source_configs(&self) -> &Vec<FieldSourceConfig> {
+        &self.source_configs
+    }
+
+    pub fn has_resolve_config(&self) -> bool {
+        self.resolve_config.is_some()
+    }
+
+    pub fn get_resolve_config(&self) -> Option<&FieldResolveConfig> {
+        self.resolve_config.as_ref()
     }
 }
 
 #[derive(Debug)]
-pub struct ResolveConfig {
+pub struct FieldResolveConfig {
     pub sync: bool,
 }
 
 #[derive(Debug, Clone)]
-pub struct SourceConfig {
+pub struct FieldSourceConfig {
     pub name: String,
     pub type_: TypeExpression,
 }

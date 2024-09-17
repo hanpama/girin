@@ -49,17 +49,8 @@ pub fn render(outdir: &PathBuf, s: &Project) -> Result<(), Error> {
 fn render_object_source(src: &mut SourceCode, s: &Project, def: &ObjectDefinition) {
     src.import("import typing");
 
-    let mut superclasses = vec!["typing.Protocol".to_owned()];
-    for interface in &def.interfaces {
-        superclasses.push(naming::source(interface));
-    }
-    superclasses.reverse();
-
-    src.line(&format!(
-        "class {name}({superclasses}):",
-        name = naming::source(&def.name),
-        superclasses = superclasses.join(", ")
-    ));
+    let name = naming::source(&def.name);
+    src.line(&format!("class {name}(typing.Protocol):"));
     src.indent();
 
     let mut pass = true;
@@ -67,7 +58,7 @@ fn render_object_source(src: &mut SourceCode, s: &Project, def: &ObjectDefinitio
     let source_configs = s
         .collect_fields(&def.name)
         .into_iter()
-        .flat_map(|f| f.collect_source_configs());
+        .flat_map(|f| f.get_source_configs());
 
     for conf in source_configs {
         pass = false;
@@ -88,40 +79,26 @@ fn render_object_source(src: &mut SourceCode, s: &Project, def: &ObjectDefinitio
 fn render_interface_source(src: &mut SourceCode, s: &Project, def: &InterfaceDefinition) {
     src.import("import typing");
 
-    let mut superclasses = vec!["typing.Protocol".to_owned()];
-    for interface in &def.interfaces {
-        superclasses.push(naming::source(interface));
+    let name = naming::source(&def.name);
+    let possible_types = s.collect_possible_types(&def.name);
+
+    if possible_types.is_empty() {
+        src.line(&format!("{name} = typing.Never"));
+    } else if possible_types.len() == 1 {
+        let possible_type_name = naming::source(possible_types[0]);
+        src.line(&format!("{name}: typing.TypeAlias = \"{possible_type_name}\""));
+    } else {
+        src.line(&format!("{name} = typing.Union["));
+        src.indent();
+        for possible_type in possible_types {
+            src.line(&format!(
+                "\"{name}\",",
+                name = naming::source(possible_type)
+            ));
+        }
+        src.dedent();
+        src.line("]");
     }
-    superclasses.reverse();
-
-    src.line(&format!(
-        "class {name}({superclasses}):",
-        name = naming::source(&def.name),
-        superclasses = superclasses.join(", ")
-    ));
-    src.indent();
-
-    let mut pass = true;
-
-    let source_configs = s
-        .collect_fields(&def.name)
-        .into_iter()
-        .flat_map(|f| f.collect_source_configs());
-
-    for conf in source_configs {
-        pass = false;
-        src.line(&format!(
-            "{name}: \"{type}\"",
-            name = naming::field_name(&conf.name),
-            type = type_expr::format_type_expression(None, &conf.type_)
-        ));
-    }
-
-    if pass {
-        src.line("pass");
-    }
-
-    src.dedent();
 }
 
 fn render_input_source(src: &mut SourceCode, s: &Project, def: &InputDefinition) {
@@ -178,9 +155,8 @@ fn render_scalar_source(src: &mut SourceCode, s: &Project, def: &ScalarDefinitio
             let from = tokens[0..tokens.len() - 1].join(".");
             let import = tokens[tokens.len() - 1];
             src.import(&format!("from {from} import {import} as {name}"));
-            src.line(&format!("{name} = {name}"));
         } else {
-            src.line(&format!("{name} = {alias}"));
+            src.line(&format!("{name}: typing.TypeAlias = {alias}"));
         }
     } else {
         src.line(&format!("{name} = typing.Any"));

@@ -5,21 +5,16 @@ import typing
 
 
 @typing.final
-class Node(runtime_spec.Relay.Node):
-    pass
-
-
-@typing.final
 class PageInfo(runtime_spec.Relay.PageInfo):
     pass
 
 
 @typing.final
 class Query(runtime_spec.Relay.Query):
-    async def node(self, obj: source_spec.Query, info: graphql.GraphQLResolveInfo, id: object) -> source_spec.Node | None:
+    async def node(self, obj: QuerySource, info: graphql.GraphQLResolveInfo, id: object) -> source_spec.NodeSource | None:
         raise NotImplementedError()
 
-    async def nodes(self, obj: source_spec.Query, info: graphql.GraphQLResolveInfo, ids: list[object]) -> list[source_spec.Node | None]:
+    async def nodes(self, obj: QuerySource, info: graphql.GraphQLResolveInfo, ids: list[object]) -> list[source_spec.NodeSource | None]:
         raise NotImplementedError()
 
 

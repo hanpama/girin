@@ -1,4 +1,4 @@
-use super::{Field, Position, SourceConfig};
+use super::{Field, Position, FieldSourceConfig};
 
 #[derive(Debug)]
 pub struct InterfaceDefinition {
@@ -21,13 +21,6 @@ impl InterfaceDefinition {
     pub fn iter_fields(&self) -> impl Iterator<Item = &Field> {
         self.fields.iter()
     }
-
-    pub fn collect_source_configs(&self) -> Vec<SourceConfig> {
-        self.fields
-            .iter()
-            .flat_map(|field| field.collect_source_configs())
-            .collect()
-    }
 }
 
 #[derive(Debug)]
@@ -49,12 +42,5 @@ impl InterfaceExtension {
 
     pub fn iter_fields(&self) -> impl Iterator<Item = &Field> {
         self.fields.iter()
-    }
-
-    pub fn collect_source_configs(&self) -> Vec<SourceConfig> {
-        self.fields
-            .iter()
-            .flat_map(|field| field.collect_source_configs())
-            .collect()
     }
 }

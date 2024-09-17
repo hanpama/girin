@@ -3,7 +3,7 @@ use std::{
     path::PathBuf,
 };
 
-use super::{Definition, EnumValue, Field, InputValue, ModuleRef, Resolve};
+use super::{Definition, EnumValue, Field, InputValue, ModuleRef};
 
 #[derive(Debug)]
 pub struct Project {
@@ -17,6 +17,7 @@ pub struct Project {
 
     object_unions: HashMap<String, HashSet<String>>,
     interface_interfaces: HashMap<String, HashSet<String>>,
+    interface_objects: HashMap<String, HashSet<String>>,
 }
 
 impl Project {
@@ -32,6 +33,7 @@ impl Project {
 
             object_unions: HashMap::new(),
             interface_interfaces: HashMap::new(),
+            interface_objects: HashMap::new(),
         }
     }
     pub fn get_query(&self) -> Option<&str> {
@@ -138,6 +140,15 @@ impl Project {
             .collect()
     }
 
+    pub fn collect_possible_types<'a>(&'a self, name: &'a str) -> Vec<&'a str> {
+        self.interface_objects
+            .get(name)
+            .into_iter()
+            .flat_map(|objects| objects.iter())
+            .map(|object| object.as_str())
+            .collect()
+    }
+
     pub fn collect_fields<'a>(&'a self, name: &'a str) -> Vec<&'a Field> {
         let definition_fields = match self.get_type_definition(name) {
             Definition::ObjectDefinition(object) => object.iter_fields().collect(),
@@ -209,17 +220,6 @@ impl Project {
         self.definitions.get(file)
     }
 
-    // pub fn resolve_field_resolve<'a>(&'a self, field: &'a Field) -> Option<Resolve<'a>> {
-    //     // TODO: 필드수준으로 옮길 것
-    //     if let Some(conf) = &field.resolve {
-    //         return Some(Resolve::new(conf.sync, field));
-    //     }
-    //     if field.args.len() > 0 {
-    //         return Some(Resolve::new(false, field));
-    //     }
-    //     None
-    // }
-
     pub fn add_definition(&mut self, type_: Definition) {
         let file = type_.get_position().file.clone();
 
@@ -288,6 +288,24 @@ impl Project {
                 .or_insert_with(HashSet::new);
             for interface in type_.as_interface_ext().iter_interfaces() {
                 hashset.insert(interface.to_owned());
+            }
+        }
+        if type_.is_object() {
+            let name = type_.get_definition_name().unwrap();
+            for interface in type_.as_object().iter_interfaces() {
+                self.interface_objects
+                    .entry(interface.to_owned())
+                    .or_insert_with(HashSet::new)
+                    .insert(name.to_owned());
+            }
+        }
+        if type_.is_object_ext() {
+            let name = type_.get_definition_name().unwrap();
+            for interface in type_.as_object_ext().iter_interfaces() {
+                self.interface_objects
+                    .entry(interface.to_owned())
+                    .or_insert_with(HashSet::new)
+                    .insert(name.to_owned());
             }
         }
 

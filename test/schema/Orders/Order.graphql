@@ -1,4 +1,4 @@
-type Order implements Node {
+type Order implements Node & Bookmarkable {
   id: ID! @resolve(sync: true)
 
   createdAt: Timestamp!
@@ -16,6 +16,8 @@ type Order implements Node {
   shippingAmount: Decimal!
   taxAmount: Decimal!
   totalAmount: Decimal!
+
+  viewerHasBookmarked: Boolean! @resolve
 }
 
 enum OrderStatus {
@@ -73,7 +75,7 @@ extend type Query {
     last: Int
     before: Cursor
     offset: Int
-    filter: OrderFilter
+    filters: [OrderFilter!]
   ): OrderConnection!
 }
 
@@ -84,7 +86,7 @@ extend type User {
     last: Int
     before: Cursor
     offset: Int
-    filter: OrderFilter
+    filters: [OrderFilter!]
   ): OrderConnection! @resolve
 }
 
@@ -106,5 +108,5 @@ type OrderCreateInDraftPayload {
 }
 
 extend type Mutation {
-  orderCreateInDraft(input: OrderCreateInDraftInput!): OrderCreateInDraftPayload!
+  orderCreateInDraft(input: OrderCreateInDraftInput!): OrderCreateInDraftPayload
 }

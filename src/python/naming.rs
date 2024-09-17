@@ -24,12 +24,7 @@ pub fn build_config_field(def_name: &str) -> String {
 }
 
 pub fn source(def_name: &str) -> String {
-    format!("{}", escape(def_name))
-}
-
-pub fn source_reference(def_name: &str) -> String {
-    // 이거 각 장소로
-    format!("source_spec.{}", source(def_name))
+    format!("{}Source", escape(def_name))
 }
 
 pub fn type_instance(def_name: &str) -> String {

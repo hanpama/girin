@@ -46,19 +46,11 @@ fn render_directory(src: &mut SourceCode, d: ModuleRef) -> Result<()> {
                     pass = false;
                     render_config_field(src, &d, type_);
                 }
-                Definition::InterfaceDefinition(_) => {
-                    pass = false;
-                    render_config_field(src, &d, type_);
-                }
                 Definition::ScalarDefinition(_) => {
                     pass = false;
                     render_config_field(src, &d, type_);
                 }
                 Definition::ObjectExtension(_) => {
-                    pass = false;
-                    render_config_field(src, &d, type_);
-                }
-                Definition::InterfaceExtension(_) => {
                     pass = false;
                     render_config_field(src, &d, type_);
                 }

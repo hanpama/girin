@@ -1,0 +1,39 @@
+interface Bookmarkable implements Node {
+    id: ID!
+    viewerHasBookmarked: Boolean!
+    bookmarks(first: Int, after: Cursor, last: Int, before: Cursor, filters: [BookmarkFilter!]): BookmarkConnection!
+}
+
+scalar BookmarkableID
+    @sourceType(alias: "swift:BookmarkableID")
+    @sourceType(alias: "python:myproject.scalars.BookmarkableID")
+
+input BookmarkableIDFilter {
+    eq: BookmarkableID
+    in: [BookmarkableID!]
+}
+
+input BookmarkableBookmarkInput {
+    bookmarkableId: BookmarkableID!
+}
+
+type BookmarkableBookmarkPayload {
+    bookmarkableBookmarked: Bookmarkable!
+        @resolve
+        @source(name: "bookmarkableBookmarkedId", type: "BookmarkableID!")
+}
+
+input BookmarkableUnbookmarkInput {
+    bookmarkableId: BookmarkableID!
+}
+
+type BookmarkableUnbookmarkPayload {
+    bookmarkableUnbookmarked: Bookmarkable!
+        @resolve
+        @source(name: "bookmarkableUnbookmarkedId", type: "BookmarkableID!")
+}
+
+extend type Mutation {
+    bookmarkBookmarkable(input: BookmarkableBookmarkInput!): BookmarkableBookmarkPayload
+    unbookmarkBookmarkable(input: BookmarkableUnbookmarkInput!): BookmarkableUnbookmarkPayload
+}

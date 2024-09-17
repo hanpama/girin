@@ -5,6 +5,186 @@ import graphql
 
 
 def build_schema() -> graphql.GraphQLSchema:
+    BookmarkType = graphql.GraphQLObjectType(
+        name="Bookmark",
+        fields=lambda: {
+            "id": graphql.GraphQLField(
+                type_=graphql.GraphQLNonNull(graphql.GraphQLID),
+                resolve=graphql.default_field_resolver,
+            ),
+            "createdAt": graphql.GraphQLField(
+                type_=graphql.GraphQLNonNull(TimestampType),
+                resolve=graphql.default_field_resolver,
+            ),
+            "bookmarker": graphql.GraphQLField(
+                type_=graphql.GraphQLNonNull(UserType),
+                resolve=BuilderConfig.Bookmark.Bookmark.Bookmark.bookmarker,
+            ),
+            "bookmarkable": graphql.GraphQLField(
+                type_=graphql.GraphQLNonNull(BookmarkableType),
+                resolve=BuilderConfig.Bookmark.Bookmark.Bookmark.bookmarkable,
+            ),
+        },
+        interfaces=lambda: [
+            NodeType,
+        ],
+    )
+    BookmarkIDType = graphql.GraphQLScalarType(
+        name="BookmarkID",
+        serialize=BuilderConfig.Bookmark.Bookmark.BookmarkID.serialize,
+        parse_value=BuilderConfig.Bookmark.Bookmark.BookmarkID.parse_value,
+        parse_literal=BuilderConfig.Bookmark.Bookmark.BookmarkID.parse_literal,
+    )
+    BookmarkIDFilterType = graphql.GraphQLInputObjectType(
+        name="BookmarkIDFilter",
+        fields=lambda: {
+            "eq": graphql.GraphQLInputField(
+                type_=BookmarkIDType,
+                out_name="eq",
+            ),
+            "in": graphql.GraphQLInputField(
+                type_=graphql.GraphQLList(graphql.GraphQLNonNull(BookmarkIDType)),
+                out_name="in_",
+            ),
+        },
+    )
+    BookmarkFilterType = graphql.GraphQLInputObjectType(
+        name="BookmarkFilter",
+        fields=lambda: {
+            "id": graphql.GraphQLInputField(
+                type_=BookmarkIDFilterType,
+                out_name="id",
+            ),
+            "bookmarkableId": graphql.GraphQLInputField(
+                type_=BookmarkableIDFilterType,
+                out_name="bookmarkable_id",
+            ),
+            "bookmarkerId": graphql.GraphQLInputField(
+                type_=UserIDFilterType,
+                out_name="bookmarker_id",
+            ),
+        },
+    )
+    BookmarkConnectionType = graphql.GraphQLObjectType(
+        name="BookmarkConnection",
+        fields=lambda: {
+            "edges": graphql.GraphQLField(
+                type_=graphql.GraphQLNonNull(graphql.GraphQLList(graphql.GraphQLNonNull(BookmarkEdgeType))),
+                resolve=graphql.default_field_resolver,
+            ),
+            "pageInfo": graphql.GraphQLField(
+                type_=graphql.GraphQLNonNull(PageInfoType),
+                resolve=graphql.default_field_resolver,
+            ),
+        },
+    )
+    BookmarkEdgeType = graphql.GraphQLObjectType(
+        name="BookmarkEdge",
+        fields=lambda: {
+            "node": graphql.GraphQLField(
+                type_=BookmarkType,
+                resolve=BuilderConfig.Bookmark.Bookmark.BookmarkEdge.node,
+            ),
+            "cursor": graphql.GraphQLField(
+                type_=graphql.GraphQLNonNull(CursorType),
+                resolve=graphql.default_field_resolver,
+            ),
+        },
+    )
+    BookmarkableType = graphql.GraphQLInterfaceType(
+        name="Bookmarkable",
+        fields=lambda: {
+            "id": graphql.GraphQLField(
+                type_=graphql.GraphQLNonNull(graphql.GraphQLID),
+            ),
+            "viewerHasBookmarked": graphql.GraphQLField(
+                type_=graphql.GraphQLNonNull(graphql.GraphQLBoolean),
+            ),
+            "bookmarks": graphql.GraphQLField(
+                type_=graphql.GraphQLNonNull(BookmarkConnectionType),
+                args={
+                    "first": graphql.GraphQLArgument(
+                        type_=graphql.GraphQLInt,
+                        out_name="first",
+                    ),
+                    "after": graphql.GraphQLArgument(
+                        type_=CursorType,
+                        out_name="after",
+                    ),
+                    "last": graphql.GraphQLArgument(
+                        type_=graphql.GraphQLInt,
+                        out_name="last",
+                    ),
+                    "before": graphql.GraphQLArgument(
+                        type_=CursorType,
+                        out_name="before",
+                    ),
+                    "filters": graphql.GraphQLArgument(
+                        type_=graphql.GraphQLList(graphql.GraphQLNonNull(BookmarkFilterType)),
+                        out_name="filters",
+                    ),
+                },
+            ),
+        },
+        interfaces=lambda: [
+            NodeType,
+        ],
+    )
+    BookmarkableIDType = graphql.GraphQLScalarType(
+        name="BookmarkableID",
+        serialize=BuilderConfig.Bookmark.Bookmarkable.BookmarkableID.serialize,
+        parse_value=BuilderConfig.Bookmark.Bookmarkable.BookmarkableID.parse_value,
+        parse_literal=BuilderConfig.Bookmark.Bookmarkable.BookmarkableID.parse_literal,
+    )
+    BookmarkableIDFilterType = graphql.GraphQLInputObjectType(
+        name="BookmarkableIDFilter",
+        fields=lambda: {
+            "eq": graphql.GraphQLInputField(
+                type_=BookmarkableIDType,
+                out_name="eq",
+            ),
+            "in": graphql.GraphQLInputField(
+                type_=graphql.GraphQLList(graphql.GraphQLNonNull(BookmarkableIDType)),
+                out_name="in_",
+            ),
+        },
+    )
+    BookmarkableBookmarkInputType = graphql.GraphQLInputObjectType(
+        name="BookmarkableBookmarkInput",
+        fields=lambda: {
+            "bookmarkableId": graphql.GraphQLInputField(
+                type_=graphql.GraphQLNonNull(BookmarkableIDType),
+                out_name="bookmarkable_id",
+            ),
+        },
+    )
+    BookmarkableBookmarkPayloadType = graphql.GraphQLObjectType(
+        name="BookmarkableBookmarkPayload",
+        fields=lambda: {
+            "bookmarkableBookmarked": graphql.GraphQLField(
+                type_=graphql.GraphQLNonNull(BookmarkableType),
+                resolve=BuilderConfig.Bookmark.Bookmarkable.BookmarkableBookmarkPayload.bookmarkable_bookmarked,
+            ),
+        },
+    )
+    BookmarkableUnbookmarkInputType = graphql.GraphQLInputObjectType(
+        name="BookmarkableUnbookmarkInput",
+        fields=lambda: {
+            "bookmarkableId": graphql.GraphQLInputField(
+                type_=graphql.GraphQLNonNull(BookmarkableIDType),
+                out_name="bookmarkable_id",
+            ),
+        },
+    )
+    BookmarkableUnbookmarkPayloadType = graphql.GraphQLObjectType(
+        name="BookmarkableUnbookmarkPayload",
+        fields=lambda: {
+            "bookmarkableUnbookmarked": graphql.GraphQLField(
+                type_=graphql.GraphQLNonNull(BookmarkableType),
+                resolve=BuilderConfig.Bookmark.Bookmarkable.BookmarkableUnbookmarkPayload.bookmarkable_unbookmarked,
+            ),
+        },
+    )
     CurrencyType = graphql.GraphQLEnumType(
         name="Currency",
         description="Currency (ISO 4217)\n",
@@ -761,9 +941,9 @@ def build_schema() -> graphql.GraphQLSchema:
                         type_=graphql.GraphQLInt,
                         out_name="offset",
                     ),
-                    "filter": graphql.GraphQLArgument(
-                        type_=OrderFilterType,
-                        out_name="filter",
+                    "filters": graphql.GraphQLArgument(
+                        type_=graphql.GraphQLList(graphql.GraphQLNonNull(OrderFilterType)),
+                        out_name="filters",
                     ),
                 },
                 resolve=BuilderConfig.Orders.Order.User.orders,
@@ -886,9 +1066,14 @@ def build_schema() -> graphql.GraphQLSchema:
                 type_=graphql.GraphQLNonNull(DecimalType),
                 resolve=graphql.default_field_resolver,
             ),
+            "viewerHasBookmarked": graphql.GraphQLField(
+                type_=graphql.GraphQLNonNull(graphql.GraphQLBoolean),
+                resolve=BuilderConfig.Orders.Order.Order.viewer_has_bookmarked,
+            ),
         },
         interfaces=lambda: [
             NodeType,
+            BookmarkableType,
         ],
     )
     OrderStatusType = graphql.GraphQLEnumType(
@@ -1055,7 +1240,6 @@ def build_schema() -> graphql.GraphQLSchema:
             "id": graphql.GraphQLField(
                 type_=graphql.GraphQLNonNull(graphql.GraphQLID),
                 description="The id of the object.\n",
-                resolve=graphql.default_field_resolver,
             ),
         },
     )
@@ -1197,9 +1381,9 @@ def build_schema() -> graphql.GraphQLSchema:
                         type_=graphql.GraphQLInt,
                         out_name="offset",
                     ),
-                    "filter": graphql.GraphQLArgument(
-                        type_=OrderFilterType,
-                        out_name="filter",
+                    "filters": graphql.GraphQLArgument(
+                        type_=graphql.GraphQLList(graphql.GraphQLNonNull(OrderFilterType)),
+                        out_name="filters",
                     ),
                 },
                 resolve=BuilderConfig.Orders.Order.Query.order_connection,
@@ -1213,8 +1397,28 @@ def build_schema() -> graphql.GraphQLSchema:
                 type_=graphql.GraphQLNonNull(graphql.GraphQLString),
                 resolve=graphql.default_field_resolver,
             ),
+            "bookmarkBookmarkable": graphql.GraphQLField(
+                type_=BookmarkableBookmarkPayloadType,
+                args={
+                    "input": graphql.GraphQLArgument(
+                        type_=graphql.GraphQLNonNull(BookmarkableBookmarkInputType),
+                        out_name="input",
+                    ),
+                },
+                resolve=BuilderConfig.Bookmark.Bookmarkable.Mutation.bookmark_bookmarkable,
+            ),
+            "unbookmarkBookmarkable": graphql.GraphQLField(
+                type_=BookmarkableUnbookmarkPayloadType,
+                args={
+                    "input": graphql.GraphQLArgument(
+                        type_=graphql.GraphQLNonNull(BookmarkableUnbookmarkInputType),
+                        out_name="input",
+                    ),
+                },
+                resolve=BuilderConfig.Bookmark.Bookmarkable.Mutation.unbookmark_bookmarkable,
+            ),
             "orderCreateInDraft": graphql.GraphQLField(
-                type_=graphql.GraphQLNonNull(OrderCreateInDraftPayloadType),
+                type_=OrderCreateInDraftPayloadType,
                 args={
                     "input": graphql.GraphQLArgument(
                         type_=graphql.GraphQLNonNull(OrderCreateInDraftInputType),
@@ -1239,10 +1443,29 @@ def build_schema() -> graphql.GraphQLSchema:
         parse_value=BuilderConfig.Root.Decimal.parse_value,
         parse_literal=BuilderConfig.Root.Decimal.parse_literal,
     )
+    TypeIDType = graphql.GraphQLScalarType(
+        name="TypeID",
+        serialize=BuilderConfig.Root.TypeID.serialize,
+        parse_value=BuilderConfig.Root.TypeID.parse_value,
+        parse_literal=BuilderConfig.Root.TypeID.parse_literal,
+    )
     return graphql.GraphQLSchema(
         query=QueryType,
         mutation=MutationType,
         types=[
+            BookmarkType,
+            BookmarkIDType,
+            BookmarkIDFilterType,
+            BookmarkFilterType,
+            BookmarkConnectionType,
+            BookmarkEdgeType,
+            BookmarkableType,
+            BookmarkableIDType,
+            BookmarkableIDFilterType,
+            BookmarkableBookmarkInputType,
+            BookmarkableBookmarkPayloadType,
+            BookmarkableUnbookmarkInputType,
+            BookmarkableUnbookmarkPayloadType,
             CurrencyType,
             UserType,
             UserIDType,
@@ -1268,5 +1491,6 @@ def build_schema() -> graphql.GraphQLSchema:
             MutationType,
             TimestampType,
             DecimalType,
+            TypeIDType,
         ],
     )

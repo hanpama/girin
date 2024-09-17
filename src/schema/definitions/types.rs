@@ -17,7 +17,7 @@ impl fmt::Display for Position {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum TypeExpression {
     NamedType(String),
     ListType(Box<TypeExpression>),

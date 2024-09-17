@@ -78,7 +78,7 @@ fn render_object_type(src: &mut SourceCode, s: &Project, def: &ObjectDefinition)
     src.line("fields=lambda: {");
     src.indent();
     for field in s.collect_fields(&def.name) {
-        render_field(src, s, field)
+        render_object_field(src, s, &def.name, field)
     }
     src.dedent();
     src.line("},");
@@ -112,7 +112,7 @@ fn render_interface_type(src: &mut SourceCode, s: &Project, def: &InterfaceDefin
     src.line("fields=lambda: {");
     src.indent();
     for field in s.collect_fields(&def.name) {
-        render_field(src, s, field)
+        render_interface_field(src, s, field)
     }
     src.dedent();
     src.line("},");
@@ -231,7 +231,7 @@ fn render_union_type(src: &mut SourceCode, s: &Project, def: &UnionDefinition) {
     src.line(")");
 }
 
-fn render_field(src: &mut SourceCode, s: &Project, def: &Field) {
+fn render_object_field(src: &mut SourceCode, s: &Project, type_name: &str, def: &Field) {
     src.line(format!("\"{}\": graphql.GraphQLField(", def.name));
     src.indent();
 
@@ -255,9 +255,9 @@ fn render_field(src: &mut SourceCode, s: &Project, def: &Field) {
         src.dedent();
         src.line("},");
     }
-    if let Some(opt) = s.resolve_field_resolve(def) {
-        let module_ref = s.get_module_ref(&opt.field.position.file);
-        let def_config_path = format_definition_config_path(module_ref, &opt.field.type_name);
+    if let Some(opt) = def.get_resolve_config() {
+        let module_ref = s.get_module_ref(&def.position.file);
+        let def_config_path = format_definition_config_path(module_ref, &type_name);
 
         src.line(format!(
             "resolve={}.{},",
@@ -268,6 +268,34 @@ fn render_field(src: &mut SourceCode, s: &Project, def: &Field) {
         src.line("resolve=graphql.default_field_resolver,");
     }
 
+    src.dedent();
+    src.line("),");
+}
+
+fn render_interface_field(src: &mut SourceCode, s: &Project, def: &Field) {
+    src.line(format!("\"{}\": graphql.GraphQLField(", def.name));
+    src.indent();
+
+    src.line(format!(
+        "type_={},",
+        format_type_expression(&def.field_type)
+    ));
+    if let Some(deprecation_reason) = &def.deprecation_reason {
+        src.line(format!("deprecation_reason={:?},", deprecation_reason));
+    }
+    if let Some(description) = &def.description {
+        src.line(format!("description={:?},", description));
+    }
+
+    if !def.args.is_empty() {
+        src.line("args={");
+        src.indent();
+        for arg in &def.args {
+            render_arg(src, arg);
+        }
+        src.dedent();
+        src.line("},");
+    }
     src.dedent();
     src.line("),");
 }

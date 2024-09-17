@@ -1,3 +1,62 @@
+type Bookmark implements Node {
+  id: ID!
+  createdAt: Timestamp!
+  bookmarker: User!
+  bookmarkable: Bookmarkable!
+}
+
+scalar BookmarkID
+
+input BookmarkIDFilter {
+  eq: BookmarkID
+  in: [BookmarkID!]
+}
+
+input BookmarkFilter {
+  id: BookmarkIDFilter
+  bookmarkableId: BookmarkableIDFilter
+  bookmarkerId: UserIDFilter
+}
+
+type BookmarkConnection {
+  edges: [BookmarkEdge!]!
+  pageInfo: PageInfo!
+}
+
+type BookmarkEdge {
+  node: Bookmark
+  cursor: Cursor!
+}
+
+interface Bookmarkable implements Node {
+  id: ID!
+  viewerHasBookmarked: Boolean!
+  bookmarks(first: Int, after: Cursor, last: Int, before: Cursor, filters: [BookmarkFilter!]): BookmarkConnection!
+}
+
+scalar BookmarkableID
+
+input BookmarkableIDFilter {
+  eq: BookmarkableID
+  in: [BookmarkableID!]
+}
+
+input BookmarkableBookmarkInput {
+  bookmarkableId: BookmarkableID!
+}
+
+type BookmarkableBookmarkPayload {
+  bookmarkableBookmarked: Bookmarkable!
+}
+
+input BookmarkableUnbookmarkInput {
+  bookmarkableId: BookmarkableID!
+}
+
+type BookmarkableUnbookmarkPayload {
+  bookmarkableUnbookmarked: Bookmarkable!
+}
+
 """
   Currency (ISO 4217)
 """
@@ -546,7 +605,7 @@ enum Currency {
 
 type User implements Node {
   id: ID!
-  orders(first: Int, after: Cursor, last: Int, before: Cursor, offset: Int, filter: OrderFilter): OrderConnection!
+  orders(first: Int, after: Cursor, last: Int, before: Cursor, offset: Int, filters: [OrderFilter!]): OrderConnection!
 }
 
 scalar UserID
@@ -571,7 +630,7 @@ type UserEdge {
   cursor: Cursor!
 }
 
-type Order implements Node {
+type Order implements Node & Bookmarkable {
   id: ID!
   createdAt: Timestamp!
   updatedAt: Timestamp!
@@ -585,6 +644,7 @@ type Order implements Node {
   shippingAmount: Decimal!
   taxAmount: Decimal!
   totalAmount: Decimal!
+  viewerHasBookmarked: Boolean!
 }
 
 enum OrderStatus {
@@ -692,12 +752,14 @@ type Query {
   userConnection(first: Int, after: Cursor, last: Int, before: Cursor, offset: Int, filter: UserFilter): UserConnection!
   viewer: User
   order(id: OrderID!): Order!
-  orderConnection(first: Int, after: Cursor, last: Int, before: Cursor, offset: Int, filter: OrderFilter): OrderConnection!
+  orderConnection(first: Int, after: Cursor, last: Int, before: Cursor, offset: Int, filters: [OrderFilter!]): OrderConnection!
 }
 
 type Mutation {
   version: String!
-  orderCreateInDraft(input: OrderCreateInDraftInput!): OrderCreateInDraftPayload!
+  bookmarkBookmarkable(input: BookmarkableBookmarkInput!): BookmarkableBookmarkPayload
+  unbookmarkBookmarkable(input: BookmarkableUnbookmarkInput!): BookmarkableUnbookmarkPayload
+  orderCreateInDraft(input: OrderCreateInDraftInput!): OrderCreateInDraftPayload
 }
 
 """
@@ -709,3 +771,5 @@ scalar Timestamp
   Decimal floating point partially implmenting http://speleotrove.com/decimal/decarith.html
 """
 scalar Decimal
+
+scalar TypeID

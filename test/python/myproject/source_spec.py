@@ -1,9 +1,59 @@
 # GENERATED. DO NOT EDIT.
 # fmt: off
+from datetime import datetime as TimestampSource
+from decimal import Decimal as DecimalSource
+from myproject.scalars import BookmarkableID as BookmarkableIDSource
+from uuid import UUID as BookmarkIDSource
+from uuid import UUID as OrderIDSource
+from uuid import UUID as TypeIDSource
+from uuid import UUID as UserIDSource
 import typing
 
 
-Currency = typing.Literal[
+class BookmarkSource(typing.Protocol):
+    id: "object"
+    created_at: "TimestampSource"
+    bookmarker_id: "object"
+    bookmarkable_id: "BookmarkableIDSource"
+    bookmarkable_type_id: "TypeIDSource"
+
+
+class BookmarkIDFilterSource(typing.TypedDict):
+    eq: "typing.NotRequired[BookmarkIDSource | None]"
+    in_: "typing.NotRequired[list[BookmarkIDSource] | None]"
+
+class BookmarkFilterSource(typing.TypedDict):
+    id: "typing.NotRequired[BookmarkIDFilterSource | None]"
+    bookmarkable_id: "typing.NotRequired[BookmarkableIDFilterSource | None]"
+    bookmarker_id: "typing.NotRequired[UserIDFilterSource | None]"
+
+class BookmarkConnectionSource(typing.Protocol):
+    edges: "list[BookmarkEdgeSource]"
+    page_info: "PageInfoSource"
+
+class BookmarkEdgeSource(typing.Protocol):
+    cursor: "CursorSource"
+
+BookmarkableSource: typing.TypeAlias = "OrderSource"
+
+
+class BookmarkableIDFilterSource(typing.TypedDict):
+    eq: "typing.NotRequired[BookmarkableIDSource | None]"
+    in_: "typing.NotRequired[list[BookmarkableIDSource] | None]"
+
+class BookmarkableBookmarkInputSource(typing.TypedDict):
+    bookmarkable_id: "BookmarkableIDSource"
+
+class BookmarkableBookmarkPayloadSource(typing.Protocol):
+    bookmarkable_bookmarked_id: "BookmarkableIDSource"
+
+class BookmarkableUnbookmarkInputSource(typing.TypedDict):
+    bookmarkable_id: "BookmarkableIDSource"
+
+class BookmarkableUnbookmarkPayloadSource(typing.Protocol):
+    bookmarkable_unbookmarked_id: "BookmarkableIDSource"
+
+CurrencySource = typing.Literal[
     "AED",
     "AFN",
     "ALL",
@@ -186,41 +236,40 @@ Currency = typing.Literal[
     "ZWL",
 ]
 
-class User(Node, typing.Protocol):
+class UserSource(typing.Protocol):
     pass
 
-UserID = typing.Any
 
-class UserFilter(typing.TypedDict):
-    id: "typing.NotRequired[UserIDFilter | None]"
+class UserFilterSource(typing.TypedDict):
+    id: "typing.NotRequired[UserIDFilterSource | None]"
     q: "typing.NotRequired[str | None]"
 
-class UserIDFilter(typing.TypedDict):
-    eq: "typing.NotRequired[UserID | None]"
-    in_: "typing.NotRequired[list[UserID] | None]"
+class UserIDFilterSource(typing.TypedDict):
+    eq: "typing.NotRequired[UserIDSource | None]"
+    in_: "typing.NotRequired[list[UserIDSource] | None]"
 
-class UserConnection(typing.Protocol):
-    edges: "list[UserEdge]"
-    page_info: "PageInfo"
+class UserConnectionSource(typing.Protocol):
+    edges: "list[UserEdgeSource]"
+    page_info: "PageInfoSource"
 
-class UserEdge(typing.Protocol):
-    cursor: "Cursor"
+class UserEdgeSource(typing.Protocol):
+    cursor: "CursorSource"
 
-class Order(Node, typing.Protocol):
-    created_at: "Timestamp"
-    updated_at: "Timestamp"
-    orderer_id: "UserID! | None"
-    status: "OrderStatus"
+class OrderSource(typing.Protocol):
+    created_at: "TimestampSource"
+    updated_at: "TimestampSource"
+    orderer_id: "UserIDSource"
+    status: "OrderStatusSource"
     destination: "str"
-    products: "list[OrderProduct]"
-    currency: "Currency"
-    tax_rate: "Decimal"
-    products_subtotal_amount: "Decimal"
-    shipping_amount: "Decimal"
-    tax_amount: "Decimal"
-    total_amount: "Decimal"
+    products: "list[OrderProductSource]"
+    currency: "CurrencySource"
+    tax_rate: "DecimalSource"
+    products_subtotal_amount: "DecimalSource"
+    shipping_amount: "DecimalSource"
+    tax_amount: "DecimalSource"
+    total_amount: "DecimalSource"
 
-OrderStatus = typing.Literal[
+OrderStatusSource = typing.Literal[
     "DRAFT",
     "PENDING",
     "CONFIRMED",
@@ -229,62 +278,60 @@ OrderStatus = typing.Literal[
     "DELIVERED",
 ]
 
-class OrderProduct(typing.Protocol):
+class OrderProductSource(typing.Protocol):
     description: "str"
     quantity: "int"
-    unit_price: "Decimal"
-    amount: "Decimal"
+    unit_price: "DecimalSource"
+    amount: "DecimalSource"
 
-class OrderProductInput(typing.TypedDict):
+class OrderProductInputSource(typing.TypedDict):
     description: "typing.NotRequired[str | None]"
     quantity: "typing.NotRequired[int | None]"
-    unit_price: "typing.NotRequired[Decimal | None]"
-    amount: "typing.NotRequired[Decimal | None]"
+    unit_price: "typing.NotRequired[DecimalSource | None]"
+    amount: "typing.NotRequired[DecimalSource | None]"
 
-OrderID = typing.Any
 
-class OrderFilter(typing.TypedDict):
-    id: "typing.NotRequired[OrderIDFilter | None]"
+class OrderFilterSource(typing.TypedDict):
+    id: "typing.NotRequired[OrderIDFilterSource | None]"
     q: "typing.NotRequired[str | None]"
 
-class OrderIDFilter(typing.TypedDict):
-    eq: "typing.NotRequired[OrderID | None]"
-    in_: "typing.NotRequired[list[OrderID] | None]"
+class OrderIDFilterSource(typing.TypedDict):
+    eq: "typing.NotRequired[OrderIDSource | None]"
+    in_: "typing.NotRequired[list[OrderIDSource] | None]"
 
-class OrderConnection(typing.Protocol):
-    edges: "list[OrderEdge]"
-    page_info: "PageInfo"
+class OrderConnectionSource(typing.Protocol):
+    edges: "list[OrderEdgeSource]"
+    page_info: "PageInfoSource"
 
-class OrderEdge(typing.Protocol):
-    cursor: "Cursor"
+class OrderEdgeSource(typing.Protocol):
+    cursor: "CursorSource"
 
-class OrderCreateInDraftInput(typing.TypedDict):
-    products: "list[OrderProductInput]"
-    currency: "Currency"
-    tax_rate: "Decimal"
-    shipping_amount: "Decimal"
+class OrderCreateInDraftInputSource(typing.TypedDict):
+    products: "list[OrderProductInputSource]"
+    currency: "CurrencySource"
+    tax_rate: "DecimalSource"
+    shipping_amount: "DecimalSource"
     destination: "str"
 
-class OrderCreateInDraftPayload(typing.Protocol):
-    order_created_in_draft: "Order"
+class OrderCreateInDraftPayloadSource(typing.Protocol):
+    order_created_in_draft: "OrderSource"
 
-class Node(typing.Protocol):
-    id: "ID! | None"
+NodeSource = typing.Union[
+    "OrderSource",
+    "BookmarkSource",
+    "UserSource",
+]
 
-class PageInfo(typing.Protocol):
+class PageInfoSource(typing.Protocol):
     has_next_page: "bool"
     has_previous_page: "bool"
-    start_cursor: "Cursor | None"
-    end_cursor: "Cursor | None"
+    start_cursor: "CursorSource | None"
+    end_cursor: "CursorSource | None"
 
-Cursor = typing.Any
+CursorSource: typing.TypeAlias = str
 
-class Query(typing.Protocol):
+class QuerySource(typing.Protocol):
     pass
 
-class Mutation(typing.Protocol):
+class MutationSource(typing.Protocol):
     version: "str"
-
-Timestamp = typing.Any
-
-Decimal = typing.Any

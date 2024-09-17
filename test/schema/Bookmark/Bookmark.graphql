@@ -1,0 +1,37 @@
+type Bookmark implements Node {
+    id: ID!
+    createdAt: Timestamp!
+    bookmarker: User!
+      @resolve
+      @source(name: "bookmarkerId", type: "ID!")
+    bookmarkable: Bookmarkable!
+      @resolve
+      @source(name: "bookmarkableId", type: "BookmarkableID!")
+      @source(name: "bookmarkableTypeId", type: "TypeID!")
+}
+
+scalar BookmarkID
+  @sourceType(alias: "swift:UUID")
+  @sourceType(alias: "python:uuid.UUID")
+
+
+input BookmarkIDFilter {
+  eq: BookmarkID
+  in: [BookmarkID!]
+}
+
+input BookmarkFilter {
+    id: BookmarkIDFilter
+    bookmarkableId: BookmarkableIDFilter
+    bookmarkerId: UserIDFilter
+}
+
+type BookmarkConnection {
+    edges: [BookmarkEdge!]!
+    pageInfo: PageInfo!
+}
+
+type BookmarkEdge {
+    node: Bookmark @resolve
+    cursor: Cursor!
+}
