@@ -3,7 +3,8 @@ import XCTest
 
 final class MyProjectTests: XCTestCase {
     func testExample() throws {
-        let v: BasicObjectSource;
+        
+        // let v: BasicObjectSource;
         // XCTest Documentation
         // https://developer.apple.com/documentation/xctest
 

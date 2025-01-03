@@ -1,6 +1,6 @@
-use std::{fs::File, io::Write, path::PathBuf};
-
 use clap::Command;
+use std::path::PathBuf;
+mod error;
 mod graphql;
 mod python;
 mod schema;
@@ -10,27 +10,56 @@ mod utils;
 const VERSION: &str = env!("CARGO_PKG_VERSION");
 
 fn main() {
-    // let cli = Command::new("girin")
-    //     .bin_name("girin")
-    //     .version(VERSION)
-    //     .author("Kyungil Choi <hanpama@gmail.com>")
-    //     .about("GraphQL code generator")
-    //     .subcommand_required(true)
-    //     .subcommand(Command::new("python").about("Generate Python code"));
+    let cli = Command::new("girin")
+        .bin_name("girin")
+        .version(VERSION)
+        .author("Kyungil Choi <hanpama@gmail.com>")
+        .about("GraphQL code generator")
+        .subcommand_required(true)
+        .subcommand(
+            Command::new("swift")
+                .about("Generate Python code")
+                .arg(clap::arg!(-s --schema <Directory>))
+                .arg(clap::arg!(-o --out <Directory>)),
+        )
+        .subcommand(
+            Command::new("graphql")
+                .about("Compile to a single GraphQL schema file")
+                .arg(clap::arg!(-s --schema <Directory>))
+                .arg(clap::arg!(-o --out <File>)),
+        );
 
-    let schema_dir = PathBuf::from("test/schema");
-    // let out_dir = PathBuf::from("test/SchemaGeneration/Sources/SchemaGeneration");
+    let matches = cli.get_matches();
 
-    let prj = schema::load(&schema_dir).unwrap();
+    let res = match matches.subcommand() {
+        Some(("swift", args)) => {
+            let schema_dir = args.get_one::<String>("schema").unwrap();
+            let outdir = args.get_one::<String>("out").unwrap();
+            let schema_dir = PathBuf::from(schema_dir);
+            let out_dir = PathBuf::from(outdir);
+            let prj = schema::load(&schema_dir).unwrap();
+            swift::generate_swift_code(out_dir, &prj)
+        }
+        Some(("graphql", args)) => {
+            let schema_dir = args.get_one::<String>("schema").unwrap();
+            let outfile = args.get_one::<String>("out").unwrap();
+            let schema_dir = PathBuf::from(schema_dir);
+            let outfile = PathBuf::from(outfile);
+            let prj = schema::load(&schema_dir).unwrap();
+            graphql::render(&prj, outfile)
+        }
+        Some(("python", args)) => {
+            let schema_dir = args.get_one::<String>("schema").unwrap();
+            let outfile = args.get_one::<String>("out").unwrap();
+            let schema_dir = PathBuf::from(schema_dir);
+            let outfile = PathBuf::from(outfile);
+            let prj = schema::load(&schema_dir).unwrap();
 
-    
-    // let mut result_debug_file = File::create(out_dir.join("debug")).unwrap();
-    // let result_debug = format!("{:#?}", result);
-    // result_debug_file
-    //     .write_all(result_debug.as_bytes())
-    //     .unwrap();
-
-    graphql::render(&prj, PathBuf::from("test/schema.graphql")).unwrap();
-    python::generate_python_code(PathBuf::from("test/python/myproject"), &prj).unwrap();
-    swift::generate_swift_code(PathBuf::from("test/swift/MyProject/Sources/MyProject"), &prj).unwrap();
+            python::generate_python_code(outfile, &prj)
+        }
+        _ => unreachable!(),
+    };
+    if let Err(e) = res {
+        eprintln!("{}", e);
+    }
 }

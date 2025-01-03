@@ -1,3 +1,4 @@
+use crate::error::AnyError;
 use crate::schema::{
     Definition, EnumDefinition, EnumValue, Field, InputDefinition, InputValue, InterfaceDefinition,
     ObjectDefinition, ScalarDefinition, Project, TypeExpression, UnionDefinition, Value,
@@ -7,7 +8,7 @@ use graphql_parser::schema;
 use std::error::Error;
 use std::{fs::File, io::Write, path::PathBuf};
 
-pub fn render(s: &Project, outfile: PathBuf) -> Result<(), GraphQLRenderingError> {
+pub fn render(s: &Project, outfile: PathBuf) -> Result<(), AnyError> {
     let schema_ast = build_schema_ast(s);
 
     let mut file = File::create(outfile)?;

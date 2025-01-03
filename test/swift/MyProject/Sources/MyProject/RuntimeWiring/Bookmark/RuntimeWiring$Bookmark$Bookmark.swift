@@ -9,6 +9,9 @@ extension Runtime.Wiring.Bookmark.Bookmark {
             }
         )
         self.BookmarkConnection = .init(
+            edges: { source, args, context, info in
+                fatalError("Not implemented")
+            }
         )
         self.BookmarkEdge = .init(
             node: { source, args, context, info in

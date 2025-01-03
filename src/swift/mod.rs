@@ -1,4 +1,4 @@
-use crate::schema::Project;
+use crate::{error::AnyError, schema::Project};
 use std::{error::Error, path::PathBuf};
 mod error;
 mod naming;
@@ -8,7 +8,7 @@ mod source_code;
 mod source_spec;
 mod type_expr;
 
-pub fn generate_swift_code(outdir: PathBuf, schema: &Project) -> Result<(), SwiftGenerationError> {
+pub fn generate_swift_code(outdir: PathBuf, schema: &Project) -> Result<(), AnyError> {
     source_spec::render(&outdir, schema).unwrap();
     runtime::render(&outdir, schema).unwrap();
     runtime_wiring::render(&outdir, schema).unwrap();

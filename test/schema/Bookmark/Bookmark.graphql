@@ -27,7 +27,7 @@ input BookmarkFilter {
 }
 
 type BookmarkConnection {
-    edges: [BookmarkEdge!]!
+    edges: [BookmarkEdge!]! @resolve
     pageInfo: PageInfo!
 }
 

@@ -42,6 +42,7 @@ impl SourceCode {
     }
 
     pub fn write_to<W: std::io::Write>(&self, w: &mut W) -> std::io::Result<()> {
+        write!(w, "{}", self.prelude)?;
         for import in &self.imports {
             writeln!(w, "import {}", import)?;
         }

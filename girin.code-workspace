@@ -5,10 +5,6 @@
         "path": "."
       },
       {
-        "name": "python-test",
-        "path": "test/python"
-      },
-      {
         "name": "swift-test",
         "path": "test/swift/MyProject"
       }

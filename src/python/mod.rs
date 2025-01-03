@@ -1,6 +1,4 @@
-use error::Error;
-
-use crate::schema::Project;
+use crate::{error::AnyError, schema::Project};
 use std::path::PathBuf;
 pub use type_expr::format_type_expression;
 
@@ -14,12 +12,12 @@ mod source_code;
 mod source_spec;
 mod type_expr;
 
-pub fn generate_python_code(outdir: PathBuf, schema: &Project) -> Result<(), Error> {
-    runtime_spec::render(&outdir, schema)?;
-    source_spec::render(&outdir, schema)?;
-    builder::render(&outdir, schema)?;
-    runtime::render(&outdir, schema)?;
-    builder_config::render(&outdir, schema)?;
+pub fn generate_python_code(outdir: PathBuf, schema: &Project) -> Result<(), AnyError> {
+    runtime_spec::render(&outdir, schema).unwrap(); // TODO: remove unwrap
+    source_spec::render(&outdir, schema).unwrap(); // TODO: remove unwrap
+    builder::render(&outdir, schema).unwrap(); // TODO: remove unwrap
+    runtime::render(&outdir, schema).unwrap(); // TODO: remove unwrap
+    builder_config::render(&outdir, schema).unwrap(); // TODO: remove unwrap
 
     Ok(())
 }

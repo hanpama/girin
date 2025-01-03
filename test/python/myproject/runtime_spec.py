@@ -6,7 +6,7 @@ import typing
 
 
 class Bookmark:
-    class Bookmark:
+    class Bookmark(typing.NamedTuple):
         class Bookmark(typing.Protocol):
             async def bookmarker(self, obj: source_spec.BookmarkSource, info: graphql.GraphQLResolveInfo, ) -> source_spec.UserSource: ...
             async def bookmarkable(self, obj: source_spec.BookmarkSource, info: graphql.GraphQLResolveInfo, ) -> source_spec.BookmarkableSource: ...
@@ -21,6 +21,12 @@ class Bookmark:
 
         class BookmarkEdge(typing.Protocol):
             async def node(self, obj: source_spec.BookmarkEdgeSource, info: graphql.GraphQLResolveInfo, ) -> source_spec.BookmarkSource | None: ...
+        
+        bookmark_: Bookmark
+        bookmark_id_: BookmarkID
+        bookmark_connection_: BookmarkConnection
+        bookmark_edge_: BookmarkEdge
+
 
     class Bookmarkable:
         class BookmarkableID(typing.Protocol):

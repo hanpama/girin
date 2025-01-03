@@ -14,6 +14,9 @@ extension Runtime.Wiring.Orders.Order {
         self.OrderProduct = .init(
         )
         self.OrderConnection = .init(
+            edges: { source, args, context, info in
+                fatalError("Not implemented")
+            }
         )
         self.OrderEdge = .init(
             node: { source, args, context, info in

@@ -10,6 +10,7 @@ public struct Runtime {
                     var bookmarkable: (_ source: SourceSpec.BookmarkSource, _ args: (), _ context: Any, _ info: GraphQL.GraphQLResolveInfo) async throws -> SourceSpec.BookmarkableSource
                 }
                 struct BookmarkConnection {
+                    var edges: (_ source: SourceSpec.BookmarkConnectionSource, _ args: (), _ context: Any, _ info: GraphQL.GraphQLResolveInfo) async throws -> [SourceSpec.BookmarkEdgeSource]
                 }
                 struct BookmarkEdge {
                     var node: (_ source: SourceSpec.BookmarkEdgeSource, _ args: (), _ context: Any, _ info: GraphQL.GraphQLResolveInfo) async throws -> SourceSpec.BookmarkSource?
@@ -76,6 +77,7 @@ public struct Runtime {
                 struct OrderProduct {
                 }
                 struct OrderConnection {
+                    var edges: (_ source: SourceSpec.OrderConnectionSource, _ args: (), _ context: Any, _ info: GraphQL.GraphQLResolveInfo) async throws -> [SourceSpec.OrderEdgeSource]
                 }
                 struct OrderEdge {
                     var node: (_ source: SourceSpec.OrderEdgeSource, _ args: (), _ context: Any, _ info: GraphQL.GraphQLResolveInfo) async throws -> SourceSpec.OrderSource?
@@ -1175,7 +1177,13 @@ public struct Runtime {
             fields: [
                 "edges": GraphQL.GraphQLField(
                     type: GraphQLNonNull(GraphQLList(GraphQLNonNull(GraphQLTypeReference("BookmarkEdge")))),
-                    resolve: nil
+                    resolve: { source, args, context, eventLoopGroup, info in
+                        let source = source as! SourceSpec.BookmarkConnectionSource
+                        let function = wiring.Bookmark.Bookmark.BookmarkConnection.edges
+                        return eventLoopGroup.next().makeFutureWithTask {
+                            return try await function(source, (), context, info)
+                        }
+                    }
                 ),
                 "pageInfo": GraphQL.GraphQLField(
                     type: GraphQLNonNull(GraphQLTypeReference("PageInfo")),
@@ -1430,7 +1438,13 @@ public struct Runtime {
             fields: [
                 "edges": GraphQL.GraphQLField(
                     type: GraphQLNonNull(GraphQLList(GraphQLNonNull(GraphQLTypeReference("OrderEdge")))),
-                    resolve: nil
+                    resolve: { source, args, context, eventLoopGroup, info in
+                        let source = source as! SourceSpec.OrderConnectionSource
+                        let function = wiring.Orders.Order.OrderConnection.edges
+                        return eventLoopGroup.next().makeFutureWithTask {
+                            return try await function(source, (), context, info)
+                        }
+                    }
                 ),
                 "pageInfo": GraphQL.GraphQLField(
                     type: GraphQLNonNull(GraphQLTypeReference("PageInfo")),

@@ -45,7 +45,6 @@ struct SourceSpec {
 
 
     protocol BookmarkConnectionSource {
-        var edges: [BookmarkEdgeSource] { get }
         var pageInfo: PageInfoSource { get }
     }
 
@@ -417,7 +416,6 @@ struct SourceSpec {
 
 
     protocol OrderConnectionSource {
-        var edges: [OrderEdgeSource] { get }
         var pageInfo: PageInfoSource { get }
     }
 

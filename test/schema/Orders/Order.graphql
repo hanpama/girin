@@ -58,7 +58,7 @@ input OrderIDFilter {
 }
 
 type OrderConnection {
-  edges: [OrderEdge!]!
+  edges: [OrderEdge!]! @resolve
   pageInfo: PageInfo!
 }
 
