@@ -222,7 +222,7 @@ fn render_object_type(src: &mut SourceCode, s: &Project, def: &ObjectDefinition)
         if i > 0 {
             src.append(",");
         }
-        render_field(src, s, &def.name, field)
+        render_field(src, s, &def.name, field, true)
     }
     src.dedent();
     src.line("]");
@@ -272,10 +272,28 @@ fn render_interface_type(src: &mut SourceCode, s: &Project, def: &InterfaceDefin
         if i > 0 {
             src.append(",");
         }
-        render_field(src, s, &def.name, field)
+        render_field(src, s, &def.name, field, false)
     }
     src.dedent();
     src.line("]");
+
+    src.append(",");
+    src.line("resolveType: { value, _, _ in");
+    src.indent();
+    src.line("switch value {");
+
+    for possible_type in s.collect_possible_types(&def.name) {
+        src.line(format!(
+            "case is SourceSpec.{}: return {:?}",
+            naming::source_spec(possible_type),
+            possible_type
+        ));
+    }
+    src.line("default: fatalError(\"Unreachable\")");
+    src.line("}");
+
+    src.dedent();
+    src.line("}");
 
     src.dedent();
     src.line(")");
@@ -402,34 +420,46 @@ fn render_union_type(src: &mut SourceCode, s: &Project, def: &UnionDefinition) {
     src.line(")");
 }
 
-fn render_field(src: &mut SourceCode, s: &Project, type_name: &str, def: &Field) {
+fn render_field(src: &mut SourceCode, s: &Project, type_name: &str, def: &Field, resolve: bool) {
     src.line(format!("{:?}: GraphQL.GraphQLField(", def.name));
     src.indent();
 
     src.line(format!(
-        "type: {},",
+        "type: {}",
         format_type_expression(&def.field_type)
     ));
     if let Some(deprecation_reason) = &def.deprecation_reason {
-        src.line(format!("deprecationReason: {:?},", deprecation_reason));
+        src.append(",");
+        src.line(format!("deprecationReason: {:?}", deprecation_reason));
     }
     if let Some(description) = &def.description {
-        src.line(format!("description: {:?},", description));
+        src.append(",");
+        src.line(format!("description: {:?}", description));
     }
 
     if !def.args.is_empty() {
+        src.append(",");
+
         src.line("args: [");
         src.indent();
         for arg in &def.args {
             render_arg(src, arg);
         }
         src.dedent();
-        src.line("],");
+        src.line("]");
     }
-    if def.has_resolve_config() {
-        render_field_resolver(src, s, type_name, &def);
-    } else {
-        src.line("resolve: nil");
+
+    if resolve {
+        src.append(",");
+        if def.has_resolve_config() {
+            render_field_resolver(src, s, type_name, &def);
+        } else {
+            src.line(format!(
+                "resolve: {{ source, _, _, _ in (source as! SourceSpec.{}).{} }}",
+                naming::source_spec(type_name),
+                naming::field_name(&def.name)
+            ));
+        }
     }
 
     src.dedent();

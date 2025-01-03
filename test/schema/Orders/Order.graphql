@@ -18,6 +18,7 @@ type Order implements Node & Bookmarkable {
   totalAmount: Decimal!
 
   viewerHasBookmarked: Boolean! @resolve
+  bookmarks(first: Int, after: Cursor, last: Int, before: Cursor, filters: [BookmarkFilter!]): BookmarkConnection!
 }
 
 enum OrderStatus {

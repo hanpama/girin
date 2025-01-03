@@ -73,6 +73,7 @@ public struct Runtime {
                     var id: (_ source: SourceSpec.OrderSource, _ args: (), _ context: Any, _ info: GraphQL.GraphQLResolveInfo) throws -> String
                     var orderer: (_ source: SourceSpec.OrderSource, _ args: (), _ context: Any, _ info: GraphQL.GraphQLResolveInfo) async throws -> SourceSpec.UserSource
                     var viewerHasBookmarked: (_ source: SourceSpec.OrderSource, _ args: (), _ context: Any, _ info: GraphQL.GraphQLResolveInfo) async throws -> Bool
+                    var bookmarks: (_ source: SourceSpec.OrderSource, _ args: (first: Int?, after: SourceSpec.CursorSource?, last: Int?, before: SourceSpec.CursorSource?, filters: [SourceSpec.BookmarkFilterSource]?), _ context: Any, _ info: GraphQL.GraphQLResolveInfo) async throws -> SourceSpec.BookmarkConnectionSource
                 }
                 struct OrderProduct {
                 }
@@ -117,7 +118,6 @@ public struct Runtime {
         }
         struct Root {
             struct Query {
-                var version: (_ source: SourceSpec.QuerySource, _ args: (), _ context: Any, _ info: GraphQL.GraphQLResolveInfo) throws -> String
             }
             struct Mutation {
             }
@@ -1094,10 +1094,17 @@ public struct Runtime {
             fields: [
                 "id": GraphQL.GraphQLField(
                     type: GraphQLNonNull(GraphQLID),
-                    description: "The id of the object.\n",
-                    resolve: nil
+                    description: "The id of the object.\n"
                 )
-            ]
+            ],
+            resolveType: { value, _, _ in
+                switch value {
+                case is SourceSpec.BookmarkSource: return "Bookmark"
+                case is SourceSpec.UserSource: return "User"
+                case is SourceSpec.OrderSource: return "Order"
+                default: fatalError("Unreachable")
+                }
+            }
         )
         let BookmarkableDefinition = try! GraphQL.GraphQLInterfaceType(
             name: "Bookmarkable",
@@ -1106,12 +1113,10 @@ public struct Runtime {
             ],
             fields: [
                 "id": GraphQL.GraphQLField(
-                    type: GraphQLNonNull(GraphQLID),
-                    resolve: nil
+                    type: GraphQLNonNull(GraphQLID)
                 ),
                 "viewerHasBookmarked": GraphQL.GraphQLField(
-                    type: GraphQLNonNull(GraphQLBoolean),
-                    resolve: nil
+                    type: GraphQLNonNull(GraphQLBoolean)
                 ),
                 "bookmarks": GraphQL.GraphQLField(
                     type: GraphQLNonNull(GraphQLTypeReference("BookmarkConnection")),
@@ -1131,21 +1136,26 @@ public struct Runtime {
                         "filters": GraphQL.GraphQLArgument(
                             type: GraphQLList(GraphQLNonNull(GraphQLTypeReference("BookmarkFilter")))
                         ),
-                    ],
-                    resolve: nil
+                    ]
                 )
-            ]
+            ],
+            resolveType: { value, _, _ in
+                switch value {
+                case is SourceSpec.OrderSource: return "Order"
+                default: fatalError("Unreachable")
+                }
+            }
         )
         let BookmarkDefinition = try! GraphQL.GraphQLObjectType(
             name: "Bookmark",
             fields: [
                 "id": GraphQL.GraphQLField(
                     type: GraphQLNonNull(GraphQLID),
-                    resolve: nil
+                    resolve: { source, _, _, _ in (source as! SourceSpec.BookmarkSource).id }
                 ),
                 "createdAt": GraphQL.GraphQLField(
                     type: GraphQLNonNull(GraphQLTypeReference("Timestamp")),
-                    resolve: nil
+                    resolve: { source, _, _, _ in (source as! SourceSpec.BookmarkSource).createdAt }
                 ),
                 "bookmarker": GraphQL.GraphQLField(
                     type: GraphQLNonNull(GraphQLTypeReference("User")),
@@ -1187,7 +1197,7 @@ public struct Runtime {
                 ),
                 "pageInfo": GraphQL.GraphQLField(
                     type: GraphQLNonNull(GraphQLTypeReference("PageInfo")),
-                    resolve: nil
+                    resolve: { source, _, _, _ in (source as! SourceSpec.BookmarkConnectionSource).pageInfo }
                 )
             ]
         )
@@ -1206,7 +1216,7 @@ public struct Runtime {
                 ),
                 "cursor": GraphQL.GraphQLField(
                     type: GraphQLNonNull(GraphQLTypeReference("Cursor")),
-                    resolve: nil
+                    resolve: { source, _, _, _ in (source as! SourceSpec.BookmarkEdgeSource).cursor }
                 )
             ]
         )
@@ -1302,11 +1312,11 @@ public struct Runtime {
             fields: [
                 "edges": GraphQL.GraphQLField(
                     type: GraphQLNonNull(GraphQLList(GraphQLNonNull(GraphQLTypeReference("UserEdge")))),
-                    resolve: nil
+                    resolve: { source, _, _, _ in (source as! SourceSpec.UserConnectionSource).edges }
                 ),
                 "pageInfo": GraphQL.GraphQLField(
                     type: GraphQLNonNull(GraphQLTypeReference("PageInfo")),
-                    resolve: nil
+                    resolve: { source, _, _, _ in (source as! SourceSpec.UserConnectionSource).pageInfo }
                 )
             ]
         )
@@ -1325,7 +1335,7 @@ public struct Runtime {
                 ),
                 "cursor": GraphQL.GraphQLField(
                     type: GraphQLNonNull(GraphQLTypeReference("Cursor")),
-                    resolve: nil
+                    resolve: { source, _, _, _ in (source as! SourceSpec.UserEdgeSource).cursor }
                 )
             ]
         )
@@ -1344,11 +1354,11 @@ public struct Runtime {
                 ),
                 "createdAt": GraphQL.GraphQLField(
                     type: GraphQLNonNull(GraphQLTypeReference("Timestamp")),
-                    resolve: nil
+                    resolve: { source, _, _, _ in (source as! SourceSpec.OrderSource).createdAt }
                 ),
                 "updatedAt": GraphQL.GraphQLField(
                     type: GraphQLNonNull(GraphQLTypeReference("Timestamp")),
-                    resolve: nil
+                    resolve: { source, _, _, _ in (source as! SourceSpec.OrderSource).updatedAt }
                 ),
                 "orderer": GraphQL.GraphQLField(
                     type: GraphQLNonNull(GraphQLTypeReference("User")),
@@ -1362,39 +1372,39 @@ public struct Runtime {
                 ),
                 "status": GraphQL.GraphQLField(
                     type: GraphQLNonNull(GraphQLTypeReference("OrderStatus")),
-                    resolve: nil
+                    resolve: { source, _, _, _ in (source as! SourceSpec.OrderSource).status }
                 ),
                 "destination": GraphQL.GraphQLField(
                     type: GraphQLNonNull(GraphQLString),
-                    resolve: nil
+                    resolve: { source, _, _, _ in (source as! SourceSpec.OrderSource).destination }
                 ),
                 "products": GraphQL.GraphQLField(
                     type: GraphQLNonNull(GraphQLList(GraphQLNonNull(GraphQLTypeReference("OrderProduct")))),
-                    resolve: nil
+                    resolve: { source, _, _, _ in (source as! SourceSpec.OrderSource).products }
                 ),
                 "currency": GraphQL.GraphQLField(
                     type: GraphQLNonNull(GraphQLTypeReference("Currency")),
-                    resolve: nil
+                    resolve: { source, _, _, _ in (source as! SourceSpec.OrderSource).currency }
                 ),
                 "taxRate": GraphQL.GraphQLField(
                     type: GraphQLNonNull(GraphQLTypeReference("Decimal")),
-                    resolve: nil
+                    resolve: { source, _, _, _ in (source as! SourceSpec.OrderSource).taxRate }
                 ),
                 "productsSubtotalAmount": GraphQL.GraphQLField(
                     type: GraphQLNonNull(GraphQLTypeReference("Decimal")),
-                    resolve: nil
+                    resolve: { source, _, _, _ in (source as! SourceSpec.OrderSource).productsSubtotalAmount }
                 ),
                 "shippingAmount": GraphQL.GraphQLField(
                     type: GraphQLNonNull(GraphQLTypeReference("Decimal")),
-                    resolve: nil
+                    resolve: { source, _, _, _ in (source as! SourceSpec.OrderSource).shippingAmount }
                 ),
                 "taxAmount": GraphQL.GraphQLField(
                     type: GraphQLNonNull(GraphQLTypeReference("Decimal")),
-                    resolve: nil
+                    resolve: { source, _, _, _ in (source as! SourceSpec.OrderSource).taxAmount }
                 ),
                 "totalAmount": GraphQL.GraphQLField(
                     type: GraphQLNonNull(GraphQLTypeReference("Decimal")),
-                    resolve: nil
+                    resolve: { source, _, _, _ in (source as! SourceSpec.OrderSource).totalAmount }
                 ),
                 "viewerHasBookmarked": GraphQL.GraphQLField(
                     type: GraphQLNonNull(GraphQLBoolean),
@@ -1403,6 +1413,41 @@ public struct Runtime {
                         let function = wiring.Orders.Order.Order.viewerHasBookmarked
                         return eventLoopGroup.next().makeFutureWithTask {
                             return try await function(source, (), context, info)
+                        }
+                    }
+                ),
+                "bookmarks": GraphQL.GraphQLField(
+                    type: GraphQLNonNull(GraphQLTypeReference("BookmarkConnection")),
+                    args: [
+                        "first": GraphQL.GraphQLArgument(
+                            type: GraphQLInt
+                        ),
+                        "after": GraphQL.GraphQLArgument(
+                            type: GraphQLTypeReference("Cursor")
+                        ),
+                        "last": GraphQL.GraphQLArgument(
+                            type: GraphQLInt
+                        ),
+                        "before": GraphQL.GraphQLArgument(
+                            type: GraphQLTypeReference("Cursor")
+                        ),
+                        "filters": GraphQL.GraphQLArgument(
+                            type: GraphQLList(GraphQLNonNull(GraphQLTypeReference("BookmarkFilter")))
+                        ),
+                    ],
+                    resolve: { source, args, context, eventLoopGroup, info in
+                        let source = source as! SourceSpec.OrderSource
+                        let function = wiring.Orders.Order.Order.bookmarks
+                        struct Args: Decodable {
+                            var first: Int?
+                            var after: SourceSpec.CursorSource?
+                            var last: Int?
+                            var before: SourceSpec.CursorSource?
+                            var filters: [SourceSpec.BookmarkFilterSource]?
+                        }
+                        let args: Args = try decoder.decode(Args.self, from: args)
+                        return eventLoopGroup.next().makeFutureWithTask {
+                            return try await function(source, (args.first, args.after, args.last, args.before, args.filters), context, info)
                         }
                     }
                 )
@@ -1417,19 +1462,19 @@ public struct Runtime {
             fields: [
                 "description": GraphQL.GraphQLField(
                     type: GraphQLNonNull(GraphQLString),
-                    resolve: nil
+                    resolve: { source, _, _, _ in (source as! SourceSpec.OrderProductSource).description }
                 ),
                 "quantity": GraphQL.GraphQLField(
                     type: GraphQLNonNull(GraphQLInt),
-                    resolve: nil
+                    resolve: { source, _, _, _ in (source as! SourceSpec.OrderProductSource).quantity }
                 ),
                 "unitPrice": GraphQL.GraphQLField(
                     type: GraphQLNonNull(GraphQLTypeReference("Decimal")),
-                    resolve: nil
+                    resolve: { source, _, _, _ in (source as! SourceSpec.OrderProductSource).unitPrice }
                 ),
                 "amount": GraphQL.GraphQLField(
                     type: GraphQLNonNull(GraphQLTypeReference("Decimal")),
-                    resolve: nil
+                    resolve: { source, _, _, _ in (source as! SourceSpec.OrderProductSource).amount }
                 )
             ]
         )
@@ -1448,7 +1493,7 @@ public struct Runtime {
                 ),
                 "pageInfo": GraphQL.GraphQLField(
                     type: GraphQLNonNull(GraphQLTypeReference("PageInfo")),
-                    resolve: nil
+                    resolve: { source, _, _, _ in (source as! SourceSpec.OrderConnectionSource).pageInfo }
                 )
             ]
         )
@@ -1467,7 +1512,7 @@ public struct Runtime {
                 ),
                 "cursor": GraphQL.GraphQLField(
                     type: GraphQLNonNull(GraphQLTypeReference("Cursor")),
-                    resolve: nil
+                    resolve: { source, _, _, _ in (source as! SourceSpec.OrderEdgeSource).cursor }
                 )
             ]
         )
@@ -1476,7 +1521,7 @@ public struct Runtime {
             fields: [
                 "orderCreatedInDraft": GraphQL.GraphQLField(
                     type: GraphQLNonNull(GraphQLTypeReference("Order")),
-                    resolve: nil
+                    resolve: { source, _, _, _ in (source as! SourceSpec.OrderCreateInDraftPayloadSource).orderCreatedInDraft }
                 )
             ]
         )
@@ -1487,22 +1532,22 @@ public struct Runtime {
                 "hasNextPage": GraphQL.GraphQLField(
                     type: GraphQLNonNull(GraphQLBoolean),
                     description: "When paginating forwards, are there more items?\n",
-                    resolve: nil
+                    resolve: { source, _, _, _ in (source as! SourceSpec.PageInfoSource).hasNextPage }
                 ),
                 "hasPreviousPage": GraphQL.GraphQLField(
                     type: GraphQLNonNull(GraphQLBoolean),
                     description: "When paginating backwards, are there more items?\n",
-                    resolve: nil
+                    resolve: { source, _, _, _ in (source as! SourceSpec.PageInfoSource).hasPreviousPage }
                 ),
                 "startCursor": GraphQL.GraphQLField(
                     type: GraphQLTypeReference("Cursor"),
                     description: "When paginating backwards, the cursor to continue.\n",
-                    resolve: nil
+                    resolve: { source, _, _, _ in (source as! SourceSpec.PageInfoSource).startCursor }
                 ),
                 "endCursor": GraphQL.GraphQLField(
                     type: GraphQLTypeReference("Cursor"),
                     description: "When paginating forwards, the cursor to continue.\n",
-                    resolve: nil
+                    resolve: { source, _, _, _ in (source as! SourceSpec.PageInfoSource).endCursor }
                 )
             ]
         )
@@ -1511,13 +1556,7 @@ public struct Runtime {
             fields: [
                 "version": GraphQL.GraphQLField(
                     type: GraphQLNonNull(GraphQLString),
-                    resolve: { source, args, context, eventLoopGroup, info in
-                        let source = source as! SourceSpec.QuerySource
-                        let function = wiring.Root.Query.version
-                        return eventLoopGroup.next().makeSucceededFuture(
-                            try function(source, (), context, info)
-                        )
-                    }
+                    resolve: { source, _, _, _ in (source as! SourceSpec.QuerySource).version }
                 ),
                 "node": GraphQL.GraphQLField(
                     type: GraphQLTypeReference("Node"),
@@ -1692,7 +1731,7 @@ public struct Runtime {
             fields: [
                 "version": GraphQL.GraphQLField(
                     type: GraphQLNonNull(GraphQLString),
-                    resolve: nil
+                    resolve: { source, _, _, _ in (source as! SourceSpec.MutationSource).version }
                 ),
                 "bookmarkBookmarkable": GraphQL.GraphQLField(
                     type: GraphQLTypeReference("BookmarkableBookmarkPayload"),

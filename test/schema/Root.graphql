@@ -1,5 +1,5 @@
 type Query {
-  version: String! @resolve(sync: true)
+  version: String!
 }
 
 type Mutation {

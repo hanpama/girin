@@ -464,6 +464,7 @@ struct SourceSpec {
     typealias CursorSource = String
 
     protocol QuerySource {
+        var version: String { get }
     }
 
     protocol MutationSource {
