@@ -13,10 +13,7 @@ pub fn render(outdir: &PathBuf, s: &Project) -> Result<()> {
 
     src.import("from . import source_spec");
 
-    // src.line("class ResolverSpec:");
-    // src.indent();
     render_directory(&mut src, ModuleRef::new(s))?;
-    // src.dedent();
 
     src.write_to(&mut file)?;
     Ok(())
@@ -120,11 +117,17 @@ fn render_field_resolver(src: &mut SourceCode, def_name: &str, field: &Field) {
     let name = naming::field_name(&field.name);
     let source_type = format!("source_spec.{}", naming::source(def_name));
     let return_type = format_type_expression(Some("source_spec"), &field.field_type);
-    let arguments = format_argument_list(&field.args);
 
-    src.line(&format!(
-        "{sig} {name}(self, obj: {source_type}, info: graphql.GraphQLResolveInfo, {arguments}) -> {return_type}: ...",
-    ));
+    if field.args.is_empty() {
+        src.line(&format!(
+            "{sig} {name}(self, obj: {source_type}, info: graphql.GraphQLResolveInfo) -> {return_type}: ...",
+        ));
+    } else {
+        let arguments = format_argument_list(&field.args);
+        src.line(&format!(
+            "{sig} {name}(self, obj: {source_type}, info: graphql.GraphQLResolveInfo, {arguments}) -> {return_type}: ...",
+        ));
+    }
 }
 
 fn format_argument_list(args: &Vec<InputValue>) -> String {

@@ -28,7 +28,6 @@ class BookmarkFilterSource(typing.TypedDict):
     bookmarker_id: "typing.NotRequired[UserIDFilterSource | None]"
 
 class BookmarkConnectionSource(typing.Protocol):
-    edges: "list[BookmarkEdgeSource]"
     page_info: "PageInfoSource"
 
 class BookmarkEdgeSource(typing.Protocol):
@@ -300,7 +299,6 @@ class OrderIDFilterSource(typing.TypedDict):
     in_: "typing.NotRequired[list[OrderIDSource] | None]"
 
 class OrderConnectionSource(typing.Protocol):
-    edges: "list[OrderEdgeSource]"
     page_info: "PageInfoSource"
 
 class OrderEdgeSource(typing.Protocol):
@@ -317,8 +315,8 @@ class OrderCreateInDraftPayloadSource(typing.Protocol):
     order_created_in_draft: "OrderSource"
 
 NodeSource = typing.Union[
-    "OrderSource",
     "BookmarkSource",
+    "OrderSource",
     "UserSource",
 ]
 
@@ -331,7 +329,7 @@ class PageInfoSource(typing.Protocol):
 CursorSource: typing.TypeAlias = str
 
 class QuerySource(typing.Protocol):
-    pass
+    version: "str"
 
 class MutationSource(typing.Protocol):
     version: "str"

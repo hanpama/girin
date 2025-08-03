@@ -1,14 +1,11 @@
 from .. import runtime_spec
-from .. import source_spec
 import graphql
 import typing
 
 
 @typing.final
 class Query(runtime_spec.Root.Query):
-    def version(self, obj: QuerySource, info: graphql.GraphQLResolveInfo, ) -> str:
-        raise NotImplementedError()
-
+    pass
 
 
 @typing.final

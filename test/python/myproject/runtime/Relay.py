@@ -11,10 +11,10 @@ class PageInfo(runtime_spec.Relay.PageInfo):
 
 @typing.final
 class Query(runtime_spec.Relay.Query):
-    async def node(self, obj: QuerySource, info: graphql.GraphQLResolveInfo, id: object) -> source_spec.NodeSource | None:
+    async def node(self, obj: source_spec.QuerySource, info: graphql.GraphQLResolveInfo, id: object) -> source_spec.NodeSource | None:
         raise NotImplementedError()
 
-    async def nodes(self, obj: QuerySource, info: graphql.GraphQLResolveInfo, ids: list[object]) -> list[source_spec.NodeSource | None]:
+    async def nodes(self, obj: source_spec.QuerySource, info: graphql.GraphQLResolveInfo, ids: list[object]) -> list[source_spec.NodeSource | None]:
         raise NotImplementedError()
 
 

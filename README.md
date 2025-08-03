@@ -1,13 +1,20 @@
-## grava
+## girin
 
 GraphQL Code Generator
 
 ```
-[RootModuleName]/
-  Sources/
-    [TypeSourceName].swift ...
-  Impl/
-    [ModuleName]/
-      [SubmoduleName].swift ...
-  SchemaBuilder.swift
+$ girin help
+GraphQL code generator
+
+Usage: girin <COMMAND>
+
+Commands:
+  swift    Generate Swift code
+  python   Generate Python code
+  graphql  Compile to a single GraphQL schema file
+  help     Print this message or the help of the given subcommand(s)
+
+Options:
+  -h, --help     Print help
+  -V, --version  Print version
 ```

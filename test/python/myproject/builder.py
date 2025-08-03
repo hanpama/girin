@@ -70,7 +70,7 @@ def build_schema() -> graphql.GraphQLSchema:
         fields=lambda: {
             "edges": graphql.GraphQLField(
                 type_=graphql.GraphQLNonNull(graphql.GraphQLList(graphql.GraphQLNonNull(BookmarkEdgeType))),
-                resolve=graphql.default_field_resolver,
+                resolve=BuilderConfig.Bookmark.Bookmark.BookmarkConnection.edges,
             ),
             "pageInfo": graphql.GraphQLField(
                 type_=graphql.GraphQLNonNull(PageInfoType),
@@ -1070,6 +1070,32 @@ def build_schema() -> graphql.GraphQLSchema:
                 type_=graphql.GraphQLNonNull(graphql.GraphQLBoolean),
                 resolve=BuilderConfig.Orders.Order.Order.viewer_has_bookmarked,
             ),
+            "bookmarks": graphql.GraphQLField(
+                type_=graphql.GraphQLNonNull(BookmarkConnectionType),
+                args={
+                    "first": graphql.GraphQLArgument(
+                        type_=graphql.GraphQLInt,
+                        out_name="first",
+                    ),
+                    "after": graphql.GraphQLArgument(
+                        type_=CursorType,
+                        out_name="after",
+                    ),
+                    "last": graphql.GraphQLArgument(
+                        type_=graphql.GraphQLInt,
+                        out_name="last",
+                    ),
+                    "before": graphql.GraphQLArgument(
+                        type_=CursorType,
+                        out_name="before",
+                    ),
+                    "filters": graphql.GraphQLArgument(
+                        type_=graphql.GraphQLList(graphql.GraphQLNonNull(BookmarkFilterType)),
+                        out_name="filters",
+                    ),
+                },
+                resolve=BuilderConfig.Orders.Order.Order.bookmarks,
+            ),
         },
         interfaces=lambda: [
             NodeType,
@@ -1178,7 +1204,7 @@ def build_schema() -> graphql.GraphQLSchema:
         fields=lambda: {
             "edges": graphql.GraphQLField(
                 type_=graphql.GraphQLNonNull(graphql.GraphQLList(graphql.GraphQLNonNull(OrderEdgeType))),
-                resolve=graphql.default_field_resolver,
+                resolve=BuilderConfig.Orders.Order.OrderConnection.edges,
             ),
             "pageInfo": graphql.GraphQLField(
                 type_=graphql.GraphQLNonNull(PageInfoType),
@@ -1280,7 +1306,7 @@ def build_schema() -> graphql.GraphQLSchema:
         fields=lambda: {
             "version": graphql.GraphQLField(
                 type_=graphql.GraphQLNonNull(graphql.GraphQLString),
-                resolve=BuilderConfig.Root.Query.version,
+                resolve=graphql.default_field_resolver,
             ),
             "node": graphql.GraphQLField(
                 type_=NodeType,

@@ -18,6 +18,12 @@ fn main() {
         .subcommand_required(true)
         .subcommand(
             Command::new("swift")
+                .about("Generate Swift code")
+                .arg(clap::arg!(-s --schema <Directory>))
+                .arg(clap::arg!(-o --out <Directory>)),
+        )
+        .subcommand(
+            Command::new("python")
                 .about("Generate Python code")
                 .arg(clap::arg!(-s --schema <Directory>))
                 .arg(clap::arg!(-o --out <Directory>)),
@@ -40,14 +46,6 @@ fn main() {
             let prj = schema::load(&schema_dir).unwrap();
             swift::generate_swift_code(out_dir, &prj)
         }
-        Some(("graphql", args)) => {
-            let schema_dir = args.get_one::<String>("schema").unwrap();
-            let outfile = args.get_one::<String>("out").unwrap();
-            let schema_dir = PathBuf::from(schema_dir);
-            let outfile = PathBuf::from(outfile);
-            let prj = schema::load(&schema_dir).unwrap();
-            graphql::render(&prj, outfile)
-        }
         Some(("python", args)) => {
             let schema_dir = args.get_one::<String>("schema").unwrap();
             let outfile = args.get_one::<String>("out").unwrap();
@@ -56,6 +54,14 @@ fn main() {
             let prj = schema::load(&schema_dir).unwrap();
 
             python::generate_python_code(outfile, &prj)
+        }
+        Some(("graphql", args)) => {
+            let schema_dir = args.get_one::<String>("schema").unwrap();
+            let outfile = args.get_one::<String>("out").unwrap();
+            let schema_dir = PathBuf::from(schema_dir);
+            let outfile = PathBuf::from(outfile);
+            let prj = schema::load(&schema_dir).unwrap();
+            graphql::render(&prj, outfile)
         }
         _ => unreachable!(),
     };

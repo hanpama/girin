@@ -6,10 +6,10 @@ import typing
 
 @typing.final
 class Bookmark(runtime_spec.Bookmark.Bookmark.Bookmark):
-    async def bookmarker(self, obj: BookmarkSource, info: graphql.GraphQLResolveInfo, ) -> source_spec.UserSource:
+    async def bookmarker(self, obj: source_spec.BookmarkSource, info: graphql.GraphQLResolveInfo) -> source_spec.UserSource:
         raise NotImplementedError()
 
-    async def bookmarkable(self, obj: BookmarkSource, info: graphql.GraphQLResolveInfo, ) -> source_spec.BookmarkableSource:
+    async def bookmarkable(self, obj: source_spec.BookmarkSource, info: graphql.GraphQLResolveInfo) -> source_spec.BookmarkableSource:
         raise NotImplementedError()
 
 
@@ -28,10 +28,12 @@ class BookmarkID(runtime_spec.Bookmark.Bookmark.BookmarkID):
 
 @typing.final
 class BookmarkConnection(runtime_spec.Bookmark.Bookmark.BookmarkConnection):
-    pass
+    async def edges(self, obj: source_spec.BookmarkConnectionSource, info: graphql.GraphQLResolveInfo) -> list[source_spec.BookmarkEdgeSource]:
+        raise NotImplementedError()
+
 
 
 @typing.final
 class BookmarkEdge(runtime_spec.Bookmark.Bookmark.BookmarkEdge):
-    async def node(self, obj: BookmarkEdgeSource, info: graphql.GraphQLResolveInfo, ) -> source_spec.BookmarkSource | None:
+    async def node(self, obj: source_spec.BookmarkEdgeSource, info: graphql.GraphQLResolveInfo) -> source_spec.BookmarkSource | None:
         raise NotImplementedError()

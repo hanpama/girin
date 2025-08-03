@@ -6,5 +6,5 @@ import typing
 
 @typing.final
 class Query(runtime_spec.IAM.Viewer.Query):
-    async def viewer(self, obj: QuerySource, info: graphql.GraphQLResolveInfo, ) -> source_spec.UserSource | None:
+    async def viewer(self, obj: source_spec.QuerySource, info: graphql.GraphQLResolveInfo) -> source_spec.UserSource | None:
         raise NotImplementedError()
